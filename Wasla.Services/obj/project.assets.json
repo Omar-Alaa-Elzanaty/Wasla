@@ -1,0 +1,109 @@
+{
+  "version": 3,
+  "targets": {
+    "net7.0": {
+      "Wasla.DataAccess/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "dependencies": {
+          "Wasla.Model": "1.0.0"
+        },
+        "compile": {
+          "bin/placeholder/Wasla.DataAccess.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Wasla.DataAccess.dll": {}
+        }
+      },
+      "Wasla.Model/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v7.0",
+        "compile": {
+          "bin/placeholder/Wasla.Model.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/Wasla.Model.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Wasla.DataAccess/1.0.0": {
+      "type": "project",
+      "path": "../Wasla.DataAccess/Wasla.DataAccess.csproj",
+      "msbuildProject": "../Wasla.DataAccess/Wasla.DataAccess.csproj"
+    },
+    "Wasla.Model/1.0.0": {
+      "type": "project",
+      "path": "../Wasla.Model/Wasla.Model.csproj",
+      "msbuildProject": "../Wasla.Model/Wasla.Model.csproj"
+    }
+  },
+  "projectFileDependencyGroups": {
+    "net7.0": [
+      "Wasla.DataAccess >= 1.0.0"
+    ]
+  },
+  "packageFolders": {
+    "C:\\Users\\d\\.nuget\\packages\\": {}
+  },
+  "project": {
+    "version": "1.0.0",
+    "restore": {
+      "projectUniqueName": "F:\\Wasla\\Wasla.Services\\Wasla.Services.csproj",
+      "projectName": "Wasla.Services",
+      "projectPath": "F:\\Wasla\\Wasla.Services\\Wasla.Services.csproj",
+      "packagesPath": "C:\\Users\\d\\.nuget\\packages\\",
+      "outputPath": "F:\\Wasla\\Wasla.Services\\obj\\",
+      "projectStyle": "PackageReference",
+      "configFilePaths": [
+        "C:\\Users\\d\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+      ],
+      "originalTargetFrameworks": [
+        "net7.0"
+      ],
+      "sources": {
+        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+        "https://api.nuget.org/v3/index.json": {}
+      },
+      "frameworks": {
+        "net7.0": {
+          "targetAlias": "net7.0",
+          "projectReferences": {
+            "F:\\Wasla\\Wasla.DataAccess\\Wasla.DataAccess.csproj": {
+              "projectPath": "F:\\Wasla\\Wasla.DataAccess\\Wasla.DataAccess.csproj"
+            }
+          }
+        }
+      },
+      "warningProperties": {
+        "warnAsError": [
+          "NU1605"
+        ]
+      }
+    },
+    "frameworks": {
+      "net7.0": {
+        "targetAlias": "net7.0",
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48",
+          "net481"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.402\\RuntimeIdentifierGraph.json"
+      }
+    }
+  }
+}
