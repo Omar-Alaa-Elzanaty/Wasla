@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "eyRkMpY8VSA4Q4AVkBdvRwTJhjzbxK5j9u+VEUu6xVE=",
+  "Source": "Wasla.Api",
+  "BasePath": "_content/Wasla.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
