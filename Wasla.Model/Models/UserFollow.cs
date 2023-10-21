@@ -8,9 +8,9 @@ namespace Wasla.Model.Models
 {
 	public class UserFollow
 	{
-		public string UserId { get; set; }
-		public virtual User User { get; set; }
+		public string CustomerId { get; set; }
+		public virtual Customer Customer { get; set; }
 		public string FollowerId { get; set; }
-		public virtual User Follower { get; set; }
+		public virtual Customer Follower { get; set; }
 	}
 }

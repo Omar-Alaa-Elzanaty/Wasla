@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Wasla.Model.Models
 {
-	public class Vechiles
+	public class Vehicle
 	{
 		public int Id { get; set; }
 		public string Type { get; set; }
@@ -14,8 +14,9 @@ namespace Wasla.Model.Models
 		public string LicenseWord { get; set; }
 		public int Capcity { get; set; }
 		public int? OrganizationId { get; set; }
-		public virtual Orgainzation? Orgainzation { get; set; }
+		public virtual Organization? Orgainzation { get; set; }
 		public int? AdsId { get; set; }
 		public virtual Advertisment? Advertisment { get; set; }
+		public virtual Trip Trip { get; set; }
 	}
 }

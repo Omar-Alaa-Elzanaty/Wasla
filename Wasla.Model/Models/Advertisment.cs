@@ -11,6 +11,6 @@ namespace Wasla.Model.Models
 		public int Id { get; set; }
 		public DateTime StartDate { get; set; }
 		public DateTime EndDate { get; set; }
-		public virtual ICollection<Vechiles> Busses { get; set; }
+		public virtual ICollection<Vehicle> Busses { get; set; }
 	}
 }

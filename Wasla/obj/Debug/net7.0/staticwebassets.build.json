@@ -1,11 +1,19 @@
 {
   "Version": 1,
-  "Hash": "eyRkMpY8VSA4Q4AVkBdvRwTJhjzbxK5j9u+VEUu6xVE=",
+  "Hash": "yEce1OuH/Xe5GTDVA8A+y8ZH9L3hafSdmDa8k1QIJOE=",
   "Source": "Wasla.Api",
   "BasePath": "_content/Wasla.Api",
   "Mode": "Default",
   "ManifestType": "Build",
   "ReferencedProjectsConfiguration": [],
-  "DiscoveryPatterns": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "Wasla.Api\\wwwroot",
+      "Source": "Wasla.Api",
+      "ContentRoot": "F:\\Wasla\\Wasla\\wwwroot\\",
+      "BasePath": "_content/Wasla.Api",
+      "Pattern": "**"
+    }
+  ],
   "Assets": []
 }

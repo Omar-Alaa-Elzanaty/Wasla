@@ -10,8 +10,8 @@ namespace Wasla.Model.Models
 	{
 		public int Id { get; set; }
 		public DateTime ReservationDate { get; set; }
-		public string UserId { get; set; }
-		public User User { get; set; }
+		public string CustomerId { get; set; }
+		public virtual Customer Customer { get; set; }
 		public int TripId { get; set; }
 		public virtual Trip Trip { get; set; }
 	}

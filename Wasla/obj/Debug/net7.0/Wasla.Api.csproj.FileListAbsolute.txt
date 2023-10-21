@@ -89,3 +89,4 @@ F:\Wasla\Wasla\bin\Debug\net7.0\Microsoft.Extensions.Identity.Core.dll
 F:\Wasla\Wasla\bin\Debug\net7.0\Microsoft.Extensions.Identity.Stores.dll
 F:\Wasla\Wasla\bin\Debug\net7.0\Microsoft.Extensions.Options.dll
 F:\Wasla\Wasla\bin\Debug\net7.0\Microsoft.AspNetCore.Authentication.JwtBearer.dll
+F:\Wasla\Wasla\bin\Debug\net7.0\Wasla.Api.staticwebassets.runtime.json

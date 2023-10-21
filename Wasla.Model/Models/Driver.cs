@@ -10,6 +10,7 @@ namespace Wasla.Model.Models
 	{
 		public int License { get; set; }
 		public int? OrganizationId { get; set; }
-		public virtual Orgainzation? Orgainzation { get; set; }
+		public virtual Organization? Orgainzation { get; set; }
+		public virtual ICollection<Trip> Trips { get; set; }
 	}
 }

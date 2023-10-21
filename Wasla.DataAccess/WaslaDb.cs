@@ -32,6 +32,11 @@ namespace Wasla.DataAccess
 			modelBuilder.Entity<IdentityUserToken<string>>().ToTable("UserTokens", "Account");
 			new UserFollowConfiguration().Configure(modelBuilder.Entity<UserFollow>());
 			#endregion
+			new DriverConfiguration().Configure(modelBuilder.Entity<Driver>());
+			new VehicleConfiguraiton().Configure(modelBuilder.Entity<Vehicle>());
+			new TripConfiguration().Configure(modelBuilder.Entity<Trip>());
+			new PackageConfiguration().Configure(modelBuilder.Entity<Package>());
+			new ReservationConfiguration().Configure(modelBuilder.Entity<Reservation>());
 		}
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
@@ -39,5 +44,11 @@ namespace Wasla.DataAccess
 		}
 		public virtual DbSet<Customer> Customers { get; set; }
 		public virtual DbSet<Driver> Drivers { get; set; }
+		public virtual DbSet<Vehicle> Vehicles { get; set; }
+		public virtual DbSet<Advertisment> Advertisments { get; set;}
+		public virtual DbSet<Organization> Organizations { get; set; }
+		public virtual DbSet<Package> Packages { get; set; }
+		public virtual DbSet<Reservation> Reservations { get; set; }
+		public virtual DbSet<Trip> Trips { get; set; }
 	}
 }
