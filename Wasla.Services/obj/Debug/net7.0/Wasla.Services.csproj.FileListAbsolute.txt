@@ -1,0 +1,17 @@
+F:\Wasla\Wasla.Services\bin\Debug\net7.0\Wasla.Services.deps.json
+F:\Wasla\Wasla.Services\bin\Debug\net7.0\Wasla.Services.dll
+F:\Wasla\Wasla.Services\bin\Debug\net7.0\Wasla.Services.pdb
+F:\Wasla\Wasla.Services\bin\Debug\net7.0\Wasla.DataAccess.dll
+F:\Wasla\Wasla.Services\bin\Debug\net7.0\Wasla.Model.dll
+F:\Wasla\Wasla.Services\bin\Debug\net7.0\Wasla.DataAccess.pdb
+F:\Wasla\Wasla.Services\bin\Debug\net7.0\Wasla.Model.pdb
+F:\Wasla\Wasla.Services\obj\Debug\net7.0\Wasla.Services.csproj.AssemblyReference.cache
+F:\Wasla\Wasla.Services\obj\Debug\net7.0\Wasla.Services.GeneratedMSBuildEditorConfig.editorconfig
+F:\Wasla\Wasla.Services\obj\Debug\net7.0\Wasla.Services.AssemblyInfoInputs.cache
+F:\Wasla\Wasla.Services\obj\Debug\net7.0\Wasla.Services.AssemblyInfo.cs
+F:\Wasla\Wasla.Services\obj\Debug\net7.0\Wasla.Services.csproj.CoreCompileInputs.cache
+F:\Wasla\Wasla.Services\obj\Debug\net7.0\Wasla.Services.csproj.CopyComplete
+F:\Wasla\Wasla.Services\obj\Debug\net7.0\Wasla.Services.dll
+F:\Wasla\Wasla.Services\obj\Debug\net7.0\refint\Wasla.Services.dll
+F:\Wasla\Wasla.Services\obj\Debug\net7.0\Wasla.Services.pdb
+F:\Wasla\Wasla.Services\obj\Debug\net7.0\ref\Wasla.Services.dll

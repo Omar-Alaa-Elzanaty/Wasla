@@ -1,0 +1,16 @@
+user [id,firstname,lname,photo,birthdate,gender,email,phone]
+userfollow [userid,followerid]
+Driver [userid,License,OrgId]
+customer[userid,points]
+Organize[id,Name,Address,logo,maxpackageweight,minpackageweight,website]
+Advertisment[id,EndDate,StartDate]
+Vechiles[id,type,LicenseNo,LicenseWord,Capcity,OrgId]
+trip[id,organizationId,DriverId,vecihlesId,launchtime,ArriveTime,to,from,Availablesets,Availablepackagespace]
+package[id,Name,Describe,SenderId,Imageurl,price,weight,reciverUserName,reciverName,reciverphonenumber,tripid]
+userReservation[userid,tripid,Date]
+
+
+OnDelete
+userFollow : NoAction -> FollowerId
+Reservation : NoAction ->CustomerId
+trip: NoAction ->organizationid, vehcileId
