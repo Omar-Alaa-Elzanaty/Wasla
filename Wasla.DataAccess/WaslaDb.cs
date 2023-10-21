@@ -41,7 +41,7 @@ namespace Wasla.DataAccess
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
 			//base.OnConfiguring(optionsBuilder);
-		}
+		} 
 		public virtual DbSet<Customer> Customers { get; set; }
 		public virtual DbSet<Driver> Drivers { get; set; }
 		public virtual DbSet<Vehicle> Vehicles { get; set; }
