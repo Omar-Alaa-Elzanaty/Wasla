@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Wasla.Model.Models
 {
-	public abstract class User:IdentityUser
+	public abstract class User:Account
 	{
 		public string FirstName { get; set; }
 		public string LastName { get; set; }

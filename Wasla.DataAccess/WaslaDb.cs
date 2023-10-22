@@ -11,7 +11,7 @@ using Wasla.Model.Models;
 
 namespace Wasla.DataAccess
 {
-	public class WaslaDb:IdentityDbContext<User>
+	public class WaslaDb:IdentityDbContext<Account>
 	{
         public WaslaDb(DbContextOptions options):base(options)
         {
@@ -21,6 +21,7 @@ namespace Wasla.DataAccess
 		{
 			base.OnModelCreating(modelBuilder);
 			#region User Configuration
+			modelBuilder.Entity<Account>().ToTable("Accounts", "Account");
 			modelBuilder.Entity<User>().ToTable("users","Account");
 			modelBuilder.Entity<Customer>().ToTable("Customers","Account");
 			modelBuilder.Entity<Driver>().ToTable("Drivers", "Account");

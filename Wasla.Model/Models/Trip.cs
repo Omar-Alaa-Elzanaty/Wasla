@@ -13,6 +13,7 @@ namespace Wasla.Model.Models
 		public string DriverId { get; set; }
 		public virtual Driver Driver { get; set; }
 		public int OrganizationId { get; set; }
+		public float Price { get; set; }
 		public virtual Organization Organization { get; set; }
 		public int VehicleId { get; set; }
 		public virtual Vehicle vehicle { get; set; }
