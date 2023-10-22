@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "ahr3ok2EBmMlniQNHaQD45o8PJosJW/Di9CDPflfXokC5rIQUq/87s0dpeXChC4XKlTgHo1PrMPA7GxnxW2cOw==",
+  "dgSpecHash": "MCXytm6si3IA+03LH7Rbs8LcR+NDLEO6cNLu8/mkw9HAfjykI4NFT9RsrPe2Kub0tI90bDQSwAVg+xmPX1qCXA==",
   "success": true,
   "projectFilePath": "F:\\Wasla\\Wasla\\Wasla.Api.csproj",
   "expectedPackageFiles": [
@@ -24,6 +24,7 @@
     "C:\\Users\\d\\.nuget\\packages\\microsoft.entityframeworkcore.proxies\\7.0.12\\microsoft.entityframeworkcore.proxies.7.0.12.nupkg.sha512",
     "C:\\Users\\d\\.nuget\\packages\\microsoft.entityframeworkcore.relational\\7.0.12\\microsoft.entityframeworkcore.relational.7.0.12.nupkg.sha512",
     "C:\\Users\\d\\.nuget\\packages\\microsoft.entityframeworkcore.sqlserver\\7.0.12\\microsoft.entityframeworkcore.sqlserver.7.0.12.nupkg.sha512",
+    "C:\\Users\\d\\.nuget\\packages\\microsoft.entityframeworkcore.tools\\7.0.12\\microsoft.entityframeworkcore.tools.7.0.12.nupkg.sha512",
     "C:\\Users\\d\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
     "C:\\Users\\d\\.nuget\\packages\\microsoft.extensions.caching.abstractions\\7.0.0\\microsoft.extensions.caching.abstractions.7.0.0.nupkg.sha512",
     "C:\\Users\\d\\.nuget\\packages\\microsoft.extensions.caching.memory\\7.0.0\\microsoft.extensions.caching.memory.7.0.0.nupkg.sha512",

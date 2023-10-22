@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
 using System.Text;
 using Wasla.DataAccess;
 using Wasla.Model.Models;
@@ -25,19 +26,7 @@ namespace Wasla
 			builder.Services.AddIdentity<User, IdentityRole>()
 				.AddEntityFrameworkStores<WaslaDb>()
 				.AddDefaultTokenProviders();
-			builder.Services.AddControllers();
-			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-			builder.Services.AddEndpointsApiExplorer();
-			builder.Services.AddSwaggerGen();
-			builder.Services.AddCors();
-			var app = builder.Build();
-
-			// Configure the HTTP request pipeline.
-			if (app.Environment.IsDevelopment())
-			{
-				app.UseSwagger();
-				app.UseSwaggerUI();
-			}
+			
 			builder.Services.AddAuthentication(options =>
 			{
 				options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -58,13 +47,29 @@ namespace Wasla
 					ClockSkew = TimeSpan.Zero
 				};
 			});
-			app.UseHttpsRedirection();
-			app.UseStaticFiles();
+			builder.Services.AddSwaggerGen();
+			builder.Services.AddControllers();
+			// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+			builder.Services.AddEndpointsApiExplorer();
+			builder.Services.AddCors();
+			var app = builder.Build();
+
+			// Configure the HTTP request pipeline.
+			if (app.Environment.IsDevelopment())
+			{
+				app.UseSwagger();
+				app.UseSwaggerUI();
+			}
 			DataSeed(app);
-			app.UseAuthorization();
-			app.UseAuthentication();
-			app.UseCors(cores => cores.AllowAnyHeader().AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
+
+			app.UseStaticFiles();
+			app.UseCors(cores =>
+							cores.AllowAnyHeader().AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
 			app.UseRouting();
+
+			app.UseHttpsRedirection();
+			app.UseAuthentication();
+			app.UseAuthorization();
 
 			app.MapControllers();
 
