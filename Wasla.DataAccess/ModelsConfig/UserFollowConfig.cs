@@ -9,7 +9,7 @@ using Wasla.Model.Models;
 
 namespace Wasla.DataAccess.ModelsConfig
 {
-	internal class UserFollowConfiguration : IEntityTypeConfiguration<UserFollow>
+	internal class UserFollowConfig : IEntityTypeConfiguration<UserFollow>
 	{
 		public void Configure(EntityTypeBuilder<UserFollow> builder)
 		{

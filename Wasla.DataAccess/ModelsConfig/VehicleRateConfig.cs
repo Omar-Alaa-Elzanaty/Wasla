@@ -9,13 +9,12 @@ using Wasla.Model.Models;
 
 namespace Wasla.DataAccess.ModelsConfig
 {
-	internal class PackageConfiguration : IEntityTypeConfiguration<Package>
+	internal class VehicleRateConfig : IEntityTypeConfiguration<VehicleRate>
 	{
-		public void Configure(EntityTypeBuilder<Package> builder)
+		public void Configure(EntityTypeBuilder<VehicleRate> builder)
 		{
-			builder.HasOne(i=>i.Trip)
-				.WithMany(t=>t.Packages)
-				.HasForeignKey(p=>p.TripId).OnDelete(DeleteBehavior.NoAction);
+			builder.HasKey(vr => new {vr.CustomerId, vr.VehicleId});
+			builder.HasIndex(vr => vr.CustomerId).IsUnique();
 		}
 	}
 }

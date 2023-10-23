@@ -9,7 +9,7 @@ using Wasla.Model.Models;
 
 namespace Wasla.DataAccess.ModelsConfig
 {
-	internal class DriverConfiguration : IEntityTypeConfiguration<Driver>
+	internal class DriverConfig : IEntityTypeConfiguration<Driver>
 	{
 		public void Configure(EntityTypeBuilder<Driver> builder)
 		{

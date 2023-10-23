@@ -12,5 +12,6 @@ namespace Wasla.Model.Models
 		public int? OrganizationId { get; set; }
 		public virtual Organization? Orgainzation { get; set; }
 		public virtual ICollection<Trip> Trips { get; set; }
+		public virtual ICollection<DriverRate> Rates { get; set; }
 	}
 }

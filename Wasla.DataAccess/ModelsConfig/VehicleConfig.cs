@@ -9,7 +9,7 @@ using Wasla.Model.Models;
 
 namespace Wasla.DataAccess.ModelsConfig
 {
-	internal class VehicleConfiguraiton : IEntityTypeConfiguration<Model.Models.Vehicle>
+	internal class VehicleConfig : IEntityTypeConfiguration<Model.Models.Vehicle>
 	{
 		public void Configure(EntityTypeBuilder<Model.Models.Vehicle> builder)
 		{

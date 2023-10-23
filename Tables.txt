@@ -8,9 +8,15 @@ Vechiles[id,type,LicenseNo,LicenseWord,Capcity,OrgId]
 trip[id,organizationId,DriverId,vecihlesId,launchtime,ArriveTime,to,from,Availablesets,Availablepackagespace]
 package[id,Name,Describe,SenderId,Imageurl,price,weight,reciverUserName,reciverName,reciverphonenumber,tripid]
 userReservation[userid,tripid,Date]
+TripRate [ tripid,userid]
+unique userid;
+
+VehicleRate[VehicleId,CustomerId,Rate]
+DriverRate[DriverId,CustomerId,Rate]
 
 
 OnDelete
 userFollow : NoAction -> FollowerId
 Reservation : NoAction ->CustomerId
 trip: NoAction ->organizationid, vehcileId
+driverRate: NoAction ->

@@ -18,5 +18,6 @@ namespace Wasla.Model.Models
 		public int? AdsId { get; set; }
 		public virtual Advertisment? Advertisment { get; set; }
 		public virtual Trip Trip { get; set; }
+		public virtual ICollection<VehicleRate> Rate { get; set; }
 	}
 }

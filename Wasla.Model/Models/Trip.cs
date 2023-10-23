@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Extensions.Caching.Memory;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Wasla.Model.Models
 {
 	public class Trip
 	{
-		public int Id { get; set; }
+        public int Id { get; set; }
 		public string DriverId { get; set; }
 		public virtual Driver Driver { get; set; }
 		public int OrganizationId { get; set; }

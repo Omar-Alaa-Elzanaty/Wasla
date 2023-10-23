@@ -9,7 +9,7 @@ using Wasla.Model.Models;
 
 namespace Wasla.DataAccess.ModelsConfig
 {
-	internal class ReservationConfiguration : IEntityTypeConfiguration<Reservation>
+	internal class ReservationConfig : IEntityTypeConfiguration<Reservation>
 	{
 		public void Configure(EntityTypeBuilder<Reservation> builder)
 		{

@@ -22,7 +22,7 @@ namespace Wasla.DataAccess
 			base.OnModelCreating(modelBuilder);
 			#region User Configuration
 			modelBuilder.Entity<Account>().ToTable("Accounts", "Account");
-			modelBuilder.Entity<User>().ToTable("users","Account");
+			modelBuilder.Entity<User>().ToTable("Users","Account");
 			modelBuilder.Entity<Customer>().ToTable("Customers","Account");
 			modelBuilder.Entity<Driver>().ToTable("Drivers", "Account");
 			modelBuilder.Entity<IdentityRole>().ToTable("Roles", "Account");
@@ -31,13 +31,15 @@ namespace Wasla.DataAccess
 			modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("UserLogins", "Account");
 			modelBuilder.Entity<IdentityRoleClaim<string>>().ToTable("RoleClaims", "Account");
 			modelBuilder.Entity<IdentityUserToken<string>>().ToTable("UserTokens", "Account");
-			new UserFollowConfiguration().Configure(modelBuilder.Entity<UserFollow>());
+			new UserFollowConfig().Configure(modelBuilder.Entity<UserFollow>());
 			#endregion
-			new DriverConfiguration().Configure(modelBuilder.Entity<Driver>());
-			new VehicleConfiguraiton().Configure(modelBuilder.Entity<Vehicle>());
-			new TripConfiguration().Configure(modelBuilder.Entity<Trip>());
-			new PackageConfiguration().Configure(modelBuilder.Entity<Package>());
-			new ReservationConfiguration().Configure(modelBuilder.Entity<Reservation>());
+			new DriverConfig().Configure(modelBuilder.Entity<Driver>());
+			new VehicleConfig().Configure(modelBuilder.Entity<Vehicle>());
+			new TripConfig().Configure(modelBuilder.Entity<Trip>());
+			new PackageConfig().Configure(modelBuilder.Entity<Package>());
+			new ReservationConfig().Configure(modelBuilder.Entity<Reservation>());
+			new VehicleRateConfig().Configure(modelBuilder.Entity<VehicleRate>());
+			new DriverRateConfig().Configure(modelBuilder.Entity<DriverRate>());
 		}
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
@@ -51,5 +53,7 @@ namespace Wasla.DataAccess
 		public virtual DbSet<Package> Packages { get; set; }
 		public virtual DbSet<Reservation> Reservations { get; set; }
 		public virtual DbSet<Trip> Trips { get; set; }
+		public virtual DbSet<VehicleRate> VehicleRates { get; set; }
+		public virtual DbSet<DriverRate> DriverRates { get; set; }
 	}
 }
