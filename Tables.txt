@@ -13,10 +13,12 @@ unique userid;
 
 VehicleRate[VehicleId,CustomerId,Rate]
 DriverRate[DriverId,CustomerId,Rate]
+CustomTripOrder[UserId,OrganizationId,From,To,State,Seats,PackageWeight,Price,CreationDate,VehicleId]
 
 
 OnDelete
 userFollow : NoAction -> FollowerId
 Reservation : NoAction ->CustomerId
-trip: NoAction ->organizationid, vehcileId
-driverRate: NoAction ->
+trip: NoAction -> organizationid, vehcileId
+driverRate: NoAction -> driverId
+customTripOrder[ NO Action ]

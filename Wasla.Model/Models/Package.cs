@@ -13,7 +13,7 @@ namespace Wasla.Model.Models
 		public string Description { get; set; }
 		public string SenderId { get; set; }
 		public string ImageUrl { get; set; }
-		public string Price { get; set; }
+		public float Price { get; set; }
 		public float Weight { get; set; }
 		public string? ReciverUserName { get; set; }
 		public string? ReciverName { get; set; }
