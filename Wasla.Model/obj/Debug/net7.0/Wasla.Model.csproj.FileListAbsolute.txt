@@ -10,3 +10,6 @@ F:\Wasla\Wasla.Model\obj\Debug\net7.0\refint\Wasla.Model.dll
 F:\Wasla\Wasla.Model\obj\Debug\net7.0\Wasla.Model.pdb
 F:\Wasla\Wasla.Model\obj\Debug\net7.0\ref\Wasla.Model.dll
 F:\Wasla\Wasla.Model\obj\Debug\net7.0\Wasla.Model.csproj.AssemblyReference.cache
+C:\Users\Osama\Downloads\My_GitHub\Wasla\Wasla.Model\obj\Debug\net7.0\Wasla.Model.dll
+C:\Users\Osama\Downloads\My_GitHub\Wasla\Wasla.Model\obj\Debug\net7.0\refint\Wasla.Model.dll
+C:\Users\Osama\Downloads\My_GitHub\Wasla\Wasla.Model\obj\Debug\net7.0\Wasla.Model.pdb

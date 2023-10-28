@@ -17,7 +17,7 @@ namespace Wasla.Model.Models
 		public int VehicleId { get; set; }
 		public virtual Vehicle vehicle { get; set; }
 		public DateTime LaunchTime { get; set; }
-		public DateTime ArriveTime { get; set; }
+		public int		DurationTrip { get; set; }
 		public string From { get; set; }
 		public string To { get; set; }
 		public int AvailableSets { get; set; }
