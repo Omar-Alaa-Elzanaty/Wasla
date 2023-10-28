@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "F:\\Wasla\\Wasla\\Wasla.Api.csproj": {}
+    "D:\\0.App\\TeamProject\\Wasla\\Wasla\\Wasla.Api.csproj": {}
   },
   "projects": {
-    "F:\\Wasla\\Wasla.DataAccess\\Wasla.DataAccess.csproj": {
+    "D:\\0.App\\TeamProject\\Wasla\\Wasla.DataAccess\\Wasla.DataAccess.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\Wasla\\Wasla.DataAccess\\Wasla.DataAccess.csproj",
+        "projectUniqueName": "D:\\0.App\\TeamProject\\Wasla\\Wasla.DataAccess\\Wasla.DataAccess.csproj",
         "projectName": "Wasla.DataAccess",
-        "projectPath": "F:\\Wasla\\Wasla.DataAccess\\Wasla.DataAccess.csproj",
-        "packagesPath": "C:\\Users\\d\\.nuget\\packages\\",
-        "outputPath": "F:\\Wasla\\Wasla.DataAccess\\obj\\",
+        "projectPath": "D:\\0.App\\TeamProject\\Wasla\\Wasla.DataAccess\\Wasla.DataAccess.csproj",
+        "packagesPath": "C:\\Users\\CS\\.nuget\\packages\\",
+        "outputPath": "D:\\0.App\\TeamProject\\Wasla\\Wasla.DataAccess\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\d\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\CS\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -28,8 +28,8 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "F:\\Wasla\\Wasla.Model\\Wasla.Model.csproj": {
-                "projectPath": "F:\\Wasla\\Wasla.Model\\Wasla.Model.csproj"
+              "D:\\0.App\\TeamProject\\Wasla\\Wasla.Model\\Wasla.Model.csproj": {
+                "projectPath": "D:\\0.App\\TeamProject\\Wasla\\Wasla.Model\\Wasla.Model.csproj"
               }
             }
           }
@@ -44,6 +44,10 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[12.0.1, )"
+            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
               "version": "[7.0.12, )"
@@ -75,21 +79,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "F:\\Wasla\\Wasla.Model\\Wasla.Model.csproj": {
+    "D:\\0.App\\TeamProject\\Wasla\\Wasla.Model\\Wasla.Model.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\Wasla\\Wasla.Model\\Wasla.Model.csproj",
+        "projectUniqueName": "D:\\0.App\\TeamProject\\Wasla\\Wasla.Model\\Wasla.Model.csproj",
         "projectName": "Wasla.Model",
-        "projectPath": "F:\\Wasla\\Wasla.Model\\Wasla.Model.csproj",
-        "packagesPath": "C:\\Users\\d\\.nuget\\packages\\",
-        "outputPath": "F:\\Wasla\\Wasla.Model\\obj\\",
+        "projectPath": "D:\\0.App\\TeamProject\\Wasla\\Wasla.Model\\Wasla.Model.csproj",
+        "packagesPath": "C:\\Users\\CS\\.nuget\\packages\\",
+        "outputPath": "D:\\0.App\\TeamProject\\Wasla\\Wasla.Model\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\d\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\CS\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -136,21 +140,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "F:\\Wasla\\Wasla.Services\\Wasla.Services.csproj": {
+    "D:\\0.App\\TeamProject\\Wasla\\Wasla.Services\\Wasla.Services.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\Wasla\\Wasla.Services\\Wasla.Services.csproj",
+        "projectUniqueName": "D:\\0.App\\TeamProject\\Wasla\\Wasla.Services\\Wasla.Services.csproj",
         "projectName": "Wasla.Services",
-        "projectPath": "F:\\Wasla\\Wasla.Services\\Wasla.Services.csproj",
-        "packagesPath": "C:\\Users\\d\\.nuget\\packages\\",
-        "outputPath": "F:\\Wasla\\Wasla.Services\\obj\\",
+        "projectPath": "D:\\0.App\\TeamProject\\Wasla\\Wasla.Services\\Wasla.Services.csproj",
+        "packagesPath": "C:\\Users\\CS\\.nuget\\packages\\",
+        "outputPath": "D:\\0.App\\TeamProject\\Wasla\\Wasla.Services\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\d\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\CS\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -164,8 +168,8 @@
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "F:\\Wasla\\Wasla.DataAccess\\Wasla.DataAccess.csproj": {
-                "projectPath": "F:\\Wasla\\Wasla.DataAccess\\Wasla.DataAccess.csproj"
+              "D:\\0.App\\TeamProject\\Wasla\\Wasla.DataAccess\\Wasla.DataAccess.csproj": {
+                "projectPath": "D:\\0.App\\TeamProject\\Wasla\\Wasla.DataAccess\\Wasla.DataAccess.csproj"
               }
             }
           }
@@ -183,6 +187,10 @@
             "Microsoft.AspNetCore.Authentication.JwtBearer": {
               "target": "Package",
               "version": "[7.0.12, )"
+            },
+            "Twilio": {
+              "target": "Package",
+              "version": "[6.14.1, )"
             }
           },
           "imports": [
@@ -201,21 +209,21 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "F:\\Wasla\\Wasla\\Wasla.Api.csproj": {
+    "D:\\0.App\\TeamProject\\Wasla\\Wasla\\Wasla.Api.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "F:\\Wasla\\Wasla\\Wasla.Api.csproj",
+        "projectUniqueName": "D:\\0.App\\TeamProject\\Wasla\\Wasla\\Wasla.Api.csproj",
         "projectName": "Wasla.Api",
-        "projectPath": "F:\\Wasla\\Wasla\\Wasla.Api.csproj",
-        "packagesPath": "C:\\Users\\d\\.nuget\\packages\\",
-        "outputPath": "F:\\Wasla\\Wasla\\obj\\",
+        "projectPath": "D:\\0.App\\TeamProject\\Wasla\\Wasla\\Wasla.Api.csproj",
+        "packagesPath": "C:\\Users\\CS\\.nuget\\packages\\",
+        "outputPath": "D:\\0.App\\TeamProject\\Wasla\\Wasla\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\d\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\CS\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -223,14 +231,15 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\sdk\\7.0.306\\Sdks\\Microsoft.NET.Sdk.Web\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net7.0": {
             "targetAlias": "net7.0",
             "projectReferences": {
-              "F:\\Wasla\\Wasla.Services\\Wasla.Services.csproj": {
-                "projectPath": "F:\\Wasla\\Wasla.Services\\Wasla.Services.csproj"
+              "D:\\0.App\\TeamProject\\Wasla\\Wasla.Services\\Wasla.Services.csproj": {
+                "projectPath": "D:\\0.App\\TeamProject\\Wasla\\Wasla.Services\\Wasla.Services.csproj"
               }
             }
           }
@@ -245,6 +254,14 @@
         "net7.0": {
           "targetAlias": "net7.0",
           "dependencies": {
+            "AutoMapper": {
+              "target": "Package",
+              "version": "[12.0.1, )"
+            },
+            "AutoMapper.Extensions.Microsoft.DependencyInjection": {
+              "target": "Package",
+              "version": "[12.0.1, )"
+            },
             "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
               "version": "[7.0.12, )"
@@ -258,6 +275,10 @@
             "Microsoft.EntityFrameworkCore.Proxies": {
               "target": "Package",
               "version": "[7.0.12, )"
+            },
+            "Microsoft.Extensions.DependencyInjection": {
+              "target": "Package",
+              "version": "[7.0.0, )"
             },
             "Swashbuckle.AspNetCore": {
               "target": "Package",
@@ -283,7 +304,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.402\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.306\\RuntimeIdentifierGraph.json"
         }
       }
     }

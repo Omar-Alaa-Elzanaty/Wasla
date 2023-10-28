@@ -9,11 +9,13 @@ using Wasla.Model.Models;
 
 namespace Wasla.DataAccess.ModelsConfig
 {
-	internal class DriverConfiguration : IEntityTypeConfiguration<Driver>
+	public class DriverConfiguration : IEntityTypeConfiguration<Driver>
 	{
 		public void Configure(EntityTypeBuilder<Driver> builder)
 		{
-			builder.HasOne(d=>d.Orgainzation)
+          //  builder.ToTable("Driver");
+
+            builder.HasOne(d=>d.Orgainzation)
 				.WithOne().HasForeignKey<Driver>(i=>i.OrganizationId).OnDelete(DeleteBehavior.Cascade);
 		}
 	}

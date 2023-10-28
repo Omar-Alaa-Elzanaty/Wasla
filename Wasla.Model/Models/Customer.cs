@@ -9,6 +9,6 @@ namespace Wasla.Model.Models
 	public class Customer:User
 	{
 		public int points { get; set; }
-		public virtual ICollection<Reservation> Reservations { get; set; }
+		public virtual ICollection<Reservation>? Reservations { get; set; }
 	}
 }

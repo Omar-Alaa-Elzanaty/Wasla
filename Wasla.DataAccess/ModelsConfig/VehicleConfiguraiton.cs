@@ -9,12 +9,13 @@ using Wasla.Model.Models;
 
 namespace Wasla.DataAccess.ModelsConfig
 {
-	internal class VehicleConfiguraiton : IEntityTypeConfiguration<Model.Models.Vehicle>
+	internal class VehicleConfiguraiton : IEntityTypeConfiguration<Vehicle>
 	{
-		public void Configure(EntityTypeBuilder<Model.Models.Vehicle> builder)
+		public void Configure(EntityTypeBuilder<Vehicle> builder)
 		{
-			builder.HasOne(d => d.Orgainzation)
-				.WithOne().HasForeignKey<Model.Models.Vehicle>(i => i.OrganizationId).OnDelete(DeleteBehavior.Cascade);
+           // builder.ToTable("Vehicle");
+            builder.HasOne(d => d.Orgainzation)
+				.WithOne().HasForeignKey<Vehicle>(i => i.OrganizationId).OnDelete(DeleteBehavior.Cascade);
 		}
 	}
 }

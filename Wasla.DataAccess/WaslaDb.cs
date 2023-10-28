@@ -20,8 +20,9 @@ namespace Wasla.DataAccess
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			base.OnModelCreating(modelBuilder);
-			#region User Configuration
-			modelBuilder.Entity<User>().ToTable("users","Account");
+         //   modelBuilder.ApplyConfigurationsFromAssembly(typeof(DriverConfiguration).Assembly);
+            #region User Configuration
+            modelBuilder.Entity<User>().ToTable("users","Account");
 			modelBuilder.Entity<Customer>().ToTable("Customers","Account");
 			modelBuilder.Entity<Driver>().ToTable("Drivers", "Account");
 			modelBuilder.Entity<IdentityRole>().ToTable("Roles", "Account");

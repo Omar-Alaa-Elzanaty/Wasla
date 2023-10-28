@@ -9,7 +9,7 @@ using Wasla.Model.Models;
 
 namespace Wasla.DataAccess.ModelsConfig
 {
-	internal class TripConfiguration : IEntityTypeConfiguration<Trip>
+	public class TripConfiguration : IEntityTypeConfiguration<Trip>
 	{
 		public void Configure(EntityTypeBuilder<Trip> builder)
 		{

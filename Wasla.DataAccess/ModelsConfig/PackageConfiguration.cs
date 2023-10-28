@@ -9,7 +9,7 @@ using Wasla.Model.Models;
 
 namespace Wasla.DataAccess.ModelsConfig
 {
-	internal class PackageConfiguration : IEntityTypeConfiguration<Package>
+	public class PackageConfiguration : IEntityTypeConfiguration<Package>
 	{
 		public void Configure(EntityTypeBuilder<Package> builder)
 		{
