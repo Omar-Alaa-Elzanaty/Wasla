@@ -1,15 +1,16 @@
 {
   "version": 2,
-  "dgSpecHash": "i2+sv2dYWzr9CgJ35f7TlZp2elXMSSNPtyXxHgxPin1r5HoPwlh53ZUhV1A8wwzS+gvizlXoB3mA+ZmYN4azXw==",
-  "success": false,
+  "dgSpecHash": "sC1gMX8WERqS317PKLIc4iW6oV0isb5LTwW74hNB8rGczXs25oAW2Bf85mzDMshllo74r2jCkHn/5lP9p+kDjg==",
+  "success": true,
   "projectFilePath": "F:\\Wasla\\Wasla\\Wasla.Api.csproj",
-  "expectedPackageFiles": [],
-  "logs": [
-    {
-      "code": "NU1301",
-      "level": "Error",
-      "message": "Unable to load the service index for source https://api.nuget.org/v3/index.json.",
-      "libraryId": "Microsoft.AspNetCore.OpenApi"
-    }
-  ]
+  "expectedPackageFiles": [
+    "C:\\Users\\d\\.nuget\\packages\\microsoft.aspnetcore.openapi\\7.0.12\\microsoft.aspnetcore.openapi.7.0.12.nupkg.sha512",
+    "C:\\Users\\d\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
+    "C:\\Users\\d\\.nuget\\packages\\microsoft.openapi\\1.4.3\\microsoft.openapi.1.4.3.nupkg.sha512",
+    "C:\\Users\\d\\.nuget\\packages\\swashbuckle.aspnetcore\\6.5.0\\swashbuckle.aspnetcore.6.5.0.nupkg.sha512",
+    "C:\\Users\\d\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.5.0\\swashbuckle.aspnetcore.swagger.6.5.0.nupkg.sha512",
+    "C:\\Users\\d\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.5.0\\swashbuckle.aspnetcore.swaggergen.6.5.0.nupkg.sha512",
+    "C:\\Users\\d\\.nuget\\packages\\swashbuckle.aspnetcore.swaggerui\\6.5.0\\swashbuckle.aspnetcore.swaggerui.6.5.0.nupkg.sha512"
+  ],
+  "logs": []
 }
