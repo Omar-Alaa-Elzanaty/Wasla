@@ -57,7 +57,7 @@ namespace Wasla
             // Add services to the container.
          //   builder.Services.AddServices();
 			builder.Services.AddDbContext<WaslaDb>(option =>
-				option./*UseLazyLoadingProxies().*/UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+				option.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
 									b => b.MigrationsAssembly(typeof(WaslaDb).Assembly.FullName))
 									);
 			builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<WaslaDb>().AddDefaultTokenProviders();
@@ -161,7 +161,7 @@ namespace Wasla
 		{
 			using var scope = app.Services.CreateScope();
 			var Initalizer = scope.ServiceProvider.GetRequiredService<IInitializer>();
-			Initalizer.Initialize().Wait();
+			//Initalizer.Initialize().Wait();
 		}
         
     }

@@ -1,6 +1,6 @@
 {
   "Version": 1,
-  "Hash": "xijwHLEZN+0GEhEJZepH2wUL8NVxiD7Mqb/83SkKGhM=",
+  "Hash": "yEce1OuH/Xe5GTDVA8A+y8ZH9L3hafSdmDa8k1QIJOE=",
   "Source": "Wasla.Api",
   "BasePath": "_content/Wasla.Api",
   "Mode": "Default",
@@ -10,7 +10,7 @@
     {
       "Name": "Wasla.Api\\wwwroot",
       "Source": "Wasla.Api",
-      "ContentRoot": "D:\\0.App\\TeamProject\\Wasla\\Wasla\\wwwroot\\",
+      "ContentRoot": "F:\\Wasla\\Wasla\\wwwroot\\",
       "BasePath": "_content/Wasla.Api",
       "Pattern": "**"
     }

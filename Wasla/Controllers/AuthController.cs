@@ -13,7 +13,7 @@ using Wasla.Services.Exceptions.FilterException;
 
 namespace Wasla.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/[controller]/[action]")]
     [ApiController]
     [ServiceFilter(typeof(ValidationFilterAttribute))]
     public class AuthController : ControllerBase
@@ -29,7 +29,7 @@ namespace Wasla.Api.Controllers
             _response = new();
 
         }
-        [HttpPost("sendMessage")]
+        [HttpPost]
         public async Task<ActionResult<BaseResponse>> sendMessage([FromBody] PhoneDto phoneNumber)
         {
             var messag = await _authservice.SendMessage(phoneNumber);

@@ -20,15 +20,10 @@ namespace Wasla.DataAccess
 		protected override void OnModelCreating(ModelBuilder modelBuilder)
 		{
 			base.OnModelCreating(modelBuilder);
-<<<<<<< HEAD
 			#region User Configuration
+
 			modelBuilder.Entity<Account>().ToTable("Accounts", "Account");
 			modelBuilder.Entity<User>().ToTable("Users","Account");
-=======
-         //   modelBuilder.ApplyConfigurationsFromAssembly(typeof(DriverConfiguration).Assembly);
-            #region User Configuration
-            modelBuilder.Entity<User>().ToTable("users","Account");
->>>>>>> origin/Esraa/feature/Auth
 			modelBuilder.Entity<Customer>().ToTable("Customers","Account");
 			modelBuilder.Entity<Driver>().ToTable("Drivers", "Account");
 			modelBuilder.Entity<IdentityRole>().ToTable("Roles", "Account");

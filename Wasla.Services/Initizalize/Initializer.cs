@@ -27,19 +27,20 @@ namespace Wasla.Services.Initizalize
                 {
                     _context.Database.Migrate();
                 }
-                
-            }
+                else return;
+
+				if (!_roleManager.RoleExistsAsync(Roles.Role_Admin).GetAwaiter().GetResult())
+				{
+					_roleManager.CreateAsync(new IdentityRole(Roles.Role_Admin)).GetAwaiter().GetResult();
+					_roleManager.CreateAsync(new IdentityRole(Roles.Role_Driver)).GetAwaiter().GetResult();
+					_roleManager.CreateAsync(new IdentityRole(Roles.Role_Rider)).GetAwaiter().GetResult();
+					_roleManager.CreateAsync(new IdentityRole(Roles.Role_Organization)).GetAwaiter().GetResult();
+
+				}
+			}
             catch
             {
                 throw;
-            }
-            if (!_roleManager.RoleExistsAsync(Roles.Role_Admin).GetAwaiter().GetResult())
-            {
-                _roleManager.CreateAsync(new IdentityRole(Roles.Role_Admin)).GetAwaiter().GetResult();
-                _roleManager.CreateAsync(new IdentityRole(Roles.Role_Driver)).GetAwaiter().GetResult();
-                _roleManager.CreateAsync(new IdentityRole(Roles.Role_Rider)).GetAwaiter().GetResult();
-                _roleManager.CreateAsync(new IdentityRole(Roles.Role_Organization)).GetAwaiter().GetResult();
-
             }
             return;
         }

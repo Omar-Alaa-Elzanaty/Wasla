@@ -9,11 +9,7 @@ using Wasla.Model.Models;
 
 namespace Wasla.DataAccess.ModelsConfig
 {
-<<<<<<< HEAD:Wasla.DataAccess/ModelsConfig/VehicleConfig.cs
-	internal class VehicleConfig : IEntityTypeConfiguration<Model.Models.Vehicle>
-=======
-	internal class VehicleConfiguraiton : IEntityTypeConfiguration<Vehicle>
->>>>>>> origin/Esraa/feature/Auth:Wasla.DataAccess/ModelsConfig/VehicleConfiguraiton.cs
+	internal class VehicleConfig : IEntityTypeConfiguration<Vehicle>
 	{
 		public void Configure(EntityTypeBuilder<Vehicle> builder)
 		{
