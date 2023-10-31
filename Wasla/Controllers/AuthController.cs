@@ -46,14 +46,14 @@ namespace Wasla.Api.Controllers
             _response.Result =res;
             return Ok(_response);
         }
-        [HttpPost("confirmPhoneNumber")]
+        [HttpPost]
         public async Task<ActionResult<BaseResponse>> ConfirmNumber([FromBody] ConfirmNumberDto confirmNumber)
         {
             var resualt = await _authservice.ConfirmPhone(confirmNumber);
             _response.Result= resualt;
             return Ok(_response);
         }
-        [HttpPost("RefreshToken")]
+        [HttpPost]
         [Authorize]
         public async Task<ActionResult<BaseResponse>> RefreshToken([FromBody]RefTokenDto refToken)
         {
