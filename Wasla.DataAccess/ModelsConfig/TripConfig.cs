@@ -9,7 +9,11 @@ using Wasla.Model.Models;
 
 namespace Wasla.DataAccess.ModelsConfig
 {
+<<<<<<< HEAD:Wasla.DataAccess/ModelsConfig/TripConfig.cs
 	internal class TripConfig : IEntityTypeConfiguration<Trip>
+=======
+	public class TripConfiguration : IEntityTypeConfiguration<Trip>
+>>>>>>> origin/Esraa/feature/Auth:Wasla.DataAccess/ModelsConfig/TripConfiguration.cs
 	{
 		public void Configure(EntityTypeBuilder<Trip> builder)
 		{

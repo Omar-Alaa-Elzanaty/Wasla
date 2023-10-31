@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Wasla.Model.Helpers;
 
 namespace Wasla.Model.Models
 {
@@ -15,8 +16,10 @@ namespace Wasla.Model.Models
 		public string? PhotoUrl { get; set; }
 		public bool Gender { get; set; }
 		public DateTime? Birthdate { get; set; }
-	}
-	public  struct Gender
+        public List<RefreshToken> RefreshTokens { get; set; }
+
+    }
+    public  struct Gender
 	{
 		public static readonly bool Male=true;
 		public static readonly bool Female=false;

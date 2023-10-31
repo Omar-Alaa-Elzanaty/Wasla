@@ -9,7 +9,11 @@ using Wasla.Model.Models;
 
 namespace Wasla.DataAccess.ModelsConfig
 {
+<<<<<<< HEAD:Wasla.DataAccess/ModelsConfig/PackageConfig.cs
 	internal class PackageConfig : IEntityTypeConfiguration<Package>
+=======
+	public class PackageConfiguration : IEntityTypeConfiguration<Package>
+>>>>>>> origin/Esraa/feature/Auth:Wasla.DataAccess/ModelsConfig/PackageConfiguration.cs
 	{
 		public void Configure(EntityTypeBuilder<Package> builder)
 		{

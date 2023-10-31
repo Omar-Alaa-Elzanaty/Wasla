@@ -1,0 +1,19 @@
+{
+  "Version": 1,
+  "Hash": "xijwHLEZN+0GEhEJZepH2wUL8NVxiD7Mqb/83SkKGhM=",
+  "Source": "Wasla.Api",
+  "BasePath": "_content/Wasla.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [
+    {
+      "Name": "Wasla.Api\\wwwroot",
+      "Source": "Wasla.Api",
+      "ContentRoot": "D:\\0.App\\TeamProject\\Wasla\\Wasla\\wwwroot\\",
+      "BasePath": "_content/Wasla.Api",
+      "Pattern": "**"
+    }
+  ],
+  "Assets": []
+}
