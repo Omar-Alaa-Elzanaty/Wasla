@@ -404,6 +404,9 @@ namespace Wasla.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
+                    b.Property<TimeSpan>("Duration")
+                        .HasColumnType("time");
+
                     b.Property<string>("From")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
