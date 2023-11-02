@@ -22,3 +22,4 @@ Reservation : NoAction ->CustomerId
 trip: NoAction -> organizationid, vehcileId
 driverRate: NoAction -> driverId
 customTripOrder[ NO Action ]
+VehicleRate : NoAction VehicleId

@@ -408,8 +408,7 @@ namespace Wasla.DataAccess.Migrations
                         name: "FK_VehicleRates_Vehicles_VehicleId",
                         column: x => x.VehicleId,
                         principalTable: "Vehicles",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(

@@ -161,7 +161,7 @@ namespace Wasla
 		{
 			using var scope = app.Services.CreateScope();
 			var Initalizer = scope.ServiceProvider.GetRequiredService<IInitializer>();
-			//Initalizer.Initialize().Wait();
+			Initalizer.Initialize().Wait();
 		}
         
     }
