@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Caching.Memory;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Numerics;
@@ -19,7 +20,7 @@ namespace Wasla.Model.Models
 		public float Price { get; set; }
 		public int VehicleId { get; set; }
 		public virtual Vehicle vehicle { get; set; }
-		public TimeSpan Duration { get;}
+		public TimeSpan Duration { get; set; }
 		public string From { get; set; }
 		public string To { get; set; }
 		public int AvailableSets { get; set; }
