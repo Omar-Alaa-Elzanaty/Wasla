@@ -16,6 +16,7 @@ using Wasla.Services.Exceptions;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
 using Microsoft.Extensions.Localization;
+using Twilio.Http;
 
 namespace Wasla.Services.AuthService
 {
@@ -28,6 +29,8 @@ namespace Wasla.Services.AuthService
         private readonly JWT _jwt;
         private readonly IMapper _mapper;
         private readonly IStringLocalizer<AuthService> _localization;
+        private readonly BaseResponse _response;
+
 
         public AuthService(UserManager<User> userManager,RoleManager<IdentityRole> roleManager, IOptions<JWT> jwt,
             IMapper mapper, IOptions<TwilioSetting> twilio, IHttpContextAccessor httpContextAccessor, IStringLocalizer<AuthService> localization)
@@ -39,11 +42,13 @@ namespace Wasla.Services.AuthService
             _httpContextAccessor = httpContextAccessor;
             _twilio = twilio.Value;
             _localization = localization;
+            _response = new();
+
         }
 
-        
 
-        public async Task<string> RegisterAsync(RiderRegisterDto Input)
+
+        public async Task<BaseResponse> RegisterAsync(PassengerRegisterDto Input)
         {
             
             if (await _userManager.Users.FirstOrDefaultAsync(u=>u.PhoneNumber==Input.PhoneNumber) is not null)
@@ -74,7 +79,8 @@ namespace Wasla.Services.AuthService
                 {
                     await _userManager.AddToRoleAsync(user, Input.Role);
                 }
-                return _localization["RegisterSucccess"].Value;
+                _response.Result = _localization["RegisterSucccess"].Value;
+                return _response;
 
             }
             else
@@ -85,7 +91,7 @@ namespace Wasla.Services.AuthService
                 throw new BadRequestException(errors);
             }
         }
-        public async Task<MessageResource> SendMessage(PhoneDto phoneNumber)
+        public async Task<BaseResponse> SendMessage(PhoneDto phoneNumber)
         {
             string otp = await GenerateOtp();
             SetOtpInCookie(otp);
@@ -96,7 +102,8 @@ namespace Wasla.Services.AuthService
                   to: new Twilio.Types.PhoneNumber(phoneNumber.Phone)
 
                 );
-            return message;
+            _response.Result = message.Status;
+            return _response;
         }
 
         private async Task<string> GenerateOtp()
@@ -110,20 +117,20 @@ namespace Wasla.Services.AuthService
                 stringChars[i] = chars[random.Next(chars.Length)];
             }
             var otp = new string(stringChars);
-
             return otp;
+             
         }
         public async Task<bool> CompareOtp(string reciveOtp)
         {
            // var user = await getUserAsync(phone);
             var otp = _httpContextAccessor.HttpContext.Request.Cookies["storeOtp"];
-            if (otp == reciveOtp)
+            if (otp != reciveOtp)
              {
-                return true;
+                throw new BadRequestException(_localization["compareOtp"].Value);
              }
-            throw new BadRequestException(_localization["compareOtp"].Value);
+            return true;
         }
-        public async Task<userDto> ConfirmPhone(ConfirmNumberDto confirmNumberDto)
+        public async Task<BaseResponse> ConfirmPhone(ConfirmNumberDto confirmNumberDto)
         {
             var user = await getUserAsync(confirmNumberDto.Phone);
 
@@ -139,11 +146,11 @@ namespace Wasla.Services.AuthService
               await _userManager.UpdateAsync(user);
              var roles = await _userManager.GetRolesAsync(user);
 
-            return new userDto
+            var userLogin= new userDto
             {
                 Email = user.Email,
                 ExpiresOn = jwtSecurityToken.ValidTo,
-                isAuthenticated = true,
+                IsAuthenticated = true,
                 Role = roles[0],
                 Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
                 UserName = user.UserName,
@@ -151,20 +158,23 @@ namespace Wasla.Services.AuthService
                 RefreshToken = refreshToken.RefToken,
                 RefreshTokenExpiration = refreshToken.ExpiresOn
             };
+            _response.Result= userLogin;
+            return _response;
         }
-        public async Task<string> ResetPassword(ResetPasswordDto resetPassword)
+        public async Task<BaseResponse> ResetPassword(ResetPasswordDto resetPassword)
         {
             var user = await getUserAsync(resetPassword.Phone);
             var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var result = await _userManager.ResetPasswordAsync(user, resetToken, resetPassword.newPassword);
+            var result = await _userManager.ResetPasswordAsync(user, resetToken, resetPassword.NewPassword);
             if (!result.Succeeded)
                 throw new BadRequestException(_localization["ResetPassword"].Value);
-            return _localization["PasswordChanged"].Value;                
+            _response.Result= _localization["PasswordChanged"].Value;
+            return _response;             
         }
-        public async Task<userDto> RefreshTokenAsync(RefTokenDto token)
+        public async Task<BaseResponse> RefreshTokenAsync(RefTokenDto token)
         {
             var userdto = new userDto();
-            var user = await _userManager.Users.SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.RefToken == token.refToken));
+            var user = await _userManager.Users.SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.RefToken == token.RefToken));
           
           var revoke=await RevokeTokenAsync(token);
             if (revoke)
@@ -179,7 +189,7 @@ namespace Wasla.Services.AuthService
                 userdto.UserName = user.UserName;
                 userdto.phoneNumber = user.PhoneNumber;
                 userdto.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
-                userdto.isAuthenticated = true;
+                userdto.IsAuthenticated = true;
                 userdto.ExpiresOn = jwtSecurityToken.ValidTo;
                 userdto.Role = roles[0];
                 userdto.RefreshToken = newRefreshToken.RefToken;
@@ -190,26 +200,28 @@ namespace Wasla.Services.AuthService
             {
                 throw new BadHttpRequestException(_localization["generateRefreshToken"].Value);
             }
-            return userdto;
+            _response.Result= userdto;
+            return _response;
         }
-        public async Task<string> LogoutAsync(RefTokenDto token)
+        public async Task<BaseResponse> LogoutAsync(RefTokenDto token)
         {
           var resaul=await this.RevokeTokenAsync(token);
             if (!resaul)
               throw new BadRequestException(_localization["logoutWrong"].Value);
-            return _localization["LogoutSuccess"].Value;
+            _response.Result= _localization["LogoutSuccess"].Value;
+            return _response;
         }
         private async Task<bool> RevokeTokenAsync(RefTokenDto token)
         {
             var userdto = new userDto();
 
-            var user = await _userManager.Users.SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.RefToken == token.refToken));
+            var user = await _userManager.Users.SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.RefToken == token.RefToken));
 
             if (user == null)
             {
                 throw new NotFoundException(_localization["refreshTokenNotFound"].Value);
             }
-            var refreshToken = user.RefreshTokens.Single(t => t.RefToken == token.refToken);
+            var refreshToken = user.RefreshTokens.Single(t => t.RefToken == token.RefToken);
 
             if (!refreshToken.IsActive)
             {
@@ -219,7 +231,7 @@ namespace Wasla.Services.AuthService
             await _userManager.UpdateAsync(user);
             return true;
         }
-        public async Task<userDto> LoginAsync(RiderLoginDto Input)
+        public async Task<BaseResponse> LoginAsync(RiderLoginDto Input)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == Input.PhoneNumber);
             if (user is  null|| !await _userManager.CheckPasswordAsync(user, Input.Password))
@@ -233,11 +245,11 @@ namespace Wasla.Services.AuthService
             await _userManager.UpdateAsync(user);
             var roles = await _userManager.GetRolesAsync(user);
 
-            return new userDto
+            var userLogined= new userDto
             {
                 Email = user.Email,
                 ExpiresOn = jwtSecurityToken.ValidTo,
-                isAuthenticated = true,
+                IsAuthenticated = true,
                 Role = roles[0],
                 Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken),
                 UserName = user.UserName,
@@ -245,6 +257,8 @@ namespace Wasla.Services.AuthService
                 RefreshToken = refreshToken.RefToken,
                 RefreshTokenExpiration = refreshToken.ExpiresOn
             };
+            _response.Result= userLogined;
+            return _response;
 
         }
         private async Task<User> getUserAsync(string phoneNumber)

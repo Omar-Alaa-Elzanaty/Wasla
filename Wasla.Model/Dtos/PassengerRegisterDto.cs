@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Wasla.Model.Dtos
 {
-    public class RiderRegisterDto
+    public class PassengerRegisterDto
     {
         [Required(ErrorMessage = "phoneNumberRequired")]
         public string PhoneNumber { get; set; }

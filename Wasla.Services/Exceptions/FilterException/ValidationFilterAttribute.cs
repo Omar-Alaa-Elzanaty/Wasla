@@ -14,11 +14,8 @@ namespace Wasla.Services.Exceptions.FilterException
 {
     public class ValidationFilterAttribute :IActionFilter
     {
-        private readonly IStringLocalizer<ValidationFilterAttribute> _localization;
-
-        public ValidationFilterAttribute(IStringLocalizer<ValidationFilterAttribute> localization)
+        public ValidationFilterAttribute()
         {
-            _localization = localization;
         }
         public void OnActionExecuting(ActionExecutingContext context)
         {
@@ -28,12 +25,12 @@ namespace Wasla.Services.Exceptions.FilterException
                 httpContext.Response.ContentType = "application/json";
                 var errorResponse = new BaseResponse
                 {
-                    ErrorMessages = context.ModelState.Values
+                    Message = context.ModelState.Values
                      .SelectMany(v => v.Errors)
                      .Select(e => e.ErrorMessage).ToList().FirstOrDefault(),
                     Result = null,
-                    HttpStatusCode = HttpStatusCode.BadRequest,
-                    isSuccess = false
+                    Status = HttpStatusCode.BadRequest,
+                    IsSuccess = false
                     
                 };
                 context.Result = new ObjectResult(errorResponse)
@@ -43,15 +40,6 @@ namespace Wasla.Services.Exceptions.FilterException
                 };
             }
         }
-
         public void OnActionExecuted(ActionExecutedContext context) { }
-        /*  public void OnActionExecuting(ActionExecutingContext context)
-          {
-              if (!context.ModelState.IsValid)
-              {
-                  context.Result =  new UnprocessableEntityObjectResult(context.ModelState);
-              }
-          }
-          public void OnActionExecuted(ActionExecutedContext context) { }*/
     }
 }

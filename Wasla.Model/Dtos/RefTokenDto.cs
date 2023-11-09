@@ -10,6 +10,6 @@ namespace Wasla.Model.Dtos
     public class RefTokenDto
     {
         [Required(ErrorMessage ="refTokenReuired")]
-        public string refToken { get; set; }
+        public string RefToken { get; set; }
     }
 }

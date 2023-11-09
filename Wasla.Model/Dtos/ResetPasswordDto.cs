@@ -13,6 +13,6 @@ namespace Wasla.Model.Dtos
         public string Phone { get; set; }
         [Required(ErrorMessage = "PasswordRequired")]
         [StringLength(20, ErrorMessage = "PasswordLength", MinimumLength = 6)]
-        public string newPassword { get; set; }
+        public string NewPassword { get; set; }
     }
 }
