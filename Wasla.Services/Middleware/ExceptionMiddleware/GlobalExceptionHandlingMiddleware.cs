@@ -27,9 +27,9 @@ namespace Wasla.Services.Middleware.ExceptionMiddleware
                 {
 
                     var response = new BaseResponse();
-                    response.isSuccess = false;
-                    response.ErrorMessages =_localization["Unauthorized"].Value;
-                    response.HttpStatusCode = HttpStatusCode.Unauthorized;
+                    response.IsSuccess = false;
+                    response.Message =_localization["Unauthorized"].Value;
+                    response.Status = HttpStatusCode.Unauthorized;
 
                     var exceptionResult = JsonSerializer.Serialize(response);
                     httpContext.Response.ContentType = "application/json";
@@ -42,40 +42,37 @@ namespace Wasla.Services.Middleware.ExceptionMiddleware
             catch (Exception ex) 
             {
                 await HandlingExceptionsAsync(httpContext,ex);
-            }    
-           
+            }     
         }
         private static Task HandlingExceptionsAsync(HttpContext httpContext, Exception ex)
         {
             var response = new BaseResponse();
-            response.isSuccess = false;
-
+            response.IsSuccess = false;
             var exceptionType= ex.GetType();
             if(exceptionType == typeof(BadRequestException))
             {
-                response.ErrorMessages= ex.Message;
-                response.HttpStatusCode=HttpStatusCode.BadRequest;  
+                response.Message= ex.Message;
+                response.Status=HttpStatusCode.BadRequest;  
             }
            else if (exceptionType == typeof(NotFoundException))
             {
-                response.ErrorMessages = ex.Message;
-                response.HttpStatusCode = HttpStatusCode.NotFound;
+                response.Message = ex.Message;
+                response.Status= HttpStatusCode.NotFound;
             }
            else if (exceptionType == typeof(UnauthorizedException))
             {
-                response.ErrorMessages = ex.Message;
-                response.HttpStatusCode = HttpStatusCode.Unauthorized;
+                response.Message= ex.Message;
+                response.Status = HttpStatusCode.Unauthorized;
             }
            else if (exceptionType == typeof(NotImplementeException))
             {
-                response.ErrorMessages = ex.Message;
-                response.HttpStatusCode = HttpStatusCode.NotImplemented;
+                response.Message= ex.Message;
+                response.Status = HttpStatusCode.NotImplemented;
             }
-           
             else
             {
-                response.ErrorMessages = ex.Message;
-                response.HttpStatusCode = HttpStatusCode.InternalServerError;
+                response.Message = ex.Message;
+                response.Status = HttpStatusCode.InternalServerError;
             }
             var exceptionResault = JsonSerializer.Serialize(response);
             httpContext.Response.ContentType = "application/json";

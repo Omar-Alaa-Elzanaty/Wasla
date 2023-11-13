@@ -9,7 +9,6 @@ using Microsoft.OpenApi.Models;
 using System.Globalization;
 using System.Text;
 using Wasla.DataAccess;
-using Wasla.DataAccess.AutoMapping;
 using Wasla.Model.Helpers;
 using Wasla.Model.Models;
 using Wasla.Services.ApplicationStatic;
@@ -25,7 +24,7 @@ namespace Wasla
 		public static void Main(string[] args)
 		{
 			var builder = WebApplication.CreateBuilder(args);
-            builder.Services.AddEndpointsApiExplorer();            
+            builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(option =>
             {
                 option.SwaggerDoc("v1", new OpenApiInfo { Title = "Demo API", Version = "v1" });
@@ -52,18 +51,14 @@ namespace Wasla
                 }
             });
             });
-
-            
-            // Add services to the container.
-           builder.Services.AddServices();
-			builder.Services.AddDbContext<WaslaDb>(option =>
-				option.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
-									b => b.MigrationsAssembly(typeof(WaslaDb).Assembly.FullName))
-									);
-			builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<WaslaDb>().AddDefaultTokenProviders();
+            builder.Services.AddDbContext<WaslaDb>(option =>
+                option.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+                                    b => b.MigrationsAssembly(typeof(WaslaDb).Assembly.FullName))
+                                    );
+            builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<WaslaDb>().AddDefaultTokenProviders();
             builder.Services.AddDistributedMemoryCache();
-           
             builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
+            builder.Services.Configure<TwilioSetting>(builder.Configuration.GetSection("Twilio"));
 
             builder.Services.AddAuthentication(options =>
             {
@@ -85,20 +80,6 @@ namespace Wasla
                     ClockSkew = TimeSpan.Zero
                 };
             });
-            builder.Services.AddControllers();
-            builder.Services.Configure<TwilioSetting>(builder.Configuration.GetSection("Twilio"));
-            builder.Services.AddAutoMapper(typeof(AuthAutoMapper));
-            builder.Services.AddScoped<IAuthService, AuthService>();
-            builder.Services.AddScoped<IInitializer, Initializer>();
-
-            //
-            builder.Services.AddScoped<ValidationFilterAttribute>();
-            builder.Services.Configure<ApiBehaviorOptions>(options
-           => options.SuppressModelStateInvalidFilter = true);
-            
-            //
-            //loclazation
-
             builder.Services.AddLocalization();
 
             builder.Services.Configure<RequestLocalizationOptions>(options =>
@@ -112,32 +93,31 @@ namespace Wasla
                 options.DefaultRequestCulture = new RequestCulture(culture: supportedCultures[0]);
                 options.SupportedCultures = supportedCultures;
             });
-            builder.Services.AddMvc()
+            builder.Services.Configure<ApiBehaviorOptions>(options
+         => options.SuppressModelStateInvalidFilter = true);
+            builder.Services.AddMvc(options =>
+            {
+                options.Filters.Add(new ValidationFilterAttribute());
+            })
               .AddDataAnnotationsLocalization(options =>
               {
-               options.DataAnnotationLocalizerProvider = (type, factory) =>
-               factory.Create(typeof(JsonStringLocalizerFactory));
+                  options.DataAnnotationLocalizerProvider = (type, factory) =>
+                  factory.Create(typeof(JsonStringLocalizerFactory));
               });
-            //end loclatzation
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            // Add services to the container.
+            builder.Services.AddServices();
+            builder.Services.AddScoped<IAuthService,AuthService>();
 
             builder.Services.AddCors();
             builder.Services.AddAuthorization();
-
             var app = builder.Build();
-
 			// Configure the HTTP request pipeline.
 			if (app.Environment.IsDevelopment())
 			{
 				app.UseSwagger();
 				app.UseSwaggerUI();
 			}
-            //
-
-            //
-        
             app.UseHttpsRedirection();
-
             app.UseStaticFiles();
             DataSeed(app);
             //
@@ -145,7 +125,6 @@ namespace Wasla
             var localizationOptions = new RequestLocalizationOptions()
                 .SetDefaultCulture(supportedCultures[0])
                 .AddSupportedCultures(supportedCultures);
-
             app.UseRequestLocalization(localizationOptions);
             //
             app.AddGlobalExceptionGlobalHandler();
@@ -155,7 +134,6 @@ namespace Wasla
             app.UseCors(cores => cores.AllowAnyHeader().AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
 			app.MapControllers();
             app.Run();
-
         }
         static void  DataSeed(WebApplication app)
 		{

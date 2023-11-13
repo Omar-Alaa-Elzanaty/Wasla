@@ -10,7 +10,7 @@ namespace Wasla.Services.ApplicationStatic
 {
     public static class ApplicationBuilderExtensions
     {
-        public static IApplicationBuilder AddGlobalExceptionGlobalHandler(this IApplicationBuilder app)
-     =>app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
+       public static IApplicationBuilder AddGlobalExceptionGlobalHandler(this IApplicationBuilder app)
+          =>app.UseMiddleware<GlobalExceptionHandlingMiddleware>();
     }
 }

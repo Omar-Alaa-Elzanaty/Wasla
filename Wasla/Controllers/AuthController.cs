@@ -15,7 +15,7 @@ namespace Wasla.Api.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [ServiceFilter(typeof(ValidationFilterAttribute))]
+  
     public class AuthController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -30,7 +30,7 @@ namespace Wasla.Api.Controllers
 
         }
         [HttpPost]
-        public async Task<ActionResult<BaseResponse>> sendMessage([FromBody] PhoneDto phoneNumber)
+        public async Task<IActionResult> sendMessage([FromBody] PhoneDto phoneNumber)
         {
             var messag = await _authservice.SendMessage(phoneNumber);
             _response.Result = messag;
@@ -39,7 +39,7 @@ namespace Wasla.Api.Controllers
         
         [HttpGet]
         [Route("{recOtp}")]
-        public async Task<ActionResult<BaseResponse>> CompareOtp([FromRoute]string recOtp)
+        public async Task<IActionResult> CompareOtp([FromRoute]string recOtp)
         {
            // var otp = recOtp.UserOtp;
             var res = await _authservice.CompareOtp(recOtp);
@@ -47,7 +47,7 @@ namespace Wasla.Api.Controllers
             return Ok(_response);
         }
         [HttpPost]
-        public async Task<ActionResult<BaseResponse>> ConfirmNumber([FromBody] ConfirmNumberDto confirmNumber)
+        public async Task<IActionResult> ConfirmNumber([FromBody] ConfirmNumberDto confirmNumber)
         {
             var resualt = await _authservice.ConfirmPhone(confirmNumber);
             _response.Result= resualt;
@@ -55,30 +55,30 @@ namespace Wasla.Api.Controllers
         }
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<BaseResponse>> RefreshToken([FromBody]RefTokenDto refToken)
+        public async Task<IActionResult> RefreshToken([FromBody]RefTokenDto refToken)
         {
            
             var resualt = await _authservice.RefreshTokenAsync(refToken);
             _response.Result= resualt;
             return Ok(_response);
         }
-        [HttpPost("Login")]
-        public async Task<ActionResult<BaseResponse>> Login([FromBody] RiderLoginDto riderLoginDto)
+        [HttpPost]
+        public async Task<IActionResult> Login([FromBody] RiderLoginDto riderLoginDto)
         {
             var resualt = await _authservice.LoginAsync(riderLoginDto);
             _response.Result = resualt;
             return Ok(_response);
         }
-        [HttpPost("ResetPassword")]
-        public async Task<ActionResult<BaseResponse>> ResetPassword([FromBody] ResetPasswordDto resetPassword)
+        [HttpPost]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetPassword)
         {
             var resualt = await _authservice.ResetPassword(resetPassword);
             _response.Result = resualt;
             return Ok(_response);
         }
-        [HttpPost("Logout")]
+        [HttpPost]
        [Authorize(AuthenticationSchemes = "Bearer")]
-        public async Task<ActionResult<BaseResponse>> Logout(RefTokenDto token)
+        public async Task<IActionResult> Logout(RefTokenDto token)
         {
             var resault = await _authservice.LogoutAsync(token);
             _response.Result = resault;
