@@ -21,12 +21,11 @@ namespace Wasla.Api.Controllers
             _mapper = mapper;
             _authservice = authService;
         }
-
         [HttpPost]
-        public async Task<IActionResult> AddPassenger([FromBody]PassengerRegisterDto adv)
+        public async Task<IActionResult> PassengerRegister([FromBody]PassengerRegisterDto adv)
         {
-               var result = await _authservice.RegisterAsync(adv);
-              return Ok(result);
+             var result = await _authservice.RegisterAsync(adv);
+             return Ok(result);
         }
     }
 }

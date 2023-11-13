@@ -59,6 +59,8 @@ namespace Wasla
             builder.Services.AddDistributedMemoryCache();
             builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
             builder.Services.Configure<TwilioSetting>(builder.Configuration.GetSection("Twilio"));
+            builder.Services.Configure<SmtpSettings>(builder.Configuration.GetSection("SmtpSettings"));
+
 
             builder.Services.AddAuthentication(options =>
             {

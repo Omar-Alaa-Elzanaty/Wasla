@@ -27,7 +27,6 @@ namespace Wasla.Services.Initizalize
                 {
                     _context.Database.Migrate();
                 }
-                else return;
 
 				if (!_roleManager.RoleExistsAsync(Roles.Role_Admin).GetAwaiter().GetResult())
 				{

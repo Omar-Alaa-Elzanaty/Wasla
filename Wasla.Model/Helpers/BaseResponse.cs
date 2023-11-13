@@ -14,6 +14,6 @@ namespace Wasla.Model.Helpers
         public  string? Message { get; set; }
        // public List<string>? ErrorMessags { get; set; }
 
-        public object? Result { get; set; }
+        public object? Data { get; set; }
     }
 }

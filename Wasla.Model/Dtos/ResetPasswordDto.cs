@@ -9,8 +9,8 @@ namespace Wasla.Model.Dtos
 {
     public class ResetPasswordDto
     {
-        [Required(ErrorMessage = "phoneNumberRequired")]
-        public string Phone { get; set; }
+        [Required(ErrorMessage = "contactRequired")]
+        public string Contact { get; set; }
         [Required(ErrorMessage = "PasswordRequired")]
         [StringLength(20, ErrorMessage = "PasswordLength", MinimumLength = 6)]
         public string NewPassword { get; set; }
