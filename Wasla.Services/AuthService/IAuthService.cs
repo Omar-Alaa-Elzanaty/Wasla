@@ -13,12 +13,17 @@ namespace Wasla.Services.AuthService
     {
        // Task<userDto> LoginAsync(LoginDto Input);
         Task<BaseResponse> RegisterAsync(PassengerRegisterDto Input);
-        Task<BaseResponse> SendMessage(PhoneDto phoneNumber);
+        Task<BaseResponse> SendOtpMessageAsync(string userPhone);
+        Task<BaseResponse> SendOtpEmailAsync(string userEmail);
+
         Task<BaseResponse> RefreshTokenAsync(RefTokenDto token);
         Task<BaseResponse> LogoutAsync(RefTokenDto token);
-        Task<BaseResponse> LoginAsync(RiderLoginDto riderLoginDto);
-        Task<bool> CompareOtp( string reciveOtp);
-        Task<BaseResponse> ConfirmPhone(ConfirmNumberDto confirmNumberDto);
-        Task <BaseResponse> ResetPassword(ResetPasswordDto resetPassword);
+        Task<BaseResponse> LoginAsync(LoginDto riderLoginDto);
+        Task<BaseResponse> CompareOtpAsync( string reciveOtp);
+        Task<BaseResponse> ConfirmPhoneAsync(ConfirmNumberDto confirmNumberDto);
+        Task<BaseResponse> ConfirmEmailAsync(ConfirmEmailDto confirmEmailDto);
+        Task <BaseResponse> ResetPasswordByphoneAsync(ResetPasswordDto resetPassword);
+        Task<BaseResponse> ResetPasswordByEmailAsync(ResetPasswordDto resetPassword);
+
     }
 }

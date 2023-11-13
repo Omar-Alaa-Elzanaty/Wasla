@@ -28,7 +28,7 @@ namespace Wasla.Services.Exceptions.FilterException
                     Message = context.ModelState.Values
                      .SelectMany(v => v.Errors)
                      .Select(e => e.ErrorMessage).ToList().FirstOrDefault(),
-                    Result = null,
+                    Data = null,
                     Status = HttpStatusCode.BadRequest,
                     IsSuccess = false
                     

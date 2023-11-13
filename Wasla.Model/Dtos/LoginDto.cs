@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Wasla.Model.Dtos
 {
-    public class RiderLoginDto
+    public class LoginDto
     {
-        [Required(ErrorMessage = "phoneNumberRequired")]
-        public string PhoneNumber { get; set; }
+        [Required(ErrorMessage = "userNameRequired")]
+        public string Phone { get; set; }
         [Required(ErrorMessage = "PasswordRequired")]
         [StringLength(20, ErrorMessage = "PasswordLength", MinimumLength = 6)]
         public string Password { get; set; }

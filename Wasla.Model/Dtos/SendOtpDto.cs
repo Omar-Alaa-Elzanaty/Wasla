@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Wasla.Model.Dtos
 {
-    public class PhoneDto
+    public class SendOtpDto
     {
-        [Required(ErrorMessage = "phoneNumberRequired")]
-        public string Phone { get; set; }
+        [Required(ErrorMessage = "confirmFieldRequired")]
+        public string SendData { get; set; }
     }
 }

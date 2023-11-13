@@ -29,29 +29,51 @@ namespace Wasla.Api.Controllers
             _response = new();
 
         }
-        [HttpPost]
-        public async Task<IActionResult> sendMessage([FromBody] PhoneDto phoneNumber)
+        //it not accept it as FromRoute make it FromBody and use class SendOtpDto or keep it 
+        //https://localhost:44366/api/Auth/SendMessage?phone=%2B201118499698
+        [HttpGet]
+       // [Route("{phone}")]
+        public async Task<IActionResult> SendMessage([FromQuery] string phone)
         {
-            var messag = await _authservice.SendMessage(phoneNumber);
-            _response.Result = messag;
+            var messag = await _authservice.SendOtpMessageAsync(phone);
+            _response.Data = messag;
             return Ok(_response);
         }
-        
+     /*   [HttpPost]
+        public async Task<IActionResult> SendMessage([FromBody] SendOtpDto input)
+        {
+            var messag = await _authservice.SendOtpMessageAsync(input.SendData);
+            _response.Data = messag;
+            return Ok(_response);
+        }*/
         [HttpGet]
-        [Route("{recOtp}")]
+       [Route("{email}")]
+
+        public async Task<IActionResult> SendEmail([FromRoute] string email)
+        {
+            var messag = await _authservice.SendOtpEmailAsync(email);
+            return Ok(messag);
+        }
+
+        [HttpGet]
+       [Route("{recOtp}")]
         public async Task<IActionResult> CompareOtp([FromRoute]string recOtp)
         {
            // var otp = recOtp.UserOtp;
-            var res = await _authservice.CompareOtp(recOtp);
-            _response.Result =res;
-            return Ok(_response);
+            var res = await _authservice.CompareOtpAsync(recOtp);
+            return Ok(res);
         }
         [HttpPost]
-        public async Task<IActionResult> ConfirmNumber([FromBody] ConfirmNumberDto confirmNumber)
+        public async Task<IActionResult> ConfirmPhone([FromBody] ConfirmNumberDto confirmNumber)
         {
-            var resualt = await _authservice.ConfirmPhone(confirmNumber);
-            _response.Result= resualt;
-            return Ok(_response);
+            var resualt = await _authservice.ConfirmPhoneAsync(confirmNumber);
+            return Ok(resualt);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailDto confirmEmail)
+        {
+            var resualt = await _authservice.ConfirmEmailAsync(confirmEmail);
+            return Ok(resualt);
         }
         [HttpPost]
         [Authorize]
@@ -59,30 +81,34 @@ namespace Wasla.Api.Controllers
         {
            
             var resualt = await _authservice.RefreshTokenAsync(refToken);
-            _response.Result= resualt;
-            return Ok(_response);
+            return Ok(resualt);
         }
         [HttpPost]
-        public async Task<IActionResult> Login([FromBody] RiderLoginDto riderLoginDto)
+        public async Task<IActionResult> Login([FromBody] LoginDto riderLoginDto)
         {
             var resualt = await _authservice.LoginAsync(riderLoginDto);
-            _response.Result = resualt;
-            return Ok(_response);
+            return Ok(resualt);
         }
         [HttpPost]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto resetPassword)
+        public async Task<IActionResult> ResetPasswordByPhone([FromBody] ResetPasswordDto resetPassword)
         {
-            var resualt = await _authservice.ResetPassword(resetPassword);
-            _response.Result = resualt;
-            return Ok(_response);
+            var resualt = await _authservice.ResetPasswordByphoneAsync(resetPassword);
+           
+            return Ok(resualt);
+        }
+        [HttpPost]
+        public async Task<IActionResult> ResetPasswordByEmail([FromBody] ResetPasswordDto resetPassword)
+        {
+            var resualt = await _authservice.ResetPasswordByEmailAsync(resetPassword);
+
+            return Ok(resualt);
         }
         [HttpPost]
        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Logout(RefTokenDto token)
         {
             var resault = await _authservice.LogoutAsync(token);
-            _response.Result = resault;
-            return Ok(_response);
+            return Ok(resault);
         }
     }
 }
