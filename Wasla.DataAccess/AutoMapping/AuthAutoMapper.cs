@@ -14,6 +14,8 @@ namespace Wasla.DataAccess.AutoMapping
         public AuthAutoMapper()
         {
             CreateMap<Customer, PassengerRegisterDto>().ReverseMap();
+            CreateMap<OrgRegisterRequestDto, OrganizationRegisterRequest>();
+            CreateMap<OrganizationRegisterRequest, Organization>();
         }
     }
 }

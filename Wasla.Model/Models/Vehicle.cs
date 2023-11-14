@@ -14,7 +14,7 @@ namespace Wasla.Model.Models
 		public string LicenseWord { get; set; }
 		public int Capcity { get; set; }
 		public float PackageCapcity { get; set; }
-		public string? OrganizationId { get; set; }
+		public int? OrganizationId { get; set; }
 		public virtual Organization? Orgainzation { get; set; }
 		public int? AdsId { get; set; }
 		public virtual Advertisment? Advertisment { get; set; }

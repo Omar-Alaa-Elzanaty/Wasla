@@ -19,12 +19,16 @@ using Microsoft.Extensions.Localization;
 using MimeKit;
 using MimeKit.Text;
 using MailKit.Net.Smtp;
+using Wasla.DataAccess;
+using System.Net;
+using Wasla.Services.MediaSerivces;
+using Microsoft.AspNetCore.Http.HttpResults;
 
-namespace Wasla.Services.AuthService
+namespace Wasla.Services.AuthServices
 {
-    public class AuthService:IAuthService
+	public class AuthService : IAuthService
     {
-        private readonly UserManager<User> _userManager;
+        private readonly UserManager<Account> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly TwilioSetting _twilio;
@@ -33,26 +37,35 @@ namespace Wasla.Services.AuthService
         private readonly IStringLocalizer<AuthService> _localization;
         private readonly BaseResponse _response;
         private readonly SmtpSettings _smtpSettings;
+        private readonly WaslaDb _dbContext;
+        private readonly IMediaSerivces _mediaServices;
 
+		public AuthService(
+            UserManager<Account> userManager,
+            RoleManager<IdentityRole> roleManager,
+            IOptions<JWT> jwt,
+			IMapper mapper,
+            IOptions<TwilioSetting> twilio,
+            IHttpContextAccessor httpContextAccessor,
+            IOptions<SmtpSettings> smtpSettings,
+			IStringLocalizer<AuthService> localization,
+            IMediaSerivces mediaSerivces,
+            WaslaDb dbContext)
+		{
+			_userManager = userManager;
+			_roleManager = roleManager;
+			_jwt = jwt.Value;
+			_mapper = mapper;
+			_httpContextAccessor = httpContextAccessor;
+			_twilio = twilio.Value;
+			_localization = localization;
+			_response = new();
+			_smtpSettings = smtpSettings.Value;
+			_dbContext = dbContext;
+            _mediaServices = mediaSerivces;
+		}
 
-        public AuthService(UserManager<User> userManager,RoleManager<IdentityRole> roleManager, IOptions<JWT> jwt,
-            IMapper mapper, IOptions<TwilioSetting> twilio, IHttpContextAccessor httpContextAccessor, IOptions<SmtpSettings> smtpSettings,
-            IStringLocalizer<AuthService> localization)
-        {
-            _userManager = userManager;
-            _roleManager = roleManager;
-            _jwt = jwt.Value;
-            _mapper = mapper;
-            _httpContextAccessor = httpContextAccessor;
-            _twilio = twilio.Value;
-            _localization = localization;
-            _response = new();
-            _smtpSettings = smtpSettings.Value;
-
-
-        }
-
-        public async Task<BaseResponse> RegisterAsync(PassengerRegisterDto Input)
+		public async Task<BaseResponse> RegisterAsync(PassengerRegisterDto Input)
         {
             
             if (await _userManager.Users.FirstOrDefaultAsync(u=>u.PhoneNumber==Input.PhoneNumber) is not null)
@@ -70,45 +83,86 @@ namespace Wasla.Services.AuthService
 
             }
 
-            var user=_mapper.Map<Customer>(Input);
-            var result = await _userManager.CreateAsync(user, Input.Password);
-            var role = Roles.Role_Rider;
-            //  var roleEx = Checkrole(Input.Role);
-            if (!result.Succeeded)
-            {
-                var errors = string.Empty;
-                foreach (var error in result.Errors)
-                    errors += $"{error.Description},";
-                throw new BadRequestException(errors);
-            }
-                if (Input.Role==null)
-                {
-                    await _userManager.AddToRoleAsync(user,role);
-                }
-                else
-                {
-                    await _userManager.AddToRoleAsync(user, Input.Role);
-                role = Input.Role;
-                }
-            var passengerDto = new PassengerResponseDto();
-            var newRefreshToken = GenerateRefreshToken();
-            user.RefreshTokens.Add(newRefreshToken);
-            await _userManager.UpdateAsync(user);
-            var jwtSecurityToken = await CreateToken(user);
-            passengerDto.ConnectionData.Email = Input.Email;
-            passengerDto.UserName = Input.UserName;
-            passengerDto.ConnectionData.phone = Input.PhoneNumber;
-            passengerDto.TokensData.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
-            passengerDto.IsAuthenticated = true;
-            passengerDto.TokensData.TokenExpiryDate = jwtSecurityToken.ValidTo;
-            passengerDto.Role = role;
-            passengerDto.TokensData.RefreshToken = newRefreshToken.RefToken;
-            passengerDto.TokensData.RefTokenExpiryDate = newRefreshToken.ExpiresOn;
-            _response.Message = _localization["RegisterSucccess"].Value;
-            _response.Data = passengerDto;
+            //var user=_mapper.Map<Customer>(Input);
+            //var result = await _userManager.CreateAsync(user, Input.Password);
+            //var role = Roles.Role_Rider;
+            ////  var roleEx = Checkrole(Input.Role);
+            //if (!result.Succeeded)
+            //{
+            //    var errors = string.Empty;
+            //    foreach (var error in result.Errors)
+            //        errors += $"{error.Description},";
+            //    throw new BadRequestException(errors);
+            //}
+            //    if (Input.Role==null)
+            //    {
+            //        await _userManager.AddToRoleAsync(user,role);
+            //    }
+            //    else
+            //    {
+            //        await _userManager.AddToRoleAsync(user, Input.Role);
+            //    role = Input.Role;
+            //    }
+            //var passengerDto = new PassengerResponseDto();
+            //var newRefreshToken = GenerateRefreshToken();
+            //user.RefreshTokens.Add(newRefreshToken);
+            //await _userManager.UpdateAsync(user);
+            //var jwtSecurityToken = await CreateToken(user);
+            //passengerDto.ConnectionData.Email = Input.Email;
+            //passengerDto.UserName = Input.UserName;
+            //passengerDto.ConnectionData.phone = Input.PhoneNumber;
+            //passengerDto.TokensData.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+            //passengerDto.IsAuthenticated = true;
+            //passengerDto.TokensData.TokenExpiryDate = jwtSecurityToken.ValidTo;
+            //passengerDto.Role = role;
+            //passengerDto.TokensData.RefreshToken = newRefreshToken.RefToken;
+            //passengerDto.TokensData.RefTokenExpiryDate = newRefreshToken.ExpiresOn;
+            //_response.Message = _localization["RegisterSucccess"].Value;
+            //_response.Data = passengerDto;
                 return _response;
 
         }
+
+        public async Task<BaseResponse>OrgnaizationRegisterAsync(OrgRegisterRequestDto request)
+        {
+
+            _ = CheckOtp(request.Otp);
+
+            if (await _dbContext.OrganizationsRegisters.AnyAsync(o => o.Email == request.Email)
+                || await _userManager.Users.AnyAsync(u => u.Email == request.Email)
+                || await _userManager.Users.AnyAsync(u => u.UserName == request.Email))
+            {
+				throw new BadRequestException(_localization["EmailExist"].Value);
+			}
+
+            if (await _dbContext.OrganizationsRegisters.AnyAsync(o => o.Name == request.Name)
+                || await _dbContext.Organizations.AnyAsync(o => o.Name == request.Name))
+            {
+                throw new BadRequestException(_localization["userNameExist"].Value);
+            }
+
+            if (await _userManager.Users.AnyAsync(u => u.PhoneNumber == request.PhoneNumber)
+                || await _dbContext.OrganizationsRegisters.AnyAsync(o => o.PhoneNumber == request.PhoneNumber))
+            {
+                throw new BadRequestException(_localization["phoneNumberExist"]);
+            }
+
+            OrganizationRegisterRequest orgRequest = _mapper.Map<OrganizationRegisterRequest>(request);
+
+			var response = await _mediaServices.AddAsync(request.ImageFile);
+			if (!response.IsSuccess)
+			{
+				throw new BadRequestException("couldn't save photo");
+			}
+			orgRequest.ImageUrl = response.Entity;
+
+			_ = await _dbContext.OrganizationsRegisters.AddAsync(orgRequest);
+			_ = _dbContext.SaveChanges();
+
+            _response.Message = _localization["OrganizationRequest"];
+            return _response;
+        }
+
         public async Task<BaseResponse>SendOtpMessageAsync(string userPhone)
         {
             string otp = await GenerateOtp();
@@ -308,33 +362,33 @@ namespace Wasla.Services.AuthService
             return otp;
 
         }
-        private async Task<User> getUserByPhone(string phoneNumber)
+        private async Task<Account> getUserByPhone(string phoneNumber)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
             if (user == null)
                 throw new NotFoundException(_localization["UserNotFound"].Value);
             return user;
         }
-        private async Task<User> getUserByEmail(string email)
+        private async Task<Account> getUserByEmail(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
                 throw new NotFoundException(_localization["UserNotFound"].Value);
             return user;
         }
-        private async Task<JwtSecurityToken> CreateToken(User user)
+        private async Task<JwtSecurityToken> CreateToken(Account account)
         {
-            var userClaims = await _userManager.GetClaimsAsync(user);
-            var roles = await _userManager.GetRolesAsync(user);
+            var userClaims = await _userManager.GetClaimsAsync(account);
+            var roles = await _userManager.GetRolesAsync(account);
             var roleClaims = new List<Claim>();
             foreach (var role in roles)
             roleClaims.Add(new Claim("roles", role));
             var claims = new[]
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Sub, account.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim("uid", user.Id)
+                new Claim(JwtRegisteredClaimNames.Email, account.Email),
+                new Claim("uid", account.Id)
             }
             .Union(userClaims)
             .Union(roleClaims);

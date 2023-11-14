@@ -5,7 +5,7 @@ using System.Net;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
-using Wasla.Services.AuthService;
+using Wasla.Services.AuthServices;
 using Wasla.Services.Exceptions.FilterException;
 
 namespace Wasla.Api.Controllers
