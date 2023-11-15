@@ -13,9 +13,9 @@ namespace Wasla.Model.Models
 	public class Trip
 	{
 		public int Id { get; set; }
-		public string DriverId { get; set; }
+		public int DriverId { get; set; }
 		public virtual Driver Driver { get; set; }
-		public string OrganizationId { get; set; }
+		public int OrganizationId { get; set; }
 		public virtual Organization Organization { get; set; }
 		public float Price { get; set; }
 		public int VehicleId { get; set; }

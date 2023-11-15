@@ -9,9 +9,9 @@ namespace Wasla.Model.Dtos
 {
     public class ConfirmEmailDto
     {
-        [Required(ErrorMessage = "otpReuired")]
+        [Required(ErrorMessage = "Otp Reuired")]
         public string RecOtp { get; set; }
-        [Required(ErrorMessage = "EmailRequired")]
+        [Required(ErrorMessage = "Email Required")]
         public string Email { get; set; }
     }
 }

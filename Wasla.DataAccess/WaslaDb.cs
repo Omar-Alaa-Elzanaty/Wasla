@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Azure.Core;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -23,9 +24,9 @@ namespace Wasla.DataAccess
 			#region User Configuration
 
 			modelBuilder.Entity<Account>().ToTable("Accounts", "Account");
-			modelBuilder.Entity<User>().ToTable("Users","Account");
 			modelBuilder.Entity<Customer>().ToTable("Customers","Account");
 			modelBuilder.Entity<Driver>().ToTable("Drivers", "Account");
+			modelBuilder.Entity<Organization>().ToTable("Organizations", "Account");
 			modelBuilder.Entity<IdentityRole>().ToTable("Roles", "Account");
 			modelBuilder.Entity<IdentityUserRole<string>>().ToTable("UserRoles", "Account");
 			modelBuilder.Entity<IdentityUserClaim<string>>().ToTable("UserClaims", "Account");
@@ -35,6 +36,7 @@ namespace Wasla.DataAccess
 			new UserFollowConfig().Configure(modelBuilder.Entity<UserFollow>());
 			#endregion
 			new DriverConfig().Configure(modelBuilder.Entity<Driver>());
+			new OrganizationConfig().Configure(modelBuilder.Entity<Organization>());
 			new VehicleConfig().Configure(modelBuilder.Entity<Vehicle>());
 			new TripConfig().Configure(modelBuilder.Entity<Trip>());
 			new PackageConfig().Configure(modelBuilder.Entity<Package>());
@@ -57,5 +59,6 @@ namespace Wasla.DataAccess
 		public virtual DbSet<VehicleRate> VehicleRates { get; set; }
 		public virtual DbSet<DriverRate> DriverRates { get; set; }
 		public virtual DbSet<CustomerTripOrder> CustomerTripOrders { get; set; }
+		public virtual DbSet<OrganizationRegisterRequest> OrganizationsRegisters { get; set; }
 	}
 }

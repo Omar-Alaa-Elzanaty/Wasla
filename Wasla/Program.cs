@@ -9,10 +9,11 @@ using Microsoft.OpenApi.Models;
 using System.Globalization;
 using System.Text;
 using Wasla.DataAccess;
+using Wasla.DataAccess.AutoMapping;
 using Wasla.Model.Helpers;
 using Wasla.Model.Models;
 using Wasla.Services.ApplicationStatic;
-using Wasla.Services.AuthService;
+using Wasla.Services.AuthServices;
 using Wasla.Services.Exceptions.FilterException;
 using Wasla.Services.Initizalize;
 using Wasla.Services.MultLanguageService.JsonLocalizer;
@@ -55,7 +56,7 @@ namespace Wasla
                 option.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
                                     b => b.MigrationsAssembly(typeof(WaslaDb).Assembly.FullName))
                                     );
-            builder.Services.AddIdentity<User, IdentityRole>().AddEntityFrameworkStores<WaslaDb>().AddDefaultTokenProviders();
+            builder.Services.AddIdentity<Account, IdentityRole>().AddEntityFrameworkStores<WaslaDb>().AddDefaultTokenProviders();
             builder.Services.AddDistributedMemoryCache();
             builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
             builder.Services.Configure<TwilioSetting>(builder.Configuration.GetSection("Twilio"));
@@ -108,10 +109,13 @@ namespace Wasla
               });
             // Add services to the container.
             builder.Services.AddServices();
-            builder.Services.AddScoped<IAuthService,AuthService>();
 
-            builder.Services.AddCors();
+			builder.Services.AddControllers();
+			builder.Services.AddAutoMapper(typeof(AuthAutoMapper));
+			builder.Services.AddScoped<ValidationFilterAttribute>();
+			builder.Services.AddCors();
             builder.Services.AddAuthorization();
+
             var app = builder.Build();
 			// Configure the HTTP request pipeline.
 			if (app.Environment.IsDevelopment())
@@ -121,7 +125,7 @@ namespace Wasla
 			}
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            DataSeed(app);
+           // DataSeed(app);
             //
             var supportedCultures = new[] { "en-US", "ar-EG" };
             var localizationOptions = new RequestLocalizationOptions()

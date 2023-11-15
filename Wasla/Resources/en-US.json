@@ -43,5 +43,6 @@
   "create": "Create",
   "save": "Save",
   "name": "Name",
-  "required": "Required field"
+  "required": "Required field",
+  "OrganizationRequest": "Your request is under review"
 }
