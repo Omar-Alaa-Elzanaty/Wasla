@@ -5,12 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Wasla.Model.Helpers;
 
-namespace Wasla.Model.Dtos
+namespace Wasla.Services.LoginService.ILoginService
 {
-    public class PassengerResponseDto:BaseData
+    public  interface IBaseLogin
     {
-        
-       
-        public int points { get; set; }
+        Task<BaseResponse> LoginAsync(LoginHelp help);
     }
 }

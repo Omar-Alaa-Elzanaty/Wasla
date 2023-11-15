@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
 
-namespace Wasla.Model.Dtos
+namespace Wasla.Services.LoginService.ILoginService
 {
-    public class PassengerResponseDto:BaseData
+    public interface ILogin
     {
-        
-       
-        public int points { get; set; }
+        Task<object> Login(LoginHelp loginHelp);
     }
 }

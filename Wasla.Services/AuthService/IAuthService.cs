@@ -12,7 +12,7 @@ namespace Wasla.Services.AuthService
     public interface IAuthService
     {
        // Task<userDto> LoginAsync(LoginDto Input);
-        Task<BaseResponse> RegisterAsync(PassengerRegisterDto Input);
+        Task<BaseResponse> RegisterPassengerAsync(PassengerRegisterDto Input);
         Task<BaseResponse> SendOtpMessageAsync(string userPhone);
         Task<BaseResponse> SendOtpEmailAsync(string userEmail);
 

@@ -17,6 +17,8 @@ using Wasla.Model.Models;
 using Wasla.Services.AuthService;
 using Wasla.Services.Exceptions.FilterException;
 using Wasla.Services.Initizalize;
+using Wasla.Services.LoginService.ILoginService;
+using Wasla.Services.LoginService.LoginService;
 using Wasla.Services.MultLanguageService.JsonLocalizer;
 
 namespace Wasla.Services.ApplicationStatic
@@ -33,7 +35,7 @@ namespace Wasla.Services.ApplicationStatic
             services.AddControllers();
             services.AddAutoMapper(typeof(AuthAutoMapper));
             services.AddScoped<IInitializer, Initializer>();
-
+            services.AddScoped<IBaseLogin,BaseLogin>();
             //
             services.AddScoped<ValidationFilterAttribute>();
          
