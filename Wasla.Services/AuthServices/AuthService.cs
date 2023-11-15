@@ -129,8 +129,7 @@ namespace Wasla.Services.AuthServices
             _ = CheckOtp(request.Otp);
 
             if (await _dbContext.OrganizationsRegisters.AnyAsync(o => o.Email == request.Email)
-                || await _userManager.Users.AnyAsync(u => u.Email == request.Email)
-                || await _userManager.Users.AnyAsync(u => u.UserName == request.Email))
+                || await _userManager.Users.AnyAsync(u => u.Email == request.Email))
             {
 				throw new BadRequestException(_localization["EmailExist"].Value);
 			}
@@ -138,7 +137,7 @@ namespace Wasla.Services.AuthServices
             if (await _dbContext.OrganizationsRegisters.AnyAsync(o => o.Name == request.Name)
                 || await _dbContext.Organizations.AnyAsync(o => o.Name == request.Name))
             {
-                throw new BadRequestException(_localization["userNameExist"].Value);
+                throw new BadRequestException(_localization["OrganizationNameExist"].Value);
             }
 
             if (await _userManager.Users.AnyAsync(u => u.PhoneNumber == request.PhoneNumber)
@@ -152,14 +151,14 @@ namespace Wasla.Services.AuthServices
 			var response = await _mediaServices.AddAsync(request.ImageFile);
 			if (!response.IsSuccess)
 			{
-				throw new BadRequestException("couldn't save photo");
+                throw new BadRequestException(_localization["UploadMediaFail"].Value);
 			}
 			orgRequest.ImageUrl = response.Entity;
 
 			_ = await _dbContext.OrganizationsRegisters.AddAsync(orgRequest);
 			_ = _dbContext.SaveChanges();
 
-            _response.Message = _localization["OrganizationRequest"];
+            _response.Message = _localization["OrganizationSuccessRequest"];
             return _response;
         }
 
@@ -264,17 +263,17 @@ namespace Wasla.Services.AuthServices
             _response.Message = _localization["LogoutSuccess"].Value;
             return _response;
         }
-      public async Task<BaseResponse> CompareOtpAsync(string otp)
+        public async Task<BaseResponse> CompareOtpAsync(string otp)
         {
-            var res = CheckOtp(otp);
-            _response.Data = otp;
-            _response.Message = _localization["otpSame"].Value;
-            return _response;
+              var res = CheckOtp(otp);
+              _response.Data = otp;
+              _response.Message = _localization["otpSame"].Value;
+              return _response;
         }
-        public async Task<BaseResponse> LoginAsync(LoginDto Input)
+        public async Task<BaseResponse> LoginAsync(LoginDto input)
         {
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == Input.Phone);
-            if (user is  null|| !await _userManager.CheckPasswordAsync(user, Input.Password))
+            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == input.Phone);
+            if (user is  null|| !await _userManager.CheckPasswordAsync(user, input.Password))
             {
                 throw new BadRequestException(_localization["phonOrpasswordNotCorrect"].Value);
 
@@ -299,6 +298,25 @@ namespace Wasla.Services.AuthServices
             return _response;
             
         }
+        public async Task<BaseResponse>CheckUserNameSimilarity(string input)
+        {
+            if (input.IsNullOrEmpty())
+            {
+                throw new BadRequestException(_localization["userNameRequired"].Value);
+            }
+
+            bool isFound = await _userManager.Users.AnyAsync(a =>
+                                (a.UserName != null && a.UserName.StartsWith(input))
+                                || (a.Email != null && a.Email.StartsWith(input)));
+
+            if(!isFound) 
+            {
+                _response.Message = _localization["userNameExist"].Value;
+            }
+
+            return _response;
+        }
+
         private async Task<bool> SendMessage(string sendOtpDto, string msg)
         {
             try

@@ -44,5 +44,7 @@
   "save": "Save",
   "name": "Name",
   "required": "Required field",
-  "OrganizationRequest": "Your request is under review"
+  "OrganizationSuccessRequest": "Your request is under review",
+  "OrganizationNameExist": "Company Name is already exist",
+  "UploadMediaFail": "Coudln't save a Media"
 }

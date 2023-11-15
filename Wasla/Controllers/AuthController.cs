@@ -49,11 +49,16 @@ namespace Wasla.Api.Controllers
         }*/
         [HttpGet]
        [Route("{email}")]
-
         public async Task<IActionResult> SendEmail([FromRoute] string email)
         {
             var messag = await _authservice.SendOtpEmailAsync(email);
             return Ok(messag);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CheckUserName(string userName)
+        {
+            return Ok(await _authservice.CheckUserNameSimilarity(userName));
         }
 
         [HttpGet]

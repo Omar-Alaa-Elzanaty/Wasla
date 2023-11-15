@@ -45,5 +45,7 @@
   "save": "حفظ",
   "name": "الاسم",
   "required": "حقل مطلوب",
-  "OrganizationRequest": "طلبك تحت المراجعة"
+  "OrganizationSuccessRequest": "طلبك تحت المراجعة",
+  "OrganizationNameExist": "اسم الشركة مستخدم بالفعل",
+  "UploadMediaFail": "فشل تحميل الوسائط"
 }
