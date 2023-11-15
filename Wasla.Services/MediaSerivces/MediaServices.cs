@@ -11,7 +11,7 @@ using Wasla.Model.Helpers;
 
 namespace Wasla.Services.MediaSerivces
 {
-    internal class MediaServices
+    public class MediaServices:IMediaSerivces
     {
         private readonly IWebHostEnvironment _host;
 		private readonly StringBuilder _defaultPath;
@@ -26,16 +26,16 @@ namespace Wasla.Services.MediaSerivces
 		{
 			return true;
 		}
-		bool IsImageExtension(string ext) => (ext == "d" || ext == "dd");
+		bool IsImageExtension(string ext) => (ext == ".PNG" || ext == ".jpg");
 		bool IsVideoExtension(string ext) => (ext == "d" || ext == "dd");
 
-		public MediaServices(IWebHostEnvironment host, HttpContextAccessor contextAccessor)
+		public MediaServices(IWebHostEnvironment host, IHttpContextAccessor contextAccessor)
 		{
 			_host = host;
 			_defaultPath = new StringBuilder(@$"{contextAccessor.HttpContext?.Request.Scheme}://{contextAccessor?.HttpContext?.Request.Host}/FOLDER/");
 			_fileName = Guid.NewGuid().ToString();
 		}
-		public async Task<ServicesResponse<string>> Add(IFormFile media)
+		public async Task<ServicesResponse<string>> AddAsync(IFormFile media)
         {
 			ServicesResponse<string> response = new ServicesResponse<string>();
 			string RootPath = _host.WebRootPath;
@@ -66,7 +66,7 @@ namespace Wasla.Services.MediaSerivces
 			response.Entity = path + _fileName + Extension;
 			return response;
 		}
-        public async Task<ServicesResponse<bool?>> Remove(string url)
+        public async Task<ServicesResponse<bool?>> RemoveAsync(string url)
 		{
 			ServicesResponse<bool?> response = new ServicesResponse<bool?>();
 			try
@@ -96,7 +96,7 @@ namespace Wasla.Services.MediaSerivces
 				return response;
 			}
 		}
-        public async Task<ServicesResponse<string>> Update(string oldUrl, IFormFile newMedia)
+        public async Task<ServicesResponse<string>> UpdateAsync(string oldUrl, IFormFile newMedia)
         {
 			ServicesResponse<string> response = new ServicesResponse<string>();
 			string? newMediaUrl=null;
@@ -122,12 +122,12 @@ namespace Wasla.Services.MediaSerivces
 				response.Entity = oldUrl;
 				return response;
 			}
-			if (!Remove(oldUrl).Result.IsSuccess) 
+			if (!RemoveAsync(oldUrl).Result.IsSuccess) 
 			{
 				response.Log = "couldn't update photo";
 				return response;
 			}
-			var addResult = await Add(newMedia);
+			var addResult = await AddAsync(newMedia);
 			if (addResult == null)
 			{
 				response.Log = "couldn't update Media file";

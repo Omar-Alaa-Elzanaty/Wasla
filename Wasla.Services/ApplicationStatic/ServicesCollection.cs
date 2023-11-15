@@ -14,9 +14,11 @@ using Wasla.DataAccess;
 using Wasla.DataAccess.AutoMapping;
 using Wasla.Model.Helpers;
 using Wasla.Model.Models;
-using Wasla.Services.AuthService;
+using Wasla.Services.AdminServices;
+using Wasla.Services.AuthServices;
 using Wasla.Services.Exceptions.FilterException;
 using Wasla.Services.Initizalize;
+using Wasla.Services.MediaSerivces;
 using Wasla.Services.LoginService.ILoginService;
 using Wasla.Services.LoginService.LoginService;
 using Wasla.Services.MultLanguageService.JsonLocalizer;
@@ -27,13 +29,8 @@ namespace Wasla.Services.ApplicationStatic
     {
         public static void AddServices(this IServiceCollection services)
         {
-            
-
             services.AddSingleton<IStringLocalizerFactory, JsonStringLocalizerFactory>();
-
-
-            services.AddControllers();
-            services.AddAutoMapper(typeof(AuthAutoMapper));
+			services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IInitializer, Initializer>();
             services.AddScoped<IBaseLogin,BaseLogin>();
             //
@@ -41,6 +38,9 @@ namespace Wasla.Services.ApplicationStatic
          
 
 
+            services.AddScoped<IAdminService, AdminService>();
+            services.AddScoped<IMediaSerivces,MediaServices>();
+         
         }
     }
 }

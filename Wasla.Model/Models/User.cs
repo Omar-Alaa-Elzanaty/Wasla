@@ -9,14 +9,15 @@ using Wasla.Model.Helpers;
 
 namespace Wasla.Model.Models
 {
-	public abstract class User:Account
+	public abstract class User
 	{
+		public int Id { get; set; }
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
 		public string? PhotoUrl { get; set; }
 		public bool Gender { get; set; }
 		public DateTime? Birthdate { get; set; }
-        public List<RefreshToken> RefreshTokens { get; set; }
+		//public Account Account { get; set; }
 
     }
     public  struct Gender

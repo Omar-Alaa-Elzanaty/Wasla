@@ -7,7 +7,8 @@ using Microsoft.AspNetCore.Server.IIS.Core;
 using System.Net;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
-using Wasla.Services.AuthService;
+using Wasla.Services.AdminServices;
+using Wasla.Services.AuthServices;
 using Wasla.Services.Exceptions;
 using Wasla.Services.Exceptions.FilterException;
 
@@ -21,12 +22,14 @@ namespace Wasla.Api.Controllers
         private readonly IMapper _mapper;
         private readonly IAuthService _authservice;
         private readonly BaseResponse _response;
+        private readonly IAdminService _adminservice;
 
         public AuthController(IMapper mapper, IAuthService authService)
         {
             _mapper = mapper;
             _authservice = authService;
             _response = new();
+            _adminservice = adminservice;
 
         }
         [HttpPost]
@@ -35,7 +38,9 @@ namespace Wasla.Api.Controllers
             var result = await _authservice.RegisterPassengerAsync(adv);
             return Ok(result);
         }
-        [HttpGet]//("{phone}")]
+        //it not accept it as FromRoute make it FromBody and use class SendOtpDto or keep it 
+        //https://localhost:44366/api/Auth/SendMessage?phone=%2B201118499698
+        [HttpGet]
         public async Task<IActionResult> SendMessage([FromQuery]string phone)
         {
             var messag = await _authservice.SendOtpMessageAsync(phone);
@@ -112,6 +117,16 @@ namespace Wasla.Api.Controllers
         {
             var resault = await _authservice.LogoutAsync(token);
             return Ok(resault);
+        }
+        [HttpPost]
+        public async Task<IActionResult> OrganizationRegister([FromForm]OrgRegisterRequestDto request)
+        {
+            return Ok(await _authservice.OrgnaizationRegisterAsync(request));
+        }
+        [HttpGet]
+        public async Task<IActionResult> ConfrimOrganizationAccount([FromRoute] int id)
+        {
+            return Ok(await _adminservice.ConfirmOrgnaizationRequestAsync(id));
         }
     }
 }

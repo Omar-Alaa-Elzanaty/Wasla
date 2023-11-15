@@ -50,5 +50,6 @@
   "create": "إضافة",
   "save": "حفظ",
   "name": "الاسم",
-  "required": "حقل مطلوب"
+  "required": "حقل مطلوب",
+  "OrganizationRequest": "طلبك تحت المراجعة"
 }
