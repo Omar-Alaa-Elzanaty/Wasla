@@ -10,6 +10,10 @@ namespace Wasla.Model.Models
 {
 	public  class Account:IdentityUser
 	{
+        public Account()
+        {
+            RefreshTokens = new List<RefreshToken>();
+        }
 		public List<RefreshToken> RefreshTokens { get; set; }
-	}
+    }
 }

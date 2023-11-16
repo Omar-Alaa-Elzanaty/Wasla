@@ -22,32 +22,22 @@ namespace Wasla.DataAccess
 		{
 			base.OnModelCreating(modelBuilder);
 			#region User Configuration
-
 			modelBuilder.Entity<Account>().ToTable("Accounts", "Account");
-			modelBuilder.Entity<Customer>().ToTable("Customers","Account");
-			modelBuilder.Entity<Driver>().ToTable("Drivers", "Account");
-			modelBuilder.Entity<Organization>().ToTable("Organizations", "Account");
 			modelBuilder.Entity<IdentityRole>().ToTable("Roles", "Account");
 			modelBuilder.Entity<IdentityUserRole<string>>().ToTable("UserRoles", "Account");
 			modelBuilder.Entity<IdentityUserClaim<string>>().ToTable("UserClaims", "Account");
 			modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("UserLogins", "Account");
 			modelBuilder.Entity<IdentityRoleClaim<string>>().ToTable("RoleClaims", "Account");
 			modelBuilder.Entity<IdentityUserToken<string>>().ToTable("UserTokens", "Account");
-			new UserFollowConfig().Configure(modelBuilder.Entity<UserFollow>());
 			#endregion
-			new DriverConfig().Configure(modelBuilder.Entity<Driver>());
-			new OrganizationConfig().Configure(modelBuilder.Entity<Organization>());
-			new VehicleConfig().Configure(modelBuilder.Entity<Vehicle>());
-			new TripConfig().Configure(modelBuilder.Entity<Trip>());
-			new PackageConfig().Configure(modelBuilder.Entity<Package>());
-			new ReservationConfig().Configure(modelBuilder.Entity<Reservation>());
-			new VehicleRateConfig().Configure(modelBuilder.Entity<VehicleRate>());
-			new DriverRateConfig().Configure(modelBuilder.Entity<DriverRate>());
+
+			modelBuilder.ApplyConfigurationsFromAssembly(typeof(DriverConfig).Assembly);
 		}
 		protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 		{
 			//base.OnConfiguring(optionsBuilder);
 		}
+		public virtual DbSet<User> Users { get; set; }
 		public virtual DbSet<Customer> Customers { get; set; }
 		public virtual DbSet<Driver> Drivers { get; set; }
 		public virtual DbSet<Vehicle> Vehicles { get; set; }

@@ -117,9 +117,9 @@ namespace Wasla.Api.Controllers
             return Ok(resault);
         }
         [HttpPost]
-        public async Task<IActionResult> OrganizationRegister([FromForm]OrgRegisterRequestDto request)
+        public async Task<IActionResult> OrganizationRegister([FromForm] DriverRegisterDto request)
         {
-            return Ok(await _authservice.OrgnaizationRegisterAsync(request));
+            return Ok(await _authservice.DriverRegisterAsync(request));
         }
         [HttpGet]
         public async Task<IActionResult> ConfrimOrganizationAccount([FromRoute] int id)
