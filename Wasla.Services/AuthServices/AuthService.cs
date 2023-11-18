@@ -195,6 +195,7 @@ namespace Wasla.Services.AuthServices
 					var errors = string.Empty;
 					foreach (var error in result.Errors)
 						errors += $"{error.Description},";
+
 					await transaction.RollbackAsync();
 					throw new BadRequestException(errors);
 				}

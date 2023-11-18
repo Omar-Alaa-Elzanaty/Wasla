@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Server.IIS.Core;
 using System.Net;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
+using Wasla.Model.Models;
 using Wasla.Services.AdminServices;
 using Wasla.Services.AuthServices;
 using Wasla.Services.Exceptions;
@@ -117,9 +118,9 @@ namespace Wasla.Api.Controllers
             return Ok(resault);
         }
         [HttpPost]
-        public async Task<IActionResult> OrganizationRegister([FromForm] DriverRegisterDto request)
+        public async Task<IActionResult> OrganizationRegister([FromForm] OrgRegisterRequestDto request)
         {
-            return Ok(await _authservice.DriverRegisterAsync(request));
+            return Ok(await _authservice.OrgnaizationRegisterAsync(request));
         }
         [HttpGet]
         public async Task<IActionResult> ConfrimOrganizationAccount([FromRoute] int id)
