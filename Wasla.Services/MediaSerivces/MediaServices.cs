@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Localization;
 using Microsoft.Identity.Client;
 using System;
 using System.Collections.Generic;
@@ -8,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Twilio.TwiML.Messaging;
 using Wasla.Model.Helpers;
+using Wasla.Services.Exceptions;
 
 namespace Wasla.Services.MediaSerivces
 {
@@ -16,7 +18,7 @@ namespace Wasla.Services.MediaSerivces
         private readonly IWebHostEnvironment _host;
 		private readonly StringBuilder _defaultPath;
 		private readonly string _fileName;
-
+		private readonly IStringLocalizer<IMediaSerivces> _localization;
 
 		bool ImageConstrains(IFormFile extension)
 		{
@@ -29,15 +31,18 @@ namespace Wasla.Services.MediaSerivces
 		bool IsImageExtension(string ext) => (ext == ".PNG" || ext == ".jpg");
 		bool IsVideoExtension(string ext) => (ext == "d" || ext == "dd");
 
-		public MediaServices(IWebHostEnvironment host, IHttpContextAccessor contextAccessor)
+		public MediaServices(
+			IWebHostEnvironment host,
+			IHttpContextAccessor contextAccessor,
+			IStringLocalizer<IMediaSerivces> localization)
 		{
 			_host = host;
 			_defaultPath = new StringBuilder(@$"{contextAccessor.HttpContext?.Request.Scheme}://{contextAccessor?.HttpContext?.Request.Host}/FOLDER/");
 			_fileName = Guid.NewGuid().ToString();
+			_localization = localization;
 		}
-		public async Task<ServicesResponse<string>> AddAsync(IFormFile media)
+		public async Task<string> AddAsync(IFormFile media)
         {
-			ServicesResponse<string> response = new ServicesResponse<string>();
 			string RootPath = _host.WebRootPath;
 			string Extension = Path.GetExtension(media.FileName);
 			string MediaFolderPath = "";
@@ -54,21 +59,17 @@ namespace Wasla.Services.MediaSerivces
 			}
 			else
 			{
-				response.Log = "invaild media extension";
-				return response;
+				throw new BadRequestException(_localization["UploadMediaFail"].Value);
 			}
 			using (FileStream fileStreams = new(Path.Combine(MediaFolderPath,
 											_fileName + Extension), FileMode.Create))
 			{
 				media.CopyTo(fileStreams);
 			}
-			response.IsSuccess=true;
-			response.Entity = path + _fileName + Extension;
-			return response;
+			return path + _fileName + Extension;
 		}
-        public async Task<ServicesResponse<bool?>> RemoveAsync(string url)
+        public async Task<bool> RemoveAsync(string url)
 		{
-			ServicesResponse<bool?> response = new ServicesResponse<bool?>();
 			try
 			{
 				string RootPath = _host.WebRootPath.Replace("\\\\", "\\");
@@ -81,22 +82,21 @@ namespace Wasla.Services.MediaSerivces
 					oldPath = $@"{RootPath}\Images\{mediaNameToDelete}{EXT}";
 				else
 				{
-					response.Log = "Invalid Extension";
+					throw new BadRequestException(_localization["DeleteMediaFail"].Value);
 				}
 				if (File.Exists(oldPath))
 				{
 					File.Delete(oldPath);
-					response.IsSuccess = true;
-					return response;
+					return true;
 				}
-				return response;
+				throw new BadRequestException(_localization["NotFoundMedia"].Value);
 			}
 			catch
 			{
-				return response;
+				throw new BadRequestException(_localization["DeleteMediaFail"].Value);
 			}
 		}
-        public async Task<ServicesResponse<string>> UpdateAsync(string oldUrl, IFormFile newMedia)
+        public async Task<string> UpdateAsync(string oldUrl, IFormFile newMedia)
         {
 			ServicesResponse<string> response = new ServicesResponse<string>();
 			string? newMediaUrl=null;
@@ -112,30 +112,23 @@ namespace Wasla.Services.MediaSerivces
 
 			if(newMediaUrl is null)
 			{
-				response.Log = "could not parse";
-				return response;
+				throw new BadRequestException(_localization["NotFoundMedia"].Value);
 			}
 			newMediaUrl += _fileName + Extension;
 			if (oldUrl == newMediaUrl)
 			{
-				response.IsSuccess = true;
-				response.Entity = oldUrl;
-				return response;
+				return oldUrl;
 			}
-			if (!RemoveAsync(oldUrl).Result.IsSuccess) 
+			if (!await RemoveAsync(oldUrl)) 
 			{
-				response.Log = "couldn't update photo";
-				return response;
+				throw new BadRequestException(_localization["UploadMediaFail"].Value);
 			}
 			var addResult = await AddAsync(newMedia);
 			if (addResult == null)
 			{
-				response.Log = "couldn't update Media file";
-				return response;
+				throw new BadRequestException(_localization["UploadMediaFail"].Value);
 			}
-			response.IsSuccess = true;
-			response.Entity = addResult.Entity;
-			return response;
+			return addResult;
 		}
 	}
 }

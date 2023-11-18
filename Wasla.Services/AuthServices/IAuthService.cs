@@ -15,11 +15,13 @@ namespace Wasla.Services.AuthServices
        // Task<userDto> LoginAsync(LoginDto Input);
         Task<BaseResponse> RegisterAsync(PassengerRegisterDto Input);
         Task<BaseResponse> OrgnaizationRegisterAsync(OrgRegisterRequestDto request);
+        Task<BaseResponse> DriverRegisterAsync(DriverRegisterDto model);
 
 		Task<BaseResponse> SendOtpMessageAsync(string userPhone);
         Task<BaseResponse> SendOtpEmailAsync(string userEmail);
 
-        Task<BaseResponse> RefreshTokenAsync(RefTokenDto token);
+        Task<BaseResponse> CheckUserNameSimilarity(string input);
+		Task<BaseResponse> RefreshTokenAsync(RefTokenDto token);
         Task<BaseResponse> LogoutAsync(RefTokenDto token);
         Task<BaseResponse> LoginAsync(LoginDto riderLoginDto);
         Task<BaseResponse> CompareOtpAsync( string reciveOtp);

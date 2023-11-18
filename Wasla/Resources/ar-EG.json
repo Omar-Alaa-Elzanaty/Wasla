@@ -6,6 +6,7 @@
   "userNameExist": "اسم المستخدم موجود مسبقا",
   "EmailExist": "الايميل موجود مسبقا",
   "RegisterSucccess": "تم تسجيل الدخول بنجاح",
+  "RegisterFail": "فشل تسجيل البيانات",
   "PasswordRequired": "كلمه المرور مطلوبه",
   "PasswordLength": "يجب ان تحتوي كلمات المرور علي 6 حروف علي الاقل و يكون حرف رقمي وحرف علي الاقل صغير (a-z) وحرف علي الاقل كبير(A-Z) ",
   "firstNameRequired": "الاسم الاول مطلوب",
@@ -45,5 +46,10 @@
   "save": "حفظ",
   "name": "الاسم",
   "required": "حقل مطلوب",
-  "OrganizationRequest": "طلبك تحت المراجعة"
+  "OrganizationSuccessRequest": "طلبك تحت المراجعة",
+  "OrganizationNameExist": "اسم الشركة مستخدم بالفعل",
+  "UploadMediaFail": "فشل تحميل الوسائط",
+  "DeleteMediaFail": "فشل حدف الوسائط",
+  "NotFoundMedia": "لم يتم العثور على الوسائط",
+  "LicenseExist": "التصريح مستخدم من قبل"
 }

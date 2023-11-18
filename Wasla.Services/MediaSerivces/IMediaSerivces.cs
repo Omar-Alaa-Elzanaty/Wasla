@@ -10,9 +10,9 @@ namespace Wasla.Services.MediaSerivces
 {
 	public interface IMediaSerivces
 	{
-		Task<ServicesResponse<string>> AddAsync(IFormFile media);
-		Task<ServicesResponse<bool?>> RemoveAsync(string url);
-		Task<ServicesResponse<string>> UpdateAsync(string oldUrl, IFormFile newMedia);
+		Task<string> AddAsync(IFormFile media);
+		Task<bool> RemoveAsync(string url);
+		Task<string> UpdateAsync(string oldUrl, IFormFile newMedia);
 
 	}
 }

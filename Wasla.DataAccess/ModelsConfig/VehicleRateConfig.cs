@@ -15,7 +15,7 @@ namespace Wasla.DataAccess.ModelsConfig
 		{
 			builder.HasKey(vr => new {vr.CustomerId, vr.VehicleId});
 			builder.HasIndex(vr => vr.CustomerId).IsUnique();
-			builder.HasOne(vr => vr.Vehicle).WithMany(v=>v.Rate).OnDelete(DeleteBehavior.NoAction);
+			builder.HasOne(vr => vr.Vehicle).WithMany(v=>v.Rates).OnDelete(DeleteBehavior.NoAction);
 		}
 	}
 }
