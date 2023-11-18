@@ -5,6 +5,7 @@
   "userNameRequired": "اسم المستخدم مطلوب",
   "userNameExist": "اسم المستخدم موجود مسبقا",
   "EmailExist": "الايميل موجود مسبقا",
+  "EmailValid": "الايميل صالح للاستخدام",
   "RegisterSucccess": "تم تسجيل الدخول بنجاح",
   "RegisterFail": "فشل تسجيل البيانات",
   "PasswordRequired": "كلمه المرور مطلوبه",

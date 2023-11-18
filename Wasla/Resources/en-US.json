@@ -4,6 +4,7 @@
   "userNameRequired": "User Name is required",
   "userNameExist": "this User Name Aready Exist",
   "EmailExist": "this E-mail already Exist",
+  "EmailValid": "Email valid to use",
   "RegisterSucccess": "Register Success",
   "RegisterFail": "Register Fail",
   "PasswordRequired": "Password is required.",
