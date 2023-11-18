@@ -18,7 +18,7 @@ namespace Wasla.Services.LoginService.LoginService
         {
             _db = db;
         }
-        public async Task<object> Login(LoginHelp loginHelp)
+        public async Task<DataAuthResponse> Login(LoginHelp loginHelp)
         {
             var driver = await _db.Drivers.FirstOrDefaultAsync(u => u.Id == loginHelp.userId);
             var driverResponse = new DriverResponseDto();

@@ -86,7 +86,7 @@ namespace Wasla.Services.AuthServices
                 throw new BadRequestException(_localization["EmailExist"].Value);
 
             }
-            var user = _mapper.Map<Customer>(Input);
+            var user = _mapper.Map< Customer>(Input);
             var result = await _userManager.CreateAsync(user, Input.Password);
             var role = Roles.Role_Rider;
             //  var roleEx = Checkrole(Input.Role);
@@ -391,7 +391,6 @@ namespace Wasla.Services.AuthServices
             };
             return checkUser;
         }
-        private async Task<User> getUserByEmail(string email)
         private async Task<Account> getUserByEmail(string email)
         {
             var user = await _userManager.FindByEmailAsync(email);

@@ -9,7 +9,7 @@ namespace Wasla.Model.Helpers
 {
     public class CheckUserExit
     {
-        public User user { get; set; }
+        public Account user { get; set; }
         public string role { get; set; }
     }
 }
