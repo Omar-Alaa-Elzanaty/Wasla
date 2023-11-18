@@ -6,6 +6,7 @@
   "userNameExist": "this User Name Aready Exist",
   "EmailExist": "this E-mail already Exist",
   "RegisterSucccess": "Register Success",
+  "RegisterFail": "Register Fail",
   "PasswordRequired": "Password is required.",
   "PasswordLength": "Passwords must be at least 6 characters.,Passwords must have at least one non alphanumericcharacter.,Passwords must have at least one lowercase ('a'-'z').,Passwords must have at least one uppercase ('A'-'Z').",
   "firstNameRequired": "First Name Required",
@@ -50,5 +51,10 @@
   "save": "Save",
   "name": "Name",
   "required": "Required field",
-  "OrganizationRequest": "Your request is under review"
+  "OrganizationSuccessRequest": "Your request is under review",
+  "OrganizationNameExist": "Company Name is already exist",
+  "UploadMediaFail": "Coudln't save a Media",
+  "DeleteMediaFail": "Delete Photo Fail",
+  "NotFoundMedia": "Media is not found",
+  "LicenseExist": "License already exist"
 }

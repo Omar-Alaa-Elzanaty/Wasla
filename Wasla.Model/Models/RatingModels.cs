@@ -18,15 +18,15 @@ namespace Wasla.Model.Models
 	{
 		public int VehicleId { get; set; }
 		public virtual Vehicle Vehicle { get; set; }
-		public int CustomerId { get; set; }
+		public string CustomerId { get; set; }
 		public virtual Customer Customer { get; set; }
 		public Rate Rate { get; set; }
 	}
 	public class DriverRate
 	{
-		public int DriverId { get; set; }
+		public string DriverId { get; set; }
 		public virtual Driver Driver { get; set; }
-		public int CustomerId { get; set; }
+		public string CustomerId { get; set; }
 		public virtual Customer Customer { get; set; }
 		public Rate Rate { get; set; }
 	}

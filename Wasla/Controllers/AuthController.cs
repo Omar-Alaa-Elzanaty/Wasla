@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Server.IIS.Core;
 using System.Net;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
+using Wasla.Model.Models;
 using Wasla.Services.AdminServices;
 using Wasla.Services.AuthServices;
 using Wasla.Services.Exceptions;
@@ -56,11 +57,16 @@ namespace Wasla.Api.Controllers
         }*/
         [HttpGet]
        [Route("{email}")]
-
         public async Task<IActionResult> SendEmail([FromRoute] string email)
         {
             var messag = await _authservice.SendOtpEmailAsync(email);
             return Ok(messag);
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CheckUserName(string userName)
+        {
+            return Ok(await _authservice.CheckUserNameSimilarity(userName));
         }
 
         [HttpGet]
@@ -119,7 +125,7 @@ namespace Wasla.Api.Controllers
             return Ok(resault);
         }
         [HttpPost]
-        public async Task<IActionResult> OrganizationRegister([FromForm]OrgRegisterRequestDto request)
+        public async Task<IActionResult> OrganizationRegister([FromForm] OrgRegisterRequestDto request)
         {
             return Ok(await _authservice.OrgnaizationRegisterAsync(request));
         }

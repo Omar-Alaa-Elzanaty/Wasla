@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Text;
 using System.Threading.Tasks;
 using Wasla.Model.Models;
@@ -13,14 +14,12 @@ namespace Wasla.DataAccess.ModelsConfig
 	{
 		public void Configure(EntityTypeBuilder<Driver> builder)
 		{
+			builder.ToTable("Drivers", "Account");
 			builder.HasOne(d=>d.Orgainzation)
 				.WithOne()
 				.HasForeignKey<Driver>(i=>i.OrganizationId)
 				.OnDelete(DeleteBehavior.NoAction);
 
-			builder.HasOne(d => d.Account)
-				.WithOne()
-				.HasForeignKey<Driver>(d => d.AccountId);
 		}
 	}
 }

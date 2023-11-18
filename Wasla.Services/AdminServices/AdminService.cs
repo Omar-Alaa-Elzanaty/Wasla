@@ -50,35 +50,41 @@ namespace Wasla.Services.AdminServices
 			{
 				throw new KeyNotFoundException("NO such request found");
 			}
-
-			var account = new Account()
+			var organization = _mapper.Map<Organization>(request);
+			//var account = new Account()
+			//{
+			//	UserName = request.Email,
+			//	Email = request.Email,
+			//	PhoneNumber = request.PhoneNumber
+			//};
+			//var organization = new Organization()
+			//{
+			//	Name = request.Name,
+			//	Address = request.Address,
+			//	LogoUrl = request.ImageUrl,
+			//	WebsiteLink = request.WebSiteLink
+			//};
+			using (var transaction=await _dbContext.Database.BeginTransactionAsync())
 			{
-				UserName = request.Email,
-				Email = request.Email,
-				PhoneNumber = request.PhoneNumber
-			};
-			var result = await _userManager.CreateAsync(account, request.Password);
-
-			if (!result.Succeeded)
-			{
-				var errorList = string.Empty;
-				foreach (var error in result.Errors)
+				var result=await _userManager.CreateAsync(organization, request.Password);
+				if (!result.Succeeded)
 				{
-					errorList += error + " ,";
+					var errors = string.Empty;
+					foreach (var error in result.Errors)
+						errors += $"{error.Description},";
+					throw new BadRequestException(errors);
 				}
-
-				throw new ServerErrorException($"coudn't create account: {errorList}");
+				result = await _userManager.AddToRoleAsync(organization, Roles.Role_Organization);
+				if (!result.Succeeded)
+				{
+					var errors = string.Empty;
+					foreach (var error in result.Errors)
+						errors += $"{error.Description},";
+					await transaction.RollbackAsync();
+					throw new BadRequestException(errors);
+				}
+				await transaction.CommitAsync();
 			}
-			var organization = new Organization()
-			{
-				Name = request.Name,
-				Address = request.Address,
-				LogoUrl = request.ImageUrl,
-				AccountId = account.Id,
-				WebsiteLink = request.WebSiteLink
-			};
-			await _dbContext.AddAsync(organization);
-			_= await _dbContext.SaveChangesAsync();
 
 			_response.Message = $"{request.Name} account confirmed";
 			_response.Data = new { 

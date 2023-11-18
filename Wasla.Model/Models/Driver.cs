@@ -8,13 +8,16 @@ namespace Wasla.Model.Models
 {
 	public class Driver:User
 	{
-		public int Id { get; set; }
-		public string License { get; set; }
-		public int? OrganizationId { get; set; }
+        public Driver()
+        {
+			Trips = new List<Trip>();
+			Rates = new List<DriverRate>();
+        }
+        public string LicenseImageUrl { get; set; }
+		public int LicenseNum { get; set; }
+		public string? OrganizationId { get; set; }
 		public virtual Organization? Orgainzation { get; set; }
 		public virtual ICollection<Trip> Trips { get; set; }
 		public virtual ICollection<DriverRate> Rates { get; set; }
-		public string AccountId { get; set; }
-		public virtual Account Account{ get; set;}
 	}
 }
