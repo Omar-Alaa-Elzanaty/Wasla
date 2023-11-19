@@ -1,5 +1,4 @@
 ﻿using AutoMapper;
-using Azure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -16,15 +15,11 @@ using Wasla.Services.Exceptions;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
 using Microsoft.Extensions.Localization;
-using MimeKit;
-using MimeKit.Text;
-using MailKit.Net.Smtp;
 using Wasla.DataAccess;
 using System.Net;
 using Wasla.Services.MediaSerivces;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
-using System.Data;
+using Wasla.Services.EmailServices;
 
 namespace Wasla.Services.AuthServices
 {
@@ -40,8 +35,9 @@ namespace Wasla.Services.AuthServices
         private readonly BaseResponse _response;
         private readonly SmtpSettings _smtpSettings;
         private readonly WaslaDb _dbContext;
-        private readonly IMediaSerivces _mediaServices;
+        private readonly IMediaSerivce _mediaServices;
         private readonly ILogger<AuthService> _logger;
+        private readonly IMailServices _mailService;
 
 		public AuthService(
 			UserManager<Account> userManager,
@@ -52,9 +48,10 @@ namespace Wasla.Services.AuthServices
 			IHttpContextAccessor httpContextAccessor,
 			IOptions<SmtpSettings> smtpSettings,
 			IStringLocalizer<AuthService> localization,
-			IMediaSerivces mediaSerivces,
+			IMediaSerivce mediaSerivces,
 			WaslaDb dbContext,
-			ILogger<AuthService> logger)
+			ILogger<AuthService> logger,
+			IMailServices mailService)
 		{
 			_userManager = userManager;
 			_roleManager = roleManager;
@@ -68,6 +65,7 @@ namespace Wasla.Services.AuthServices
 			_dbContext = dbContext;
 			_mediaServices = mediaSerivces;
 			_logger = logger;
+			_mailService = mailService;
 		}
 
 		public async Task<BaseResponse> RegisterAsync(PassengerRegisterDto Input)
@@ -234,7 +232,10 @@ namespace Wasla.Services.AuthServices
         {
             string otp = await GenerateOtp();
             SetOtpInCookie(otp);
-             await this.SendEmail(userEmail, otp);
+			await _mailService.SendEmailAsync(
+							 mailTo: userEmail,
+							 subject: "Your OTP",
+							 body: "Your OTP is: " + otp);
             _response.Message = _localization["EmailSendSuccess"].Value;
             _response.Data = otp;
             return _response;
@@ -383,7 +384,7 @@ namespace Wasla.Services.AuthServices
             _response.Status =
                 _response.IsSuccess == true ? HttpStatusCode.BadRequest : HttpStatusCode.OK;
 			_response.Message =
-                _response.IsSuccess == true ? _localization["phoneNumberExist"].Value : _localization["EmailValid"].Value;
+                _response.IsSuccess == true ? _localization["phoneNumberExist"].Value : _localization["PhoneNumberValid"].Value;
 
             return _response;
         }
@@ -418,28 +419,6 @@ namespace Wasla.Services.AuthServices
             {
                 throw new BadHttpRequestException(_localization["errorInSendMsg"].Value);
             }
-        }
-        private async Task<bool> SendEmail(string userEmail, string mail)
-        {
-            try
-            {
-                var email = new MimeMessage();
-                email.From.Add(MailboxAddress.Parse(_smtpSettings.Sender));
-                email.To.Add(MailboxAddress.Parse(userEmail));
-                email.Subject = "Your OTP";
-                email.Body = new TextPart(TextFormat.Plain) { Text = "Your OTP is: " + mail };
-                using var smtp = new SmtpClient();
-                await smtp.ConnectAsync(_smtpSettings.Sender, _smtpSettings.Port);
-                await smtp.AuthenticateAsync(_smtpSettings.Username, _smtpSettings.Password);
-                await smtp.SendAsync(email);
-                 await smtp.DisconnectAsync(true);
-                return true;
-            }
-            catch (Exception)
-            {
-                throw new BadHttpRequestException(_localization["errorInSendEmail"].Value);
-            }
-
         }
         private  bool CheckOtp(string reciveOtp)
         {

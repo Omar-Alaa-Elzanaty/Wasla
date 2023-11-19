@@ -2,6 +2,7 @@
 
   "phoneNumberRequired": "رقم الهاتف مطلوب",
   "phoneNumberExist": "رقم الهاتف موجود مسبقا",
+  "PhoneNumberValid": "رقم الهاتف صالح للاستخدام",
   "userNameRequired": "اسم المستخدم مطلوب",
   "userNameExist": "اسم المستخدم موجود مسبقا",
   "EmailExist": "الايميل موجود مسبقا",
@@ -52,5 +53,6 @@
   "UploadMediaFail": "فشل تحميل الوسائط",
   "DeleteMediaFail": "فشل حدف الوسائط",
   "NotFoundMedia": "لم يتم العثور على الوسائط",
-  "LicenseExist": "التصريح مستخدم من قبل"
+  "LicenseExist": "التصريح مستخدم من قبل",
+  "InvalidRequest": "طلب غير صحيح"
 }

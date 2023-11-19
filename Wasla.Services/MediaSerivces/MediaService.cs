@@ -13,12 +13,12 @@ using Wasla.Services.Exceptions;
 
 namespace Wasla.Services.MediaSerivces
 {
-    public class MediaServices:IMediaSerivces
+    public class MediaService:IMediaSerivce
     {
         private readonly IWebHostEnvironment _host;
 		private readonly StringBuilder _defaultPath;
 		private readonly string _fileName;
-		private readonly IStringLocalizer<IMediaSerivces> _localization;
+		private readonly IStringLocalizer<IMediaSerivce> _localization;
 
 		bool ImageConstrains(IFormFile extension)
 		{
@@ -31,10 +31,10 @@ namespace Wasla.Services.MediaSerivces
 		bool IsImageExtension(string ext) => (ext == ".PNG" || ext == ".jpg");
 		bool IsVideoExtension(string ext) => (ext == "d" || ext == "dd");
 
-		public MediaServices(
+		public MediaService(
 			IWebHostEnvironment host,
 			IHttpContextAccessor contextAccessor,
-			IStringLocalizer<IMediaSerivces> localization)
+			IStringLocalizer<IMediaSerivce> localization)
 		{
 			_host = host;
 			_defaultPath = new StringBuilder(@$"{contextAccessor.HttpContext?.Request.Scheme}://{contextAccessor?.HttpContext?.Request.Host}/FOLDER/");
