@@ -7,34 +7,34 @@ using System.Threading.Tasks;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
-using Wasla.Services.LoginService.ILoginService;
+using Wasla.Services.Authentication.AuthHelperService.FactorService.IFactory;
 
-namespace Wasla.Services.LoginService.LoginService
+namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
 {
-    public class LoginDriver:ILogin
+    public class DriverResponse:IAuthResponse
     {
         private readonly WaslaDb _db;
-        public LoginDriver(WaslaDb db) : base()
+        public DriverResponse(WaslaDb db) 
         {
             _db = db;
         }
-        public async Task<DataAuthResponse> Login(LoginHelp loginHelp)
+        public async Task<DataAuthResponse> AuthRespnseFactory(AuthResponseFactoryHelp responseHelp)
         {
-            var driver = await _db.Drivers.FirstOrDefaultAsync(u => u.Id == loginHelp.userId);
+            var driver = await _db.Drivers.FirstOrDefaultAsync(u => u.Id == responseHelp.userId);
             var driverResponse = new DriverResponseDto();
             driverResponse.ConnectionData.Email = driver.Email;
             driverResponse.UserName = driver.UserName;
             driverResponse.ConnectionData.phone = driver.PhoneNumber;
-            driverResponse.TokensData.Token = loginHelp.TokensData.Token;
+            driverResponse.TokensData.Token = responseHelp.TokensData.Token;
             driverResponse.IsAuthenticated = true;
-            driverResponse.TokensData.TokenExpiryDate = loginHelp.TokensData.TokenExpiryDate;
-            driverResponse.Role = loginHelp.role;
-            driverResponse.TokensData.RefreshToken = loginHelp.TokensData.RefreshToken;
-            driverResponse.TokensData.RefTokenExpiryDate = loginHelp.TokensData.RefTokenExpiryDate;
+            driverResponse.TokensData.TokenExpiryDate = responseHelp.TokensData.TokenExpiryDate;
+            driverResponse.Role = responseHelp.role;
+            driverResponse.TokensData.RefreshToken = responseHelp.TokensData.RefreshToken;
+            driverResponse.TokensData.RefTokenExpiryDate = responseHelp.TokensData.RefTokenExpiryDate;
             driverResponse.FirstName = driver.FirstName;
             driverResponse.LastName = driver.LastName;
             driverResponse.PhotoUrl = driver.PhotoUrl;
-            driverResponse.License = driver.License;
+            driverResponse.LicenseNum = driver.LicenseNum;
             driverResponse.Orgainzation = driver.Orgainzation;
             driverResponse.Trips = driver.Trips;
             driverResponse.Rates = driver.Rates;    

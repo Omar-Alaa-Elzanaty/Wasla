@@ -1,17 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.IIS.Core;
-using System.Net;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
-using Wasla.Model.Models;
 using Wasla.Services.AdminServices;
-using Wasla.Services.AuthServices;
-using Wasla.Services.Exceptions;
-using Wasla.Services.Exceptions.FilterException;
+using Wasla.Services.Authentication.AuthServices;
 
 namespace Wasla.Api.Controllers
 {
@@ -25,7 +18,7 @@ namespace Wasla.Api.Controllers
         private readonly BaseResponse _response;
         private readonly IAdminService _adminservice;
 
-        public AuthController(IMapper mapper, IAuthService authService)
+        public AuthController(IMapper mapper, IAuthService authService,IAdminService adminservice)
         {
             _mapper = mapper;
             _authservice = authService;
@@ -77,25 +70,25 @@ namespace Wasla.Api.Controllers
             var res = await _authservice.CompareOtpAsync(recOtp);
             return Ok(res);
         }
-        [HttpPost]
+        [HttpPut]
         public async Task<IActionResult> ConfirmPhone([FromBody] ConfirmNumberDto confirmNumber)
         {
             var resualt = await _authservice.ConfirmPhoneAsync(confirmNumber);
             return Ok(resualt);
         }
-        [HttpPost]
+        [HttpPut]
         public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailDto confirmEmail)
         {
             var resualt = await _authservice.ConfirmEmailAsync(confirmEmail);
             return Ok(resualt);
         }
-        [HttpPost]
+        [HttpPut]
         public async Task<IActionResult> ResetPasswordByPhone([FromBody] ResetPasswordDto resetPassword)
         {
             var resualt = await _authservice.ResetPasswordByphoneAsync(resetPassword);
             return Ok(resualt);
         }
-        [HttpPost]
+        [HttpPut]
         public async Task<IActionResult> ResetPasswordByEmail([FromBody] ResetPasswordDto resetPassword)
         {
             var resualt = await _authservice.ResetPasswordByEmailAsync(resetPassword);
@@ -117,7 +110,7 @@ namespace Wasla.Api.Controllers
             return Ok(resualt);
         }
         
-        [HttpPost]
+        [HttpDelete]
        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Logout(RefTokenDto token)
         {

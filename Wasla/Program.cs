@@ -13,7 +13,8 @@ using Wasla.DataAccess.AutoMapping;
 using Wasla.Model.Helpers;
 using Wasla.Model.Models;
 using Wasla.Services.ApplicationStatic;
-using Wasla.Services.AuthServices;
+using Wasla.Services.Authentication.AuthHelperService.FactorService.Factory;
+using Wasla.Services.Authentication.AuthHelperService.FactorService.IFactory;
 using Wasla.Services.Exceptions.FilterException;
 using Wasla.Services.Initizalize;
 using Wasla.Services.MultLanguageService.JsonLocalizer;
@@ -125,7 +126,7 @@ namespace Wasla
 			}
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-           // DataSeed(app);
+            DataSeed(app);
             //
             var supportedCultures = new[] { "en-US", "ar-EG" };
             var localizationOptions = new RequestLocalizationOptions()
@@ -133,6 +134,7 @@ namespace Wasla
                 .AddSupportedCultures(supportedCultures);
             app.UseRequestLocalization(localizationOptions);
             //
+
             app.AddGlobalExceptionGlobalHandler();
             app.UseRouting();
             app.UseAuthentication();

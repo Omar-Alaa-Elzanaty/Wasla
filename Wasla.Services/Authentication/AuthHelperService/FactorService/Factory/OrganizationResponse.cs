@@ -7,29 +7,30 @@ using System.Threading.Tasks;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
+using Wasla.Services.Authentication.AuthHelperService.FactorService.IFactory;
 
-namespace Wasla.Services.LoginService.LoginService
+namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
 {
-    public class LoginOrganization
+    public class OrganizationResponse:IAuthResponse
     {
         private readonly WaslaDb _db;
-        public LoginOrganization(WaslaDb db) : base()
+        public OrganizationResponse(WaslaDb db) : base()
         {
             _db = db;
         }
-        public async Task<object> Login(LoginHelp loginHelp)
+        public async Task<DataAuthResponse> AuthRespnseFactory(AuthResponseFactoryHelp responseHelp)
         {
-            var organization = await _db.Organizations.FirstOrDefaultAsync(u => u.Id == loginHelp.userId);
+            var organization = await _db.Organizations.FirstOrDefaultAsync(u => u.Id == responseHelp.userId);
             var organizationResponse = new OrganizationResponseDto();
             organizationResponse.ConnectionData.Email = organization.Email;
             organizationResponse.UserName = organization.UserName;
             organizationResponse.ConnectionData.phone = organization.PhoneNumber;
-            organizationResponse.TokensData.Token = loginHelp.TokensData.Token;
+            organizationResponse.TokensData.Token = responseHelp.TokensData.Token;
             organizationResponse.IsAuthenticated = true;
-            organizationResponse.TokensData.TokenExpiryDate = loginHelp.TokensData.TokenExpiryDate;
-            organizationResponse.Role = loginHelp.role;
-            organizationResponse.TokensData.RefreshToken = loginHelp.TokensData.RefreshToken;
-            organizationResponse.TokensData.RefTokenExpiryDate = loginHelp.TokensData.RefTokenExpiryDate;
+            organizationResponse.TokensData.TokenExpiryDate = responseHelp.TokensData.TokenExpiryDate;
+            organizationResponse.Role = responseHelp.role;
+            organizationResponse.TokensData.RefreshToken = responseHelp.TokensData.RefreshToken;
+            organizationResponse.TokensData.RefTokenExpiryDate = responseHelp.TokensData.RefTokenExpiryDate;
             organizationResponse.TripList = organization.TripList;
             organizationResponse.MaxWeight=organization.MaxWeight;
             organizationResponse.WebsiteLink = organization.WebsiteLink;

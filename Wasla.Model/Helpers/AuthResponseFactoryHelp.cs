@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace Wasla.Model.Helpers
 {
-    public class LoginHelp
+    public class AuthResponseFactoryHelp
     {
-        public LoginHelp()
+        public AuthResponseFactoryHelp()
         {
             TokensData = new TokensData();
         }

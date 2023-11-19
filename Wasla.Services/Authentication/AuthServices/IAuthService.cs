@@ -8,7 +8,7 @@ using Twilio.Rest.Api.V2010.Account;
 using Wasla.Model.Helpers;
 using Wasla.Model.Models;
 
-namespace Wasla.Services.AuthServices
+namespace Wasla.Services.Authentication.AuthServices
 {
     public interface IAuthService
     {
