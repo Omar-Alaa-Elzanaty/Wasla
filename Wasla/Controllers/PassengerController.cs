@@ -21,7 +21,7 @@ namespace Wasla.Api.Controllers
             _mapper = mapper;
             _authservice = authService;
         }
-        [HttpPost]
+        [HttpPost("passengerRegister")]
         public async Task<IActionResult> PassengerRegister([FromBody]PassengerRegisterDto adv)
         {
              var result = await _authservice.RegisterAsync(adv);

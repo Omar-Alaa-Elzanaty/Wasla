@@ -48,7 +48,7 @@ namespace Wasla.Api.Controllers
             _response.Data = messag;
             return Ok(_response);
         }*/
-        [HttpGet]
+        [HttpGet("sendEmail")]
        [Route("{email}")]
         public async Task<IActionResult> SendEmail([FromRoute] string email)
         {
@@ -56,13 +56,13 @@ namespace Wasla.Api.Controllers
             return Ok(messag);
         }
 
-        [HttpGet]
+        [HttpGet("checkUserName")]
         public async Task<IActionResult> CheckUserName(string userName)
         {
             return Ok(await _authservice.CheckUserNameSimilarity(userName));
         }
 
-        [HttpGet]
+        [HttpGet("compareOtp")]
        [Route("{recOtp}")]
         public async Task<IActionResult> CompareOtp([FromRoute]string recOtp)
         {
@@ -70,19 +70,19 @@ namespace Wasla.Api.Controllers
             var res = await _authservice.CompareOtpAsync(recOtp);
             return Ok(res);
         }
-        [HttpPost]
+        [HttpPost("confirmPhone")]
         public async Task<IActionResult> ConfirmPhone([FromBody] ConfirmNumberDto confirmNumber)
         {
             var resualt = await _authservice.ConfirmPhoneAsync(confirmNumber);
             return Ok(resualt);
         }
-        [HttpPost]
+        [HttpPost("confirmEmail")]
         public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailDto confirmEmail)
         {
             var resualt = await _authservice.ConfirmEmailAsync(confirmEmail);
             return Ok(resualt);
         }
-        [HttpPost]
+        [HttpPost("RefreshToken")]
         [Authorize]
         public async Task<IActionResult> RefreshToken([FromBody]RefTokenDto refToken)
         {
@@ -90,49 +90,49 @@ namespace Wasla.Api.Controllers
             var resualt = await _authservice.RefreshTokenAsync(refToken);
             return Ok(resualt);
         }
-        [HttpPost]
+        [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginDto riderLoginDto)
         {
             var resualt = await _authservice.LoginAsync(riderLoginDto);
             return Ok(resualt);
         }
-        [HttpPost]
+        [HttpPost("resetPasswordByPhone")]
         public async Task<IActionResult> ResetPasswordByPhone([FromBody] ResetPasswordDto resetPassword)
         {
             var resualt = await _authservice.ResetPasswordByphoneAsync(resetPassword);
            
             return Ok(resualt);
         }
-        [HttpPost]
+        [HttpPost("resetPasswordByEmail")]
         public async Task<IActionResult> ResetPasswordByEmail([FromBody] ResetPasswordDto resetPassword)
         {
             var resualt = await _authservice.ResetPasswordByEmailAsync(resetPassword);
 
             return Ok(resualt);
         }
-        [HttpPost]
+        [HttpPost("logout")]
        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Logout(RefTokenDto token)
         {
             var resault = await _authservice.LogoutAsync(token);
             return Ok(resault);
         }
-        [HttpPost]
+        [HttpPost("organizationRegister")]
         public async Task<IActionResult> OrganizationRegister([FromForm] OrgRegisterRequestDto request)
         {
             return Ok(await _authservice.OrgnaizationRegisterAsync(request));
         }
-        [HttpGet]
+        [HttpGet("confrimOrganizationAccount")]
         public async Task<IActionResult> ConfrimOrganizationAccount([FromRoute] int id)
         {
             return Ok(await _adminservice.ConfirmOrgnaizationRequestAsync(id));
         }
-		[HttpGet]
+		[HttpGet("checkPhoneNumber")]
 		public async Task<IActionResult> CheckPhoneNumber(string phoneNumber)
 		{
 			return Ok(await _authservice.CheckPhoneNumberAsync(phoneNumber));
 		}
-		[HttpGet]
+		[HttpGet("checkEmail")]
 		public async Task<IActionResult> CheckEmail(string email)
 		{
             return Ok(await _authservice.CheckEmailAsync(email));
