@@ -54,7 +54,7 @@ namespace Wasla.Services.Authentication.AuthServices
             IHttpContextAccessor httpContextAccessor,
             IOptions<SmtpSettings> smtpSettings,
             IStringLocalizer<AuthService> localization,
-            IMediaSerivces mediaSerivces,
+            IMediaSerivce mediaSerivces,
             WaslaDb dbContext,
             ILogger<AuthService> logger)
         {
