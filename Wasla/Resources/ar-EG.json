@@ -6,6 +6,7 @@
   "PhoneNumberWrong": "رقم الهاتف غير موجود,يمكنك تسجيل الدخول",
   "userNameExist": "اسم المستخدم موجود مسبقا",
   "EmailExist": "الايميل موجود مسبقا",
+  "EmailValid": "الايميل صالح للاستخدام",
   "RegisterSucccess": "تم تسجيل الدخول بنجاح",
   "RegisterFail": "فشل تسجيل البيانات",
   "PasswordRequired": "كلمه المرور مطلوبه",

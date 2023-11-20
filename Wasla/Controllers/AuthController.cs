@@ -127,5 +127,15 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _adminservice.ConfirmOrgnaizationRequestAsync(id));
         }
-    }
+		[HttpGet]
+		public async Task<IActionResult> CheckPhoneNumber(string phoneNumber)
+		{
+			return Ok(await _authservice.CheckPhoneNumberAsync(phoneNumber));
+		}
+		[HttpGet]
+		public async Task<IActionResult> CheckEmail(string email)
+		{
+            return Ok(await _authservice.CheckEmailAsync(email));
+		}
+	}
 }

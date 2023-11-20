@@ -21,6 +21,8 @@ namespace Wasla.Services.Authentication.AuthServices
         Task<BaseResponse> SendOtpEmailAsync(string userEmail);
 
         Task<BaseResponse> CheckUserNameSimilarity(string input);
+        Task<BaseResponse> CheckPhoneNumberAsync(string phoneNumber);
+        Task<BaseResponse> CheckEmailAsync(string email);
 		Task<BaseResponse> RefreshTokenAsync(RefTokenDto token);
         Task<BaseResponse> LogoutAsync(RefTokenDto token);
         Task<BaseResponse> LoginAsync(LoginDto riderLoginDto);

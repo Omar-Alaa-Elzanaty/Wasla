@@ -5,6 +5,7 @@
   "PhoneNumberWrong": "this Phone Not Exit,go to register",
   "userNameExist": "this User Name Aready Exist",
   "EmailExist": "this E-mail already Exist",
+  "EmailValid": "Email valid to use",
   "RegisterSucccess": "Register Success",
   "RegisterFaild": "Register Failed",
   "RegisterFail": "Register Fail",

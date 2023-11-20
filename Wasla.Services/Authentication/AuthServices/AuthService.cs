@@ -328,8 +328,37 @@ namespace Wasla.Services.Authentication.AuthServices
 
             return _response;
         }
+        public async Task<BaseResponse>CheckPhoneNumberAsync(string phoneNumber)
+        {
+            if(phoneNumber.IsNullOrEmpty())
+            {
+                throw new BadRequestException(_localization["phoneNumberRequired"]);
+            }
 
-        private async Task<bool> SendMessage(string sendOtpDto, string msg)
+            _response.IsSuccess = await _userManager.Users.AnyAsync(u => u.PhoneNumber == phoneNumber);
+            _response.Status =
+                _response.IsSuccess == true ? HttpStatusCode.BadRequest : HttpStatusCode.OK;
+			_response.Message =
+                _response.IsSuccess == true ? _localization["phoneNumberExist"].Value : _localization["EmailValid"].Value;
+
+            return _response;
+        }
+		public async Task<BaseResponse> CheckEmailAsync(string email)
+		{
+			if (email.IsNullOrEmpty())
+			{
+				throw new BadRequestException(_localization["EmailRequired"]);
+			}
+
+			_response.IsSuccess = await _userManager.Users.AnyAsync(u => u.Email == email);
+			_response.Status =
+				_response.IsSuccess == true ? HttpStatusCode.BadRequest : HttpStatusCode.OK;
+			_response.Message =
+				_response.IsSuccess == true ? _localization["EmailExist"].Value : _localization["EmailValid"].Value;
+
+			return _response;
+		}
+		private async Task<bool> SendMessage(string sendOtpDto, string msg)
         {
             try
             {
