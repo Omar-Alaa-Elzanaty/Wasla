@@ -1,18 +1,18 @@
-﻿
-using Microsoft.Extensions.DependencyInjection;
+﻿using Microsoft.Extensions.Localization;
+using Wasla.Services.Exceptions.FilterException;
 using Wasla.Services.AdminServices;
 using Wasla.Services.Initizalize;
 using Wasla.Services.MediaSerivces;
 using Wasla.Services.Authentication.AuthServices;
-using Microsoft.Extensions.Localization;
 using Wasla.Services.MultLanguageService.JsonLocalizer;
 using Wasla.Services.Authentication.AuthHelperService.FactorService.IFactory;
 using Wasla.Services.Authentication.AuthHelperService.FactorService.Factory;
-using Wasla.Services.Exceptions.FilterException;
+using Microsoft.Extensions.DependencyInjection;
+using Wasla.Services.EmailServices;
 
 namespace Wasla.Services.ApplicationStatic
 {
-    public static class ServicesCollection
+	public static class ServicesCollection
     {
         public static void AddServices(this IServiceCollection services)
         {
@@ -26,7 +26,8 @@ namespace Wasla.Services.ApplicationStatic
 
 
             services.AddScoped<IAdminService, AdminService>();
-            services.AddScoped<IMediaSerivces,MediaServices>();
+            services.AddScoped<IMediaSerivce,MediaService>();
+            services.AddScoped<IMailServices, MailServices>();
          
         }
     }

@@ -16,15 +16,13 @@ using Wasla.Services.Exceptions;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
 using Microsoft.Extensions.Localization;
-using MimeKit;
-using MimeKit.Text;
-using MailKit.Net.Smtp;
 using Wasla.DataAccess;
 using Wasla.Services.MediaSerivces;
 using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 using Wasla.Services.Authentication.AuthHelperService.FactorService.IFactory;
 using System.Data;
+using Wasla.Services.EmailServices;
 
 namespace Wasla.Services.Authentication.AuthServices
 {
@@ -41,8 +39,9 @@ namespace Wasla.Services.Authentication.AuthServices
         private readonly SmtpSettings _smtpSettings;
         private readonly IBaseFactoryResponse _baseFactory;
         private readonly WaslaDb _dbContext;
-        private readonly IMediaSerivces _mediaServices;
+        private readonly IMediaSerivce _mediaServices;
         private readonly ILogger<AuthService> _logger;
+        private readonly IMailServices _mailService;
 
         public AuthService
             (
@@ -55,7 +54,7 @@ namespace Wasla.Services.Authentication.AuthServices
             IHttpContextAccessor httpContextAccessor,
             IOptions<SmtpSettings> smtpSettings,
             IStringLocalizer<AuthService> localization,
-            IMediaSerivces mediaSerivces,
+            IMediaSerivce mediaSerivces,
             WaslaDb dbContext,
             ILogger<AuthService> logger)
         {
@@ -218,7 +217,10 @@ namespace Wasla.Services.Authentication.AuthServices
         {
             string otp = await GenerateOtp();
             SetOtpInCookie(otp);
-            await SendEmail(userEmail, otp);
+			await _mailService.SendEmailAsync(
+							 mailTo: userEmail,
+							 subject: "Your OTP",
+							 body: "Your OTP is: " + otp);
             _response.Message = _localization["EmailSendSuccess"].Value;
             _response.Data = otp;
             return _response;
@@ -339,7 +341,7 @@ namespace Wasla.Services.Authentication.AuthServices
             _response.Status =
                 _response.IsSuccess == true ? HttpStatusCode.BadRequest : HttpStatusCode.OK;
 			_response.Message =
-                _response.IsSuccess == true ? _localization["phoneNumberExist"].Value : _localization["EmailValid"].Value;
+                _response.IsSuccess == true ? _localization["phoneNumberExist"].Value : _localization["PhoneNumberValid"].Value;
 
             return _response;
         }
@@ -374,28 +376,6 @@ namespace Wasla.Services.Authentication.AuthServices
             {
                 throw new BadHttpRequestException(_localization["errorInSendMsg"].Value);
             }
-        }
-        private async Task<bool> SendEmail(string userEmail, string mail)
-        {
-            try
-            {
-                var email = new MimeMessage();
-                email.From.Add(MailboxAddress.Parse(_smtpSettings.Sender));
-                email.To.Add(MailboxAddress.Parse(userEmail));
-                email.Subject = "Your OTP";
-                email.Body = new TextPart(TextFormat.Plain) { Text = "Your OTP is: " + mail };
-                using var smtp = new SmtpClient();
-                await smtp.ConnectAsync(_smtpSettings.Sender, _smtpSettings.Port);
-                await smtp.AuthenticateAsync(_smtpSettings.Username, _smtpSettings.Password);
-                await smtp.SendAsync(email);
-                await smtp.DisconnectAsync(true);
-                return true;
-            }
-            catch (Exception)
-            {
-                throw new BadHttpRequestException(_localization["errorInSendEmail"].Value);
-            }
-
         }
         private bool CheckOtp(string reciveOtp)
         {

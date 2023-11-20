@@ -1,6 +1,7 @@
 {
   "phoneNumberRequired": "the Phone Number is required",
-  "phoneNumberExist": "the Phone Number already exist,go to login",
+  "phoneNumberExist": "the Phone Number already exist",
+  "PhoneNumberValid": "Phone number is valid",
   "userNameRequired": "User Name is required",
   "PhoneNumberWrong": "this Phone Not Exit,go to register",
   "userNameExist": "this User Name Aready Exist",
@@ -59,5 +60,6 @@
   "UploadMediaFail": "Coudln't save a Media",
   "DeleteMediaFail": "Delete Photo Fail",
   "NotFoundMedia": "Media is not found",
-  "LicenseExist": "License already exist"
+  "LicenseExist": "License already exist",
+  "InvalidRequest": "Invalid request"
 }

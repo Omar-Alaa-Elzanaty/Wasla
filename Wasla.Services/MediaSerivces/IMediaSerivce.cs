@@ -8,7 +8,7 @@ using Wasla.Model.Helpers;
 
 namespace Wasla.Services.MediaSerivces
 {
-	public interface IMediaSerivces
+	public interface IMediaSerivce
 	{
 		Task<string> AddAsync(IFormFile media);
 		Task<bool> RemoveAsync(string url);

@@ -11,7 +11,13 @@ namespace Wasla.Model.Models
 {
 	public  class User:Account
 	{
-		public string FirstName { get; set; }
+        public User()
+        {
+			PhotoUrl = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fstock.adobe.com%" +
+						"2Fsearch%3Fk%3Dmy%2Bprofile%2Bicon&psig=AOvVaw1qhmyXH-T4qu9HSzWFXi63&ust=1700466263740000" +
+						"&source=images&cd=vfe&ved=0CBIQjRxqFwoTCKjHtM7Iz4IDFQAAAAAdAAAAABAE";
+		}
+        public string FirstName { get; set; }
 		public string LastName { get; set; }
 		public string? PhotoUrl { get; set; }
 		public Gender Gender { get; set; }
