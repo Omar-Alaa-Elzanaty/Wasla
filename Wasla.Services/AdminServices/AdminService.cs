@@ -1,12 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Eventing.Reader;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Wasla.DataAccess;
 using Wasla.Model.Helpers;
 using Wasla.Model.Models;
@@ -74,15 +68,7 @@ namespace Wasla.Services.AdminServices
 						errors += $"{error.Description},";
 					throw new BadRequestException(errors);
 				}
-				result = await _userManager.AddToRoleAsync(organization, Roles.Role_Organization);
-				if (!result.Succeeded)
-				{
-					var errors = string.Empty;
-					foreach (var error in result.Errors)
-						errors += $"{error.Description},";
-					await transaction.RollbackAsync();
-					throw new BadRequestException(errors);
-				}
+				
 				await transaction.CommitAsync();
 			}
 

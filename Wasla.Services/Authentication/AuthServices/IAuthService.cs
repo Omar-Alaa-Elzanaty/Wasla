@@ -8,16 +8,16 @@ using Twilio.Rest.Api.V2010.Account;
 using Wasla.Model.Helpers;
 using Wasla.Model.Models;
 
-namespace Wasla.Services.AuthServices
+namespace Wasla.Services.Authentication.AuthServices
 {
     public interface IAuthService
     {
        // Task<userDto> LoginAsync(LoginDto Input);
-        Task<BaseResponse> RegisterAsync(PassengerRegisterDto Input);
         Task<BaseResponse> OrgnaizationRegisterAsync(OrgRegisterRequestDto request);
         Task<BaseResponse> DriverRegisterAsync(DriverRegisterDto model);
 
 		Task<BaseResponse> SendOtpMessageAsync(string userPhone);
+        Task<BaseResponse> RegisterPassengerAsync(PassengerRegisterDto Input);
         Task<BaseResponse> SendOtpEmailAsync(string userEmail);
 
         Task<BaseResponse> CheckUserNameSimilarity(string input);
