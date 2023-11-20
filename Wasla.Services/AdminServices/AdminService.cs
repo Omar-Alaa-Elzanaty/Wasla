@@ -2,6 +2,7 @@
 using MailKit;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Wasla.DataAccess;
 using Wasla.Model.Helpers;
 using Wasla.Model.Models;
