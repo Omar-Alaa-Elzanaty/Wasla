@@ -10,7 +10,7 @@ namespace Wasla.Model.Helpers
     {
             public const string Role_Admin = "Admin";
             public const string Role_Driver  = "Driver";
-            public const string Role_Rider = "Rider";
+            public const string Role_Rider = "Passenger";
             public const string Role_Organization = "Organization";
     }
 }

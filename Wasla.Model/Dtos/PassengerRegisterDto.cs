@@ -24,7 +24,5 @@ namespace Wasla.Model.Dtos
        
         [Required(ErrorMessage = "userNameRequired")]
         public string UserName { get; set; }
-        [JsonIgnore]
-        public string Role { get; set; } = "Rider";
     }
 }

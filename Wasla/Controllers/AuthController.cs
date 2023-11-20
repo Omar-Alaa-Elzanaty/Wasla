@@ -1,17 +1,10 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Server.IIS.Core;
-using System.Net;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
-using Wasla.Model.Models;
 using Wasla.Services.AdminServices;
-using Wasla.Services.AuthServices;
-using Wasla.Services.Exceptions;
-using Wasla.Services.Exceptions.FilterException;
+using Wasla.Services.Authentication.AuthServices;
 
 namespace Wasla.Api.Controllers
 {
@@ -24,18 +17,25 @@ namespace Wasla.Api.Controllers
         private readonly IAuthService _authservice;
         private readonly BaseResponse _response;
         private readonly IAdminService _adminservice;
-		public AuthController(IMapper mapper, IAuthService authService, IAdminService adminservice)
-		{
-			_mapper = mapper;
-			_authservice = authService;
-			_response = new();
-			_adminservice = adminservice;
-		}
-		//it not accept it as FromRoute make it FromBody and use class SendOtpDto or keep it 
-		//https://localhost:44366/api/Auth/SendMessage?phone=%2B201118499698
-		[HttpGet]
-       // [Route("{phone}")]
-        public async Task<IActionResult> SendMessage([FromQuery] string phone)
+
+        public AuthController(IMapper mapper, IAuthService authService,IAdminService adminservice)
+        {
+            _mapper = mapper;
+            _authservice = authService;
+            _response = new();
+            _adminservice = adminservice;
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> PassengerRegister([FromBody] PassengerRegisterDto adv)
+        {
+            var result = await _authservice.RegisterPassengerAsync(adv);
+            return Ok(result);
+        }
+        //it not accept it as FromRoute make it FromBody and use class SendOtpDto or keep it 
+        //https://localhost:44366/api/Auth/SendMessage?phone=%2B201118499698
+        [HttpGet]
+        public async Task<IActionResult> SendMessage([FromQuery]string phone)
         {
             var messag = await _authservice.SendOtpMessageAsync(phone);
             _response.Data = messag;
@@ -70,13 +70,13 @@ namespace Wasla.Api.Controllers
             var res = await _authservice.CompareOtpAsync(recOtp);
             return Ok(res);
         }
-        [HttpPost("confirmPhone")]
+        [HttpPut("confirmPhone")]
         public async Task<IActionResult> ConfirmPhone([FromBody] ConfirmNumberDto confirmNumber)
         {
             var resualt = await _authservice.ConfirmPhoneAsync(confirmNumber);
             return Ok(resualt);
         }
-        [HttpPost("confirmEmail")]
+        [HttpPut("confirmEmail")]
         public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailDto confirmEmail)
         {
             var resualt = await _authservice.ConfirmEmailAsync(confirmEmail);
