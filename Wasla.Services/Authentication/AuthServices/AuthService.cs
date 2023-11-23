@@ -153,8 +153,8 @@ namespace Wasla.Services.Authentication.AuthServices
 
         public async Task<BaseResponse> DriverRegisterAsync(DriverRegisterDto model)
         {
-            CheckPhoneNumber(Input.PhoneNumber);
-            CheckEmail(Input.Email);
+            CheckPhoneNumber(model.PhoneNumber);
+            CheckEmail(model.Email);
 
             if (await _dbContext.Drivers.AnyAsync(u => u.LicenseNum == model.LicenseNum))
             {
