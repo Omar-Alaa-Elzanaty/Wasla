@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,11 +38,7 @@ namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
             driverResponse.LicenseNum = driver.LicenseNum;
             driverResponse.Orgainzation = driver.Orgainzation;
             driverResponse.Trips = driver.Trips;
-            driverResponse.Rates = driver.Rates;    
-            return driverResponse;
-            // _response.Message = _localization["LoginSuccess"].Value;
+            driverResponse.Rates = driver.Rates; return driverResponse;
         }
-
-
     }
 }

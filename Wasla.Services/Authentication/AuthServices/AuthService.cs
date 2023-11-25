@@ -21,7 +21,6 @@ using Wasla.Services.MediaSerivces;
 using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 using Wasla.Services.Authentication.AuthHelperService.FactorService.IFactory;
-using System.Data;
 using Wasla.Services.EmailServices;
 
 namespace Wasla.Services.Authentication.AuthServices
@@ -253,6 +252,36 @@ namespace Wasla.Services.Authentication.AuthServices
             _response.Message = _localization["EmailConfirmSuccess"].Value;
             return _response;
         }
+        public async Task<BaseResponse> ChangePasswordByPhoneAsync(ChangePasswordDto changePassword)
+        {
+            var user = await getUserByPhone(changePassword.UserName);
+            if (!await _userManager.CheckPasswordAsync(user, changePassword.OldPassword))
+            {
+                throw new BadRequestException(_localization["userOrpasswordNotCorrect"].Value);
+            }
+            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, resetToken, changePassword.NewPassword);
+            if (!result.Succeeded)
+                throw new BadRequestException(_localization["ResetPassword"].Value);
+           
+            _response.Message = _localization["PasswordChanged"].Value;
+            return _response;
+        }
+        public async Task<BaseResponse> ChangePasswordByEmailAsync(ChangePasswordDto changePassword)
+        {
+            var user = await getUserByEmail(changePassword.UserName);
+            if (!await _userManager.CheckPasswordAsync(user, changePassword.OldPassword))
+            {
+                throw new BadRequestException(_localization["userOrpasswordNotCorrect"].Value);
+            }
+            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var result = await _userManager.ResetPasswordAsync(user, resetToken, changePassword.NewPassword);
+            if (!result.Succeeded)
+                throw new BadRequestException(_localization["ResetPassword"].Value);
+
+            _response.Message = _localization["PasswordChanged"].Value;
+            return _response;
+        }
         public async Task<BaseResponse> ResetPasswordByphoneAsync(ResetPasswordDto resetPassword)
         {
             var user = await getUserByPhone(resetPassword.UserName);
@@ -260,6 +289,11 @@ namespace Wasla.Services.Authentication.AuthServices
             var result = await _userManager.ResetPasswordAsync(user, resetToken, resetPassword.NewPassword);
             if (!result.Succeeded)
                 throw new BadRequestException(_localization["ResetPassword"].Value);
+            if(user.PhoneNumberConfirmed==false)
+            {
+                user.PhoneNumberConfirmed = true;
+                await _userManager.UpdateAsync(user);
+            }
             _response.Message = _localization["PasswordChanged"].Value;
             return _response;
         }
@@ -270,6 +304,12 @@ namespace Wasla.Services.Authentication.AuthServices
             var result = await _userManager.ResetPasswordAsync(user, resetToken, resetPassword.NewPassword);
             if (!result.Succeeded)
                 throw new BadRequestException(_localization["ResetPassword"].Value);
+
+            if(user.EmailConfirmed==false)
+            {
+                user.EmailConfirmed = true;
+                await _userManager.UpdateAsync(user);
+            }
             _response.Message = _localization["PasswordChanged"].Value;
             return _response;
         }

@@ -31,6 +31,9 @@ namespace Wasla.Services.Authentication.AuthServices
         Task<BaseResponse> ConfirmEmailAsync(ConfirmEmailDto confirmEmailDto);
         Task <BaseResponse> ResetPasswordByphoneAsync(ResetPasswordDto resetPassword);
         Task<BaseResponse> ResetPasswordByEmailAsync(ResetPasswordDto resetPassword);
+        Task<BaseResponse> ChangePasswordByEmailAsync(ChangePasswordDto changePassword);
+        Task<BaseResponse> ChangePasswordByPhoneAsync(ChangePasswordDto changePassword);
+
 
     }
 }

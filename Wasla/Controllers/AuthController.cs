@@ -8,7 +8,7 @@ using Wasla.Services.Authentication.AuthServices;
 
 namespace Wasla.Api.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]/[Action]")]
     [ApiController]
   
     public class AuthController : ControllerBase
@@ -26,7 +26,7 @@ namespace Wasla.Api.Controllers
             _adminservice = adminservice;
 
         }
-        [HttpPost]
+        [HttpPost("passengerRegister")]
         public async Task<IActionResult> PassengerRegister([FromBody] PassengerRegisterDto adv)
         {
             var result = await _authservice.RegisterPassengerAsync(adv);
@@ -34,7 +34,7 @@ namespace Wasla.Api.Controllers
         }
         //it not accept it as FromRoute make it FromBody and use class SendOtpDto or keep it 
         //https://localhost:44366/api/Auth/SendMessage?phone=%2B201118499698
-        [HttpGet]
+        [HttpGet("sendMessage")]
         public async Task<IActionResult> SendMessage([FromQuery]string phone)
         {
             var messag = await _authservice.SendOtpMessageAsync(phone);
@@ -48,8 +48,8 @@ namespace Wasla.Api.Controllers
             _response.Data = messag;
             return Ok(_response);
         }*/
-        [HttpGet("sendEmail")]
-       [Route("{email}")]
+        [HttpGet]//("sendEmail")]
+       [Route("sendEmail/{email}")]
         public async Task<IActionResult> SendEmail([FromRoute] string email)
         {
             var messag = await _authservice.SendOtpEmailAsync(email);
@@ -62,8 +62,8 @@ namespace Wasla.Api.Controllers
             return Ok(await _authservice.CheckUserNameSimilarity(userName));
         }
 
-        [HttpGet("compareOtp")]
-       [Route("{recOtp}")]
+        [HttpGet]//("compareOtp")]
+       [Route("compareOtp/{recOtp}")]
         public async Task<IActionResult> CompareOtp([FromRoute]string recOtp)
         {
            // var otp = recOtp.UserOtp;
@@ -108,6 +108,19 @@ namespace Wasla.Api.Controllers
         {
             var resualt = await _authservice.ResetPasswordByEmailAsync(resetPassword);
 
+            return Ok(resualt);
+        }
+        [HttpPost("changePasswordByPhone")]
+        public async Task<IActionResult> ChangePasswordByPhone([FromBody] ChangePasswordDto changePassword)
+        {
+            var resualt = await _authservice.ChangePasswordByPhoneAsync(changePassword);
+
+            return Ok(resualt);
+        }
+        [HttpPost("changePasswordByEmail")]
+        public async Task<IActionResult> ChangePasswordByEmail([FromBody] ChangePasswordDto changePassword)
+        {
+            var resualt = await _authservice.ChangePasswordByEmailAsync(changePassword);
             return Ok(resualt);
         }
         [HttpPost("logout")]
