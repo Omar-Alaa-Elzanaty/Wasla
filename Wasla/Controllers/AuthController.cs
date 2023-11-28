@@ -1,14 +1,16 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
 using Wasla.Services.AdminServices;
 using Wasla.Services.Authentication.AuthServices;
+using Wasla.Services.Middleware;
 
 namespace Wasla.Api.Controllers
 {
-    [Route("api/[controller]/[Action]")]
+    [Route("api/[controller]")]
     [ApiController]
   
     public class AuthController : ControllerBase
@@ -17,16 +19,17 @@ namespace Wasla.Api.Controllers
         private readonly IAuthService _authservice;
         private readonly BaseResponse _response;
         private readonly IAdminService _adminservice;
+        private readonly WaslaDb _context;
 
-        public AuthController(IMapper mapper, IAuthService authService,IAdminService adminservice)
-        {
-            _mapper = mapper;
-            _authservice = authService;
-            _response = new();
-            _adminservice = adminservice;
-
-        }
-        [HttpPost("passengerRegister")]
+		public AuthController(IMapper mapper, IAuthService authService, IAdminService adminservice, WaslaDb context)
+		{
+			_mapper = mapper;
+			_authservice = authService;
+			_response = new();
+			_adminservice = adminservice;
+			_context = context;
+		}
+		[HttpPost("passengerRegister")]
         public async Task<IActionResult> PassengerRegister([FromBody] PassengerRegisterDto adv)
         {
             var result = await _authservice.RegisterPassengerAsync(adv);
@@ -146,6 +149,7 @@ namespace Wasla.Api.Controllers
 			return Ok(await _authservice.CheckPhoneNumberAsync(phoneNumber));
 		}
 		[HttpGet("checkEmail")]
+        //[ServiceFilter(typeof(EmployeeAuthFilter))]
 		public async Task<IActionResult> CheckEmail(string email)
 		{
             return Ok(await _authservice.CheckEmailAsync(email));

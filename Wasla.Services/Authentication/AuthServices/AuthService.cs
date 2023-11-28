@@ -73,33 +73,40 @@ namespace Wasla.Services.Authentication.AuthServices
             _baseFactory = baseFactory;
         }
 
-        private void CheckPhoneNumber(string PhoneNumber)
+        private async Task<bool> CheckPhoneNumber(string PhoneNumber)
         {
             if (await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == PhoneNumber) is not null)
             {
                 throw new BadRequestException(_localization["phoneNumberExist"].Value);
             }
+            return false;
         }
-        private void CheckUserName(string UserName)
+        private async Task<bool> CheckUserName(string UserName)
         {
             if (await _userManager.FindByNameAsync(UserName) is not null)
             {
                 throw new BadRequestException(_localization["userNameExist"].Value);
             }
+            return false;
         }
-        private void CheckEmail(string Email)
+        private async Task<bool> CheckEmail(string Email)
         {
-            if (await _userManager.FindByNameAsync(Email) is not null)
+            if (await _userManager.FindByEmailAsync(Email) is not null)
             {
-                throw new BadRequestException(_localization["userNameExist"].Value);
+                throw new BadRequestException(_localization["EmailExist"].Value);
             }
+            return false;
         }
 
         public async Task<BaseResponse> RegisterPassengerAsync(PassengerRegisterDto Input)
         {
-            CheckPhoneNumber(Input.PhoneNumber);
-            CheckUserName(Input.UserName);
-            if(Input.Email != null) CheckEmail(Input.Email);
+            _ = await CheckPhoneNumber(Input.PhoneNumber);
+            _ = await CheckUserName(Input.UserName);
+
+            if (Input.Email != null)
+            {
+                await CheckEmail(Input.Email);
+            }
 
             var user = _mapper.Map<Customer>(Input);
             var result = await _userManager.CreateAsync(user, Input.Password);
@@ -123,7 +130,7 @@ namespace Wasla.Services.Authentication.AuthServices
             _ = CheckOtp(request.Otp);
 
             if (await _dbContext.OrganizationsRegisters.AnyAsync(o => o.Email == request.Email)
-                || CheckEmail(request.Email))
+                ||await CheckEmail(request.Email))
             {
                 throw new BadRequestException(_localization["EmailExist"].Value);
             }
@@ -133,7 +140,7 @@ namespace Wasla.Services.Authentication.AuthServices
                 throw new BadRequestException(_localization["OrganizationNameExist"].Value);
             }
 
-            if (CheckPhoneNumber(request.PhoneNumber)
+            if (await CheckPhoneNumber(request.PhoneNumber)
                 || await _dbContext.OrganizationsRegisters.AnyAsync(o => o.PhoneNumber == request.PhoneNumber))
             {
                 throw new BadRequestException(_localization["phoneNumberExist"]);
