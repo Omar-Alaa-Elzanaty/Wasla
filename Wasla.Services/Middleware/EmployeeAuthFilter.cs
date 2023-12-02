@@ -25,6 +25,7 @@ namespace Wasla.Services.Middleware
 		public void OnActionExecuting(ActionExecutingContext context)
 		{
 			var userId = context.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+			var user = _context.UserClaims.Where(c=>c.ClaimType==" ").ToList();
 			var x = context.HttpContext.Request.Headers["FunctionCode"];
             Console.WriteLine("Start query");
 			var z = _context.OrganizationsRegisters.Any();

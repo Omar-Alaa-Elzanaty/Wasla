@@ -138,7 +138,8 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _authservice.OrgnaizationRegisterAsync(request));
         }
-        [HttpGet("confrimOrganizationAccount")]
+        [HttpGet(Name ="confrimOrganizationAccount")]
+        [Route("{id}")]
         public async Task<IActionResult> ConfrimOrganizationAccount([FromRoute] int id)
         {
             return Ok(await _adminservice.ConfirmOrgnaizationRequestAsync(id));
@@ -149,7 +150,7 @@ namespace Wasla.Api.Controllers
 			return Ok(await _authservice.CheckPhoneNumberAsync(phoneNumber));
 		}
 		[HttpGet("checkEmail")]
-        //[ServiceFilter(typeof(EmployeeAuthFilter))]
+        [ServiceFilter(typeof(EmployeeAuthFilter))]
 		public async Task<IActionResult> CheckEmail(string email)
 		{
             return Ok(await _authservice.CheckEmailAsync(email));
