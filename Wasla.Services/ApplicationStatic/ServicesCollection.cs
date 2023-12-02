@@ -22,7 +22,6 @@ namespace Wasla.Services.ApplicationStatic
             services.AddScoped<IInitializer, Initializer>();
             //
             services.AddScoped<ValidationFilterAttribute>();
-            services.AddScoped<EmployeeAuthFilter>();
             services.AddScoped<IBaseFactoryResponse, BaseFactoryResponse>();
 
 

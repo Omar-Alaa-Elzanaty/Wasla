@@ -29,7 +29,7 @@ namespace Wasla.Api.Controllers
 			_adminservice = adminservice;
 			_context = context;
 		}
-		[HttpPost("passengerRegister")]
+        [HttpPost("passengerRegister")]
         public async Task<IActionResult> PassengerRegister([FromBody] PassengerRegisterDto adv)
         {
             var result = await _authservice.RegisterPassengerAsync(adv);
@@ -38,21 +38,21 @@ namespace Wasla.Api.Controllers
         //it not accept it as FromRoute make it FromBody and use class SendOtpDto or keep it 
         //https://localhost:44366/api/Auth/SendMessage?phone=%2B201118499698
         [HttpGet("sendMessage")]
-        public async Task<IActionResult> SendMessage([FromQuery]string phone)
+        public async Task<IActionResult> SendMessage([FromQuery] string phone)
         {
             var messag = await _authservice.SendOtpMessageAsync(phone);
             _response.Data = messag;
             return Ok(_response);
         }
-     /*   [HttpPost]
-        public async Task<IActionResult> SendMessage([FromBody] SendOtpDto input)
-        {
-            var messag = await _authservice.SendOtpMessageAsync(input.SendData);
-            _response.Data = messag;
-            return Ok(_response);
-        }*/
+        /*   [HttpPost]
+           public async Task<IActionResult> SendMessage([FromBody] SendOtpDto input)
+           {
+               var messag = await _authservice.SendOtpMessageAsync(input.SendData);
+               _response.Data = messag;
+               return Ok(_response);
+           }*/
         [HttpGet]//("sendEmail")]
-       [Route("sendEmail/{email}")]
+        [Route("sendEmail/{email}")]
         public async Task<IActionResult> SendEmail([FromRoute] string email)
         {
             var messag = await _authservice.SendOtpEmailAsync(email);
@@ -66,10 +66,10 @@ namespace Wasla.Api.Controllers
         }
 
         [HttpGet]//("compareOtp")]
-       [Route("compareOtp/{recOtp}")]
-        public async Task<IActionResult> CompareOtp([FromRoute]string recOtp)
+        [Route("compareOtp/{recOtp}")]
+        public async Task<IActionResult> CompareOtp([FromRoute] string recOtp)
         {
-           // var otp = recOtp.UserOtp;
+            // var otp = recOtp.UserOtp;
             var res = await _authservice.CompareOtpAsync(recOtp);
             return Ok(res);
         }
@@ -87,9 +87,9 @@ namespace Wasla.Api.Controllers
         }
         [HttpPost("RefreshToken")]
         [Authorize]
-        public async Task<IActionResult> RefreshToken([FromBody]RefTokenDto refToken)
+        public async Task<IActionResult> RefreshToken([FromBody] RefTokenDto refToken)
         {
-           
+
             var resualt = await _authservice.RefreshTokenAsync(refToken);
             return Ok(resualt);
         }
@@ -103,7 +103,7 @@ namespace Wasla.Api.Controllers
         public async Task<IActionResult> ResetPasswordByPhone([FromBody] ResetPasswordDto resetPassword)
         {
             var resualt = await _authservice.ResetPasswordByphoneAsync(resetPassword);
-           
+
             return Ok(resualt);
         }
         [HttpPost("resetPasswordByEmail")]
@@ -127,7 +127,7 @@ namespace Wasla.Api.Controllers
             return Ok(resualt);
         }
         [HttpPost("logout")]
-       [Authorize(AuthenticationSchemes = "Bearer")]
+        [Authorize(AuthenticationSchemes = "Bearer")]
         public async Task<IActionResult> Logout(RefTokenDto token)
         {
             var resault = await _authservice.LogoutAsync(token);
@@ -138,22 +138,20 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _authservice.OrgnaizationRegisterAsync(request));
         }
-        [HttpGet(Name ="confrimOrganizationAccount")]
-        [Route("{id}")]
-        public async Task<IActionResult> ConfrimOrganizationAccount([FromRoute] int id)
+        [HttpGet("confrimOrganizationAccount/{id}")]
+        public async Task<IActionResult> ConfrimOrganizationAccount(int id)
         {
             return Ok(await _adminservice.ConfirmOrgnaizationRequestAsync(id));
         }
-		[HttpGet("checkPhoneNumber")]
-		public async Task<IActionResult> CheckPhoneNumber(string phoneNumber)
-		{
-			return Ok(await _authservice.CheckPhoneNumberAsync(phoneNumber));
-		}
-		[HttpGet("checkEmail")]
-        [ServiceFilter(typeof(EmployeeAuthFilter))]
-		public async Task<IActionResult> CheckEmail(string email)
-		{
+        [HttpGet("checkPhoneNumber/phoneNumber")]
+        public async Task<IActionResult> CheckPhoneNumber(string phoneNumber)
+        {
+            return Ok(await _authservice.CheckPhoneNumberAsync(phoneNumber));
+        }
+        [HttpGet("checkEmail/email")]
+        public async Task<IActionResult> CheckEmail(string email)
+        {
             return Ok(await _authservice.CheckEmailAsync(email));
-		}
-	}
+        }
+    }
 }
