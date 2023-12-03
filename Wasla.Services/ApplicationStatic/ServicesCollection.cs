@@ -9,6 +9,7 @@ using Wasla.Services.Authentication.AuthHelperService.FactorService.IFactory;
 using Wasla.Services.Authentication.AuthHelperService.FactorService.Factory;
 using Microsoft.Extensions.DependencyInjection;
 using Wasla.Services.EmailServices;
+using Wasla.Services.Middleware;
 
 namespace Wasla.Services.ApplicationStatic
 {
