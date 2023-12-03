@@ -69,6 +69,11 @@ namespace Wasla.Services.Middleware.ExceptionMiddleware
                 response.Message= ex.Message;
                 response.Status = HttpStatusCode.NotImplemented;
             }
+            else if (exceptionType == typeof(ForbiddenException))
+            {
+                response.Message = ex.Message;
+                response.Status = HttpStatusCode.Forbidden;
+            }
             else
             {
                 response.Message = ex.Message;
