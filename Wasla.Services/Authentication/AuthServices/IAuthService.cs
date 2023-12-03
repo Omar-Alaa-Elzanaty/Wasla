@@ -33,7 +33,10 @@ namespace Wasla.Services.Authentication.AuthServices
         Task<BaseResponse> ResetPasswordByEmailAsync(ResetPasswordDto resetPassword);
         Task<BaseResponse> ChangePasswordByEmailAsync(ChangePasswordDto changePassword);
         Task<BaseResponse> ChangePasswordByPhoneAsync(ChangePasswordDto changePassword);
-
-
+        Task<BaseResponse> CreateOrgRole(AddOrgAdmRole addRole);
+        Task<BaseResponse> GetOrgRoles(string userName);
+        Task<BaseResponse> GetRolePermissions(string roleName);
+        Task<BaseResponse> GetAllPermissionsAsync();
+        Task<BaseResponse> AddRolePermissions(CreateRolePermissions rolePermissions);
     }
 }

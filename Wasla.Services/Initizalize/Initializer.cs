@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Wasla.DataAccess;
-using Wasla.Model.Helpers;
+using Wasla.Model.Helpers.Statics;
 
 namespace Wasla.Services.Initizalize
 {

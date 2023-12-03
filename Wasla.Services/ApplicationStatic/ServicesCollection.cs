@@ -23,9 +23,7 @@ namespace Wasla.Services.ApplicationStatic
             //
             services.AddScoped<ValidationFilterAttribute>();
             services.AddScoped<IBaseFactoryResponse, BaseFactoryResponse>();
-
-
-
+           
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IMediaSerivce,MediaService>();
             services.AddScoped<IMailServices, MailServices>();
