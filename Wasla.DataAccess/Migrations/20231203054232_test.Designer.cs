@@ -12,8 +12,8 @@ using Wasla.DataAccess;
 namespace Wasla.DataAccess.Migrations
 {
     [DbContext(typeof(WaslaDb))]
-    [Migration("20231118145026_auth")]
-    partial class auth
+    [Migration("20231203054232_test")]
+    partial class test
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,6 +27,21 @@ namespace Wasla.DataAccess.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("AdvertismentVehicle", b =>
+                {
+                    b.Property<int>("AdvertismentId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("BussesId")
+                        .HasColumnType("int");
+
+                    b.HasKey("AdvertismentId", "BussesId");
+
+                    b.HasIndex("BussesId");
+
+                    b.ToTable("AdvertismentVehicle");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -429,6 +444,27 @@ namespace Wasla.DataAccess.Migrations
                     b.ToTable("Reservations");
                 });
 
+            modelBuilder.Entity("Wasla.Model.Models.Station", b =>
+                {
+                    b.Property<string>("OrganizationId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("Langtitude")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Latitude")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("OrganizationId", "Name");
+
+                    b.ToTable("Station");
+                });
+
             modelBuilder.Entity("Wasla.Model.Models.Trip", b =>
                 {
                     b.Property<int>("Id")
@@ -474,8 +510,7 @@ namespace Wasla.DataAccess.Migrations
 
                     b.HasIndex("OrganizationId");
 
-                    b.HasIndex("VehicleId")
-                        .IsUnique();
+                    b.HasIndex("VehicleId");
 
                     b.ToTable("Trips");
                 });
@@ -507,14 +542,23 @@ namespace Wasla.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<int?>("AdsId")
+                    b.Property<int>("AdsSidesNumber")
                         .HasColumnType("int");
 
-                    b.Property<int?>("AdvertismentId")
-                        .HasColumnType("int");
+                    b.Property<string>("Brand")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Capcity")
                         .HasColumnType("int");
+
+                    b.Property<string>("Category")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("LicenseNumber")
                         .HasColumnType("int");
@@ -529,16 +573,7 @@ namespace Wasla.DataAccess.Migrations
                     b.Property<float>("PackageCapcity")
                         .HasColumnType("real");
 
-                    b.Property<int?>("TripId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("AdvertismentId");
 
                     b.HasIndex("OrganizationId")
                         .IsUnique()
@@ -649,6 +684,21 @@ namespace Wasla.DataAccess.Migrations
                         .HasFilter("[OrganizationId] IS NOT NULL");
 
                     b.ToTable("Drivers", "Account");
+                });
+
+            modelBuilder.Entity("AdvertismentVehicle", b =>
+                {
+                    b.HasOne("Wasla.Model.Models.Advertisment", null)
+                        .WithMany()
+                        .HasForeignKey("AdvertismentId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Wasla.Model.Models.Vehicle", null)
+                        .WithMany()
+                        .HasForeignKey("BussesId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -784,6 +834,15 @@ namespace Wasla.DataAccess.Migrations
                     b.Navigation("Trip");
                 });
 
+            modelBuilder.Entity("Wasla.Model.Models.Station", b =>
+                {
+                    b.HasOne("Wasla.Model.Models.Organization", null)
+                        .WithMany("Stations")
+                        .HasForeignKey("OrganizationId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
             modelBuilder.Entity("Wasla.Model.Models.Trip", b =>
                 {
                     b.HasOne("Wasla.Model.Models.Driver", "Driver")
@@ -795,20 +854,20 @@ namespace Wasla.DataAccess.Migrations
                     b.HasOne("Wasla.Model.Models.Organization", "Organization")
                         .WithMany("TripList")
                         .HasForeignKey("OrganizationId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
-                    b.HasOne("Wasla.Model.Models.Vehicle", "vehicle")
-                        .WithOne("Trip")
-                        .HasForeignKey("Wasla.Model.Models.Trip", "VehicleId")
-                        .OnDelete(DeleteBehavior.NoAction)
+                    b.HasOne("Wasla.Model.Models.Vehicle", "Vehicle")
+                        .WithMany("Trips")
+                        .HasForeignKey("VehicleId")
+                        .OnDelete(DeleteBehavior.Restrict)
                         .IsRequired();
 
                     b.Navigation("Driver");
 
                     b.Navigation("Organization");
 
-                    b.Navigation("vehicle");
+                    b.Navigation("Vehicle");
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.UserFollow", b =>
@@ -832,16 +891,10 @@ namespace Wasla.DataAccess.Migrations
 
             modelBuilder.Entity("Wasla.Model.Models.Vehicle", b =>
                 {
-                    b.HasOne("Wasla.Model.Models.Advertisment", "Advertisment")
-                        .WithMany("Busses")
-                        .HasForeignKey("AdvertismentId");
-
                     b.HasOne("Wasla.Model.Models.Organization", "Orgainzation")
                         .WithOne()
                         .HasForeignKey("Wasla.Model.Models.Vehicle", "OrganizationId")
                         .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Advertisment");
 
                     b.Navigation("Orgainzation");
                 });
@@ -908,11 +961,6 @@ namespace Wasla.DataAccess.Migrations
                     b.Navigation("Orgainzation");
                 });
 
-            modelBuilder.Entity("Wasla.Model.Models.Advertisment", b =>
-                {
-                    b.Navigation("Busses");
-                });
-
             modelBuilder.Entity("Wasla.Model.Models.Trip", b =>
                 {
                     b.Navigation("Packages");
@@ -924,12 +972,13 @@ namespace Wasla.DataAccess.Migrations
                 {
                     b.Navigation("Rates");
 
-                    b.Navigation("Trip")
-                        .IsRequired();
+                    b.Navigation("Trips");
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.Organization", b =>
                 {
+                    b.Navigation("Stations");
+
                     b.Navigation("TripList");
                 });
 

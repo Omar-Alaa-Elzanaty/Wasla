@@ -16,6 +16,7 @@
   //errors
   "phoneNumberExist": "رقم الهاتف موجود مسبقا",
   "userNameExist": "اسم المستخدم موجود مسبقا",
+  "VehicleExist": "المركبة موجودة بالفعل",
   "PhoneNumberWrong": "رقم الهاتف غير موجود,يمكنك تسجيل الدخول",
   "EmailExist": "الايميل موجود مسبقا",
   "RegisterFail": "فشل تسجيل البيانات",

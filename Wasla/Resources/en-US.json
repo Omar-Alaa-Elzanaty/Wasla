@@ -15,6 +15,7 @@
   //errors
   "EmailExist": "this E-mail already Exist",
   "PhoneNumberWrong": "this Phone Not Exit,go to register",
+  "VehicleExist": "Vehicle already Exist",
   "userNameExist": "this User Name Aready Exist",
   "phoneNumberExist": "the Phone Number already exist",
   "RegisterFaild": "Register Failed",

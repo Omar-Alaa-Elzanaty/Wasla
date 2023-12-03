@@ -10,6 +10,7 @@ using Wasla.Services.Authentication.AuthHelperService.FactorService.Factory;
 using Microsoft.Extensions.DependencyInjection;
 using Wasla.Services.EmailServices;
 using Wasla.Services.Middleware;
+using Wasla.Services.OrganizationSerivces;
 
 namespace Wasla.Services.ApplicationStatic
 {
@@ -29,6 +30,7 @@ namespace Wasla.Services.ApplicationStatic
             services.AddScoped<IAdminService, AdminService>();
             services.AddScoped<IMediaSerivce,MediaService>();
             services.AddScoped<IMailServices, MailServices>();
+            services.AddScoped<IOrganizationService,OrganizationSerivce>();
          
         }
     }

@@ -16,10 +16,7 @@ namespace Wasla.DataAccess.ModelsConfig
 			builder.HasOne(t=>t.Organization)
 				.WithMany(i=>i.TripList)
 				.HasForeignKey(t=>t.OrganizationId)
-				.OnDelete(DeleteBehavior.NoAction);
-			builder.HasOne(t=>t.vehicle)
-				.WithOne(v=>v.Trip)
-				.HasForeignKey<Trip>(t=>t.VehicleId).OnDelete(DeleteBehavior.NoAction);
+				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
 }
