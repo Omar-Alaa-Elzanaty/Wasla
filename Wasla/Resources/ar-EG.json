@@ -45,7 +45,7 @@
   "errorInSendMsg": "حدث خطا في ارسال الرساله",
   "errorInSendEmail": "خطا في ارسال الايميل",
   "roleNotFound": "لم يتم العثور علي هذا role",
-
+  "RoleAlreadyExsit": "موحودع بالفعل",
   //success
 
   "PhoneNumberValid": "رقم الهاتف صالح للاستخدام",
@@ -62,6 +62,10 @@
   "SendMsgSuccess": "تم ارسال الرساله بنجاح",
   "LoginSuccess": "تم تسجيل الدخول بنجاح",
   "EmailInOrgRegister": "هذا الحساب لم يتم تاكيده بعد",
-  "OrganizationSuccessRequest": "طلبك تحت المراجعة"
-
+  "OrganizationSuccessRequest": "طلبك تحت المراجعة",
+  "AddRolePermission": "تم اضافه التصريحات بنجاح",
+  "getPermissionsRoleSuccess": "تم استدعاء التصريحات لهذا الدور",
+  "GetAllPermissions": "تم استدعاء جميع تصريحات المؤسسه",
+  "getOrgRoles": " Roles تم استدعاء جميه ",
+  "CreateOrgRoleSuccess": "تم انشاء الدور للمؤسسه بنجاح"
 }

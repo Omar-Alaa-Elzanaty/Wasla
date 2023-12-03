@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Localization;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Globalization;
@@ -13,8 +12,6 @@ using Wasla.DataAccess.AutoMapping;
 using Wasla.Model.Helpers;
 using Wasla.Model.Models;
 using Wasla.Services.ApplicationStatic;
-using Wasla.Services.Authentication.AuthHelperService.FactorService.Factory;
-using Wasla.Services.Authentication.AuthHelperService.FactorService.IFactory;
 using Wasla.Services.Exceptions.FilterException;
 using Wasla.Services.Initizalize;
 using Wasla.Services.MultLanguageService.JsonLocalizer;
@@ -114,7 +111,8 @@ namespace Wasla
 			builder.Services.AddControllers();
 			builder.Services.AddAutoMapper(typeof(AuthAutoMapper));
 			builder.Services.AddScoped<ValidationFilterAttribute>();
-			builder.Services.AddCors();
+
+            builder.Services.AddCors();
             builder.Services.AddAuthorization();
 
             var app = builder.Build();

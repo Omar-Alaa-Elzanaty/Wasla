@@ -22,6 +22,7 @@ using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 using Wasla.Services.Authentication.AuthHelperService.FactorService.IFactory;
 using Wasla.Services.EmailServices;
+using Wasla.Model.Helpers.Statics;
 
 namespace Wasla.Services.Authentication.AuthServices
 {
@@ -35,11 +36,9 @@ namespace Wasla.Services.Authentication.AuthServices
         private readonly IMapper _mapper;
         private readonly IStringLocalizer<AuthService> _localization;
         private readonly BaseResponse _response;
-        private readonly SmtpSettings _smtpSettings;
         private readonly IBaseFactoryResponse _baseFactory;
         private readonly WaslaDb _dbContext;
         private readonly IMediaSerivce _mediaServices;
-        private readonly ILogger<AuthService> _logger;
         private readonly IMailServices _mailService;
 
         public AuthService
@@ -51,11 +50,9 @@ namespace Wasla.Services.Authentication.AuthServices
             IMapper mapper,
             IOptions<TwilioSetting> twilio,
             IHttpContextAccessor httpContextAccessor,
-            IOptions<SmtpSettings> smtpSettings,
             IStringLocalizer<AuthService> localization,
             IMediaSerivce mediaSerivces,
-            WaslaDb dbContext,
-            ILogger<AuthService> logger)
+            WaslaDb dbContext)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -65,10 +62,8 @@ namespace Wasla.Services.Authentication.AuthServices
             _twilio = twilio.Value;
             _localization = localization;
             _response = new();
-            _smtpSettings = smtpSettings.Value;
             _dbContext = dbContext;
             _mediaServices = mediaSerivces;
-            _logger = logger;
             _mediaServices = mediaSerivces;
             _baseFactory = baseFactory;
         }
@@ -411,7 +406,60 @@ namespace Wasla.Services.Authentication.AuthServices
 
 			return _response;
 		}
-		private async Task<bool> SendMessage(string sendOtpDto, string msg)
+        public async Task<BaseResponse> CreateOrgRole(AddOrgAdmRole addRole)
+        {
+            var role = "Org_" + addRole.AdminUserName + "_" + addRole.RoleName;
+            if (await _roleManager.RoleExistsAsync(role))
+            throw new BadHttpRequestException(_localization["RoleAlreadyExsit"].Value); 
+            var newRole = new IdentityRole(role);
+            var result = await _roleManager.CreateAsync(newRole);
+            _response.Data = result;
+            _response.Message = _localization["CreateOrgRoleSuccess"].Value;
+            return _response;
+        }
+        public async Task<BaseResponse> GetOrgRoles(string userName)
+        {
+            var preRole = "Org_" + userName;
+            var Roles = _roleManager.Roles
+           .Where(r => r.Name.StartsWith(preRole)).Select(r =>new { r.Id, r.Name })
+           .ToList();
+            _response.Data = Roles;
+            _response.Message = _localization["getOrgRoles"].Value;
+            return _response;
+        }
+        public async Task<BaseResponse> GetAllPermissionsAsync()
+        {
+            var res= OrgPermissions.GenerateAllPermissions();
+            _response.Data = res;
+            _response.Message = _localization["GetAllPermissions"].Value;
+            return _response;
+        }
+       public async Task<BaseResponse> GetRolePermissions(string roleName)
+        {
+            var role =await _roleManager.FindByNameAsync(roleName);
+            if (role == null)
+              throw new NotFoundException(_localization["roleNotFound"].Value);
+            List<string> roleClaims = _roleManager.GetClaimsAsync(role).Result.Select(c => c.Value).ToList();
+            _response.Data = roleClaims;
+            _response.Message = _localization["getPermissionsRoleSuccess"].Value;
+            return _response;
+        }
+        public async Task<BaseResponse> AddRolePermissions(CreateRolePermissions rolePermissions)
+        {
+            var role = await _roleManager.FindByIdAsync(rolePermissions.RoleId);
+            if (role == null)
+                throw new NotFoundException(_localization["roleNotFound"].Value);
+            var roleClaims = await _roleManager.GetClaimsAsync(role);
+               foreach (var claim in roleClaims)
+                await _roleManager.RemoveClaimAsync(role, claim);
+              var permissions = rolePermissions.RolePermissions;
+               foreach (var permission in permissions)
+                await _roleManager.AddClaimAsync(role, new Claim(PermissionsName.Org_Permission, permission));
+            _response.Data = permissions;
+            _response.Message = _localization["AddRolePermission"].Value;
+            return _response;
+        }
+        private async Task<bool> SendMessage(string sendOtpDto, string msg)
         {
             try
             {
@@ -438,7 +486,6 @@ namespace Wasla.Services.Authentication.AuthServices
             }
             return true;
         }
-       
         private async Task<string> GenerateOtp()
         {
             var random = new Random();
@@ -596,5 +643,6 @@ namespace Wasla.Services.Authentication.AuthServices
             };
             _httpContextAccessor.HttpContext.Response.Cookies.Append("storeOtp", otp, cookieOptions);
         }
+ 
     }
 }

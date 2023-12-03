@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Localization;
 using Wasla.DataAccess;
 using Wasla.Model.Helpers;
+using Wasla.Model.Helpers.Statics;
 using Wasla.Services.Authentication.AuthHelperService.FactorService.IFactory;
 using Wasla.Services.Exceptions;
 
