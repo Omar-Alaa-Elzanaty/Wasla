@@ -19,12 +19,30 @@ namespace Wasla.Api.Controllers
 		{
 			_orgService = organizationService;
 		}
-		[HttpPost("vehicle/addVehicle")]
-		public async Task<IActionResult> AddVehicle([FromForm] AddVehicleDto model)
+		[HttpPost("vehicle/add")]
+		public async Task<IActionResult> AddVehicle([FromForm] VehicleDto model)
 		{
 			var accId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
 			return Ok(await _orgService.AddVehicleAsync(model, accId??""));
+		}
+		[HttpPut("vehicle/update/{vehicleId}")]
+		public async Task<IActionResult> UpdateVehicle(int vehicleId,[FromForm]VehicleDto model)
+		{
+
+			return Ok(await _orgService.UpdateVehicleAsync(model, vehicleId));
+		}
+		[HttpDelete("vehicle/delete")]
+		public async Task<IActionResult>DeleteVehicle(int vehicleId)
+		{
+			return Ok(await _orgService.DeleteVehicle(vehicleId));
+		}
+		[HttpPost("addDriver")]
+		public async Task<IActionResult> AddDriver([FromForm]OrgDriverDto model)
+		{
+			var orgId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+			return Ok(await _orgService.AddDriver(model,orgId));
 		}
 		[HttpGet("vehicle/vehicleAnalysis")]
 		public async Task<IActionResult> VehicleAnalysis()
@@ -32,12 +50,6 @@ namespace Wasla.Api.Controllers
 			var accId=User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
 			return Ok(await _orgService.VehicleAnalysisAsync(accId??""));
-		}
-		[HttpPost("addDriver")]
-		public async Task<IActionResult> AddDriver(OrgDriverDto model)
-		{
-
-			return Ok();
 		}
 	}
 }

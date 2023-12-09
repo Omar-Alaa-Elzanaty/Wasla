@@ -80,19 +80,19 @@ namespace Wasla.DataAccess.Migrations
                 name: "OrganizationsRegisters",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    RequestId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LogoUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     WebSiteLink = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrganizationsRegisters", x => x.Id);
+                    table.PrimaryKey("PK_OrganizationsRegisters", x => x.RequestId);
                 });
 
             migrationBuilder.CreateTable(
@@ -376,8 +376,9 @@ namespace Wasla.DataAccess.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     LicenseImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LicenseNum = table.Column<int>(type: "int", nullable: false),
-                    OrganizationId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    LicenseNum = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrganizationId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    NationalId = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -599,6 +600,12 @@ namespace Wasla.DataAccess.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Accounts_Email",
+                schema: "Account",
+                table: "Accounts",
+                column: "Email");
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 schema: "Account",
                 table: "Accounts",
@@ -621,9 +628,7 @@ namespace Wasla.DataAccess.Migrations
                 name: "IX_Drivers_OrganizationId",
                 schema: "Account",
                 table: "Drivers",
-                column: "OrganizationId",
-                unique: true,
-                filter: "[OrganizationId] IS NOT NULL");
+                column: "OrganizationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Packages_TripId",

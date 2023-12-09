@@ -14,6 +14,7 @@
   "LicenseImageFileRequire": "صوره الرخصه مطلوبه",
   "LicenseNumRequire": "رقم الرخصه مطلوب",
   //errors
+  "AccountExist": "المستخدم موجود مسبقا",
   "phoneNumberExist": "رقم الهاتف موجود مسبقا",
   "userNameExist": "اسم المستخدم موجود مسبقا",
   "VehicleExist": "المركبة موجودة بالفعل",
@@ -46,6 +47,7 @@
   "errorInSendEmail": "خطا في ارسال الايميل",
   "roleNotFound": "لم يتم العثور علي هذا role",
   "RoleAlreadyExsit": "موحودع بالفعل",
+  "ObjectNotFound": "لم يتم العثور على العنصر",
   //success
 
   "PhoneNumberValid": "رقم الهاتف صالح للاستخدام",
@@ -67,5 +69,6 @@
   "getPermissionsRoleSuccess": "تم استدعاء التصريحات لهذا الدور",
   "GetAllPermissions": "تم استدعاء جميع تصريحات المؤسسه",
   "getOrgRoles": " Roles تم استدعاء جميه ",
-  "CreateOrgRoleSuccess": "تم انشاء الدور للمؤسسه بنجاح"
+  "CreateOrgRoleSuccess": "تم انشاء الدور للمؤسسه بنجاح",
+  "RemovedSuccessfully": "تم الحذف بنجاح"
 }

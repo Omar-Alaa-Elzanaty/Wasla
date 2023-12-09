@@ -15,11 +15,6 @@ namespace Wasla.DataAccess.ModelsConfig
 		public void Configure(EntityTypeBuilder<Driver> builder)
 		{
 			builder.ToTable("Drivers", "Account");
-			builder.HasOne(d=>d.Orgainzation)
-				.WithOne()
-				.HasForeignKey<Driver>(i=>i.OrganizationId)
-				.OnDelete(DeleteBehavior.NoAction);
-
 		}
 	}
 }

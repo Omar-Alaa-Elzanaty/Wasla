@@ -227,6 +227,8 @@ namespace Wasla.DataAccess.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Email");
+
                     b.HasIndex("NormalizedEmail")
                         .HasDatabaseName("EmailIndex");
 
@@ -327,11 +329,11 @@ namespace Wasla.DataAccess.Migrations
 
             modelBuilder.Entity("Wasla.Model.Models.OrganizationRegisterRequest", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("RequestId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("RequestId"));
 
                     b.Property<string>("Address")
                         .IsRequired()
@@ -341,7 +343,7 @@ namespace Wasla.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ImageUrl")
+                    b.Property<string>("LogoUrl")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -360,7 +362,7 @@ namespace Wasla.DataAccess.Migrations
                     b.Property<string>("WebSiteLink")
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("Id");
+                    b.HasKey("RequestId");
 
                     b.ToTable("OrganizationsRegisters");
                 });
@@ -670,15 +672,17 @@ namespace Wasla.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("LicenseNum")
-                        .HasColumnType("int");
+                    b.Property<string>("LicenseNum")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NationalId")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("OrganizationId")
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasIndex("OrganizationId")
-                        .IsUnique()
-                        .HasFilter("[OrganizationId] IS NOT NULL");
+                    b.HasIndex("OrganizationId");
 
                     b.ToTable("Drivers", "Account");
                 });
@@ -951,9 +955,8 @@ namespace Wasla.DataAccess.Migrations
                         .IsRequired();
 
                     b.HasOne("Wasla.Model.Models.Organization", "Orgainzation")
-                        .WithOne()
-                        .HasForeignKey("Wasla.Model.Models.Driver", "OrganizationId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .WithMany("Drivers")
+                        .HasForeignKey("OrganizationId");
 
                     b.Navigation("Orgainzation");
                 });
@@ -974,6 +977,8 @@ namespace Wasla.DataAccess.Migrations
 
             modelBuilder.Entity("Wasla.Model.Models.Organization", b =>
                 {
+                    b.Navigation("Drivers");
+
                     b.Navigation("Stations");
 
                     b.Navigation("TripList");

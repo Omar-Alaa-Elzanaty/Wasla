@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Localization;
 using Microsoft.Identity.Client;
 using System;
@@ -17,7 +18,6 @@ namespace Wasla.Services.MediaSerivces
     {
         private readonly IWebHostEnvironment _host;
 		private readonly StringBuilder _defaultPath;
-		private readonly string _fileName;
 		private readonly IStringLocalizer<IMediaSerivce> _localization;
 
 		bool ImageConstrains(IFormFile extension)
@@ -38,37 +38,40 @@ namespace Wasla.Services.MediaSerivces
 		{
 			_host = host;
 			_defaultPath = new StringBuilder(@$"{contextAccessor.HttpContext?.Request.Scheme}://{contextAccessor?.HttpContext?.Request.Host}/FOLDER/");
-			_fileName = Guid.NewGuid().ToString();
 			_localization = localization;
 		}
 		public async Task<string> AddAsync(IFormFile media)
         {
 			string RootPath = _host.WebRootPath;
+			string file=Guid.NewGuid().ToString();
 			string Extension = Path.GetExtension(media.FileName);
+			StringBuilder mainPath = _defaultPath;
 			string MediaFolderPath = "";
 			string path = "";
 			if (IsImageExtension(Extension))
 			{
 				MediaFolderPath = Path.Combine(RootPath, "Images");
-				path += _defaultPath.Replace("FOLDER","Images");
+				path += mainPath.Replace("FOLDER","Images");
 			}
 			else if (IsVideoExtension(Extension))
 			{
 				MediaFolderPath = Path.Combine(RootPath, "Videos");
-				path += _defaultPath.Replace("FOLDER", "Videos");
+				path += mainPath.Replace("FOLDER", "Videos");
 			}
 			else
 			{
 				throw new BadRequestException(_localization["UploadMediaFail"].Value);
 			}
-			using (FileStream fileStreams = new(Path.Combine(MediaFolderPath,
-											_fileName + Extension), FileMode.Create))
+			using (Stream fileStreams = new FileStream(Path.Combine(MediaFolderPath, file + Extension), FileMode.Create))
 			{
-				media.CopyTo(fileStreams);
+				await media.CopyToAsync(fileStreams);
+				fileStreams.Flush();
+				fileStreams.Dispose();
 			}
-			return path + _fileName + Extension;
+
+			return path + file + Extension;
 		}
-        public async Task<bool> RemoveAsync(string url)
+        public async Task RemoveAsync(string url)
 		{
 			try
 			{
@@ -87,7 +90,7 @@ namespace Wasla.Services.MediaSerivces
 				if (File.Exists(oldPath))
 				{
 					File.Delete(oldPath);
-					return true;
+					return;
 				}
 				throw new BadRequestException(_localization["NotFoundMedia"].Value);
 			}
@@ -100,29 +103,30 @@ namespace Wasla.Services.MediaSerivces
         {
 			ServicesResponse<string> response = new ServicesResponse<string>();
 			string? newMediaUrl=null;
+			StringBuilder mainPath = _defaultPath;
+			string file=Guid.NewGuid().ToString();
 			string Extension = Path.GetExtension(newMedia.FileName);
 			if (ImageConstrains(newMedia))
 			{ 
-				newMediaUrl =_defaultPath.Replace("FOLDER","Image").ToString();
+				newMediaUrl = mainPath.Replace("FOLDER","Image").ToString();
 			}
 			else if (VideoConstrains(newMedia))
 			{
-				newMediaUrl = _defaultPath.Replace("FOLDER", "Records").ToString();
+				newMediaUrl = mainPath.Replace("FOLDER", "Records").ToString();
 			}
 
 			if(newMediaUrl is null)
 			{
 				throw new BadRequestException(_localization["NotFoundMedia"].Value);
 			}
-			newMediaUrl += _fileName + Extension;
+			newMediaUrl += file + Extension;
 			if (oldUrl == newMediaUrl)
 			{
 				return oldUrl;
 			}
-			if (!await RemoveAsync(oldUrl)) 
-			{
-				throw new BadRequestException(_localization["UploadMediaFail"].Value);
-			}
+
+			await RemoveAsync(oldUrl);
+
 			var addResult = await AddAsync(newMedia);
 			if (addResult == null)
 			{

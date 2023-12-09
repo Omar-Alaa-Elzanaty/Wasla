@@ -14,14 +14,15 @@ namespace Wasla.Model.Dtos
 		public string UserName { get; set; }
 		public string Password { get; set; }
 		[EmailAddress]
-		public string Email { get; set; }
+		public string? Email { get; set; }
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
+		public string NationalId { get; set; }
 		public IFormFile ImageFile { get; set; }
-		public Gender Gender { get; set; }
-		public DateTime BirthDate { get; set; }
-		public string LicenseImageFile { get; set; }
-		public int LicenseNumber { get; set; }
+		public Gender Gender { get; set; }		
+		public DateTime BirthDate { get; set; }		
+		public IFormFile LicenseImageFile { get; set; }
+		public string LicenseNumber { get; set; }
 		public string PhoneNumber { get; set; }
 	}
 }

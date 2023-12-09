@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Wasla.Model.Dtos
 {
-	public class AddVehicleDto
+	public class VehicleDto
 	{
 		public string Category { get; set; }
 		public int LicenseNumber { get; set; }
@@ -16,6 +16,6 @@ namespace Wasla.Model.Dtos
 		public string Brand { get; set; }
 		public float PackageCapcity { get; set; }
 		public int AdsSidesNumber { get; set; }
-		public IFormFile ImageFile { get; set; }
+		public IFormFile? ImageFile { get; set; }
 	}
 }

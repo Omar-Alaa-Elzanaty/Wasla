@@ -13,6 +13,7 @@
   "LicenseImageFileRequire": "Image Of License Is Require",
   "LicenseNumRequire": "Number of license is require",
   //errors
+  "AccountExist": "Account already Exist before",
   "EmailExist": "this E-mail already Exist",
   "PhoneNumberWrong": "this Phone Not Exit,go to register",
   "VehicleExist": "Vehicle already Exist",
@@ -45,6 +46,7 @@
   "LicenseExist": "License already exist",
   "InvalidRequest": "Invalid request",
   "RoleAlreadyExsit": "this role is already exsit",
+  "ObjectNotFound": "Required object not found",
   //success
   "PhoneNumberValid": "Phone number is valid",
   "EmailValid": "Email valid to use",
@@ -73,5 +75,6 @@
   "create": "Create",
   "save": "Save",
   "name": "Name",
-  "OrganizationSuccessRequest": "Your request is under review"
+  "OrganizationSuccessRequest": "Your request is under review",
+  "RemovedSuccessfully": "Removed successfully"
 }

@@ -10,7 +10,10 @@ namespace Wasla.Services.OrganizationSerivces
 {
 	public interface IOrganizationService
 	{
-		Task<BaseResponse> AddVehicleAsync(AddVehicleDto vehicleModel, string orgId);
+		Task<BaseResponse> AddVehicleAsync(VehicleDto vehicleModel, string orgId);
 		Task<BaseResponse> VehicleAnalysisAsync(string orgId);
+		Task<BaseResponse> UpdateVehicleAsync(VehicleDto model, int vehicleId);
+		Task<BaseResponse> DeleteVehicle(int vehicleId);
+		Task<BaseResponse> AddDriver(OrgDriverDto model, string orgId);
 	}
 }
