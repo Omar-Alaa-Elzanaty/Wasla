@@ -93,7 +93,7 @@ namespace Wasla.Services.Authentication.AuthServices
             return false;
         }
 
-        public async Task<BaseResponse> RegisterPassengerAsync(PassengerRegisterDto Input)
+        public async Task<BaseResponse> PassengerRegisterAsync(PassengerRegisterDto Input)
         {
             _ = await CheckPhoneNumber(Input.PhoneNumber);
             _ = await CheckUserName(Input.UserName);
@@ -144,7 +144,7 @@ namespace Wasla.Services.Authentication.AuthServices
             OrganizationRegisterRequest orgRequest = _mapper.Map<OrganizationRegisterRequest>(request);
 
 
-            orgRequest.ImageUrl = await _mediaServices.AddAsync(request.ImageFile);
+            orgRequest.LogoUrl =  await _mediaServices.AddAsync(request.ImageFile);
 
             _ = await _dbContext.OrganizationsRegisters.AddAsync(orgRequest);
             _ = _dbContext.SaveChanges();
@@ -226,6 +226,7 @@ namespace Wasla.Services.Authentication.AuthServices
 							 mailTo: userEmail,
 							 subject: "Your OTP",
 							 body: "Your OTP is: " + otp);
+
             _response.Message = _localization["EmailSendSuccess"].Value;
             _response.Data = otp;
             return _response;
@@ -354,7 +355,7 @@ namespace Wasla.Services.Authentication.AuthServices
             var org = input.role == Roles.Role_Organization;
             var checkedUser = await CheckUser(input,org);
             if (checkedUser.role != input.role)
-                throw new BadRequestException(_localization["roleNotMatch"].Value);
+                throw new UnauthorizedException(_localization["roleNotMatch"].Value);
             var tokens = await GetTokenhelp(checkedUser.user, input.role);
             var response = await _baseFactory.BaseAuthResponseAsync(tokens);
             response.Message = _localization["LoginSuccess"].Value;
@@ -420,9 +421,9 @@ namespace Wasla.Services.Authentication.AuthServices
         public async Task<BaseResponse> GetOrgRoles(string userName)
         {
             var preRole = "Org_" + userName;
-            var Roles = _roleManager.Roles
+            var Roles = await _roleManager.Roles
            .Where(r => r.Name.StartsWith(preRole)).Select(r =>new { r.Id, r.Name })
-           .ToList();
+           .ToListAsync();
             _response.Data = Roles;
             _response.Message = _localization["getOrgRoles"].Value;
             return _response;
@@ -434,9 +435,9 @@ namespace Wasla.Services.Authentication.AuthServices
             _response.Message = _localization["GetAllPermissions"].Value;
             return _response;
         }
-       public async Task<BaseResponse> GetRolePermissions(string roleName)
+        public async Task<BaseResponse> GetRolePermissions(string roleName)
         {
-            var role =await _roleManager.FindByNameAsync(roleName);
+            var role = await _roleManager.FindByNameAsync(roleName);
             if (role == null)
               throw new NotFoundException(_localization["roleNotFound"].Value);
             List<string> roleClaims = _roleManager.GetClaimsAsync(role).Result.Select(c => c.Value).ToList();
@@ -499,6 +500,10 @@ namespace Wasla.Services.Authentication.AuthServices
                 throw new NotFoundException(_localization["PhoneNumberWrong"].Value);
             return user;
         }
+
+        /// <summary>
+        /// get user depend on its type
+        /// </summary>
         private async Task<CheckUserExit> CheckUser(LoginDto login,bool org=false)
         {
             const string emailPattern = @"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$";
@@ -508,8 +513,8 @@ namespace Wasla.Services.Authentication.AuthServices
             if (Regex.IsMatch(login.UserName, emailPattern))
             {
                 if (org)
-                    user = await checkEmailExitInOrgOrOrgRegister(login.UserName);
-                  user = await getUserByEmail(login.UserName);
+					_ = await checkEmailExitInOrgOrOrgRegister(login.UserName);
+                user = await getUserByEmail(login.UserName);
             }
             else if (Regex.IsMatch(login.UserName, phonePattern))
             {

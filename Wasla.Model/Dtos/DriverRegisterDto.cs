@@ -14,7 +14,7 @@ namespace Wasla.Model.Dtos
         public IFormFile LicenseImageFile { get; set; }
         [Required(ErrorMessage = "LicenseNumRequire")]
 
-        public int LicenseNum { get; set; }
+        public string LicenseNum { get; set; }
 		/*public DateTime BirthDate { get; set; }
 		public Gender Gender { get; set; }*/
 	}

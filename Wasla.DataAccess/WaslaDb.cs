@@ -29,6 +29,7 @@ namespace Wasla.DataAccess
 			modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("UserLogins", "Account");
 			modelBuilder.Entity<IdentityRoleClaim<string>>().ToTable("RoleClaims", "Account");
 			modelBuilder.Entity<IdentityUserToken<string>>().ToTable("UserTokens", "Account");
+			modelBuilder.Entity<Account>().HasIndex(x => x.Email).IsUnique(false);
 			#endregion
 
 			modelBuilder.ApplyConfigurationsFromAssembly(typeof(DriverConfig).Assembly);

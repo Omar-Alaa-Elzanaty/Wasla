@@ -16,6 +16,11 @@ namespace Wasla.DataAccess.ModelsConfig
            // builder.ToTable("Vehicle");
             builder.HasOne(d => d.Orgainzation)
 				.WithOne().HasForeignKey<Vehicle>(i => i.OrganizationId).OnDelete(DeleteBehavior.Cascade);
+
+			builder.HasMany(v=>v.Trips)
+				.WithOne(t=>t.Vehicle)
+				.HasForeignKey(t=>t.VehicleId)
+				.OnDelete(DeleteBehavior.Restrict);
 		}
 	}
 }

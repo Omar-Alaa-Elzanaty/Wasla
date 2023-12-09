@@ -18,6 +18,7 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<OrganizationRegisterRequest, Organization>().ReverseMap();
             CreateMap<DriverRegisterDto, Driver>().ReverseMap();
             CreateMap<Driver,DriverResponseDto>().ReverseMap();
+            CreateMap<VehicleDto, Vehicle>().ReverseMap();
         }
     }
 }

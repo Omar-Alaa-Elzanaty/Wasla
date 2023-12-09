@@ -11,6 +11,7 @@ namespace Wasla.Model.Models
 		public Organization() {
 			TripList = new List<Trip>();
 			Stations=new List<Station>();
+			Drivers=new List<Driver>();
 			
 		}
 		public string Name { get; set; }
@@ -19,6 +20,7 @@ namespace Wasla.Model.Models
 		public float MaxWeight { get; set; }
 		public float MinWeight { get; set; }
 		public string? WebsiteLink { get; set; }
+		public virtual List<Driver> Drivers { get; set; }
 		public virtual ICollection<Trip> TripList { get; set; }
 		public virtual ICollection<Station>Stations { get; set; }
 	}

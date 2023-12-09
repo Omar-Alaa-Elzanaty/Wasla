@@ -14,9 +14,10 @@ namespace Wasla.Model.Models
 			Rates = new List<DriverRate>();
         }
         public string LicenseImageUrl { get; set; }
-		public int LicenseNum { get; set; }
+		public string LicenseNum { get; set; }
 		public string? OrganizationId { get; set; }
 		public virtual Organization? Orgainzation { get; set; }
+		public string? NationalId { get; set; }
 		public virtual ICollection<Trip> Trips { get; set; }
 		public virtual ICollection<DriverRate> Rates { get; set; }
 	}

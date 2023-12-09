@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Wasla.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class auth : Migration
+    public partial class test : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -80,19 +80,19 @@ namespace Wasla.DataAccess.Migrations
                 name: "OrganizationsRegisters",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
+                    RequestId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LogoUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     WebSiteLink = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrganizationsRegisters", x => x.Id);
+                    table.PrimaryKey("PK_OrganizationsRegisters", x => x.RequestId);
                 });
 
             migrationBuilder.CreateTable(
@@ -301,29 +301,45 @@ namespace Wasla.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Station",
+                columns: table => new
+                {
+                    OrganizationId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Langtitude = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Latitude = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Station", x => new { x.OrganizationId, x.Name });
+                    table.ForeignKey(
+                        name: "FK_Station_Organizations_OrganizationId",
+                        column: x => x.OrganizationId,
+                        principalSchema: "Account",
+                        principalTable: "Organizations",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Vehicles",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LicenseNumber = table.Column<int>(type: "int", nullable: false),
                     LicenseWord = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Capcity = table.Column<int>(type: "int", nullable: false),
+                    Brand = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PackageCapcity = table.Column<float>(type: "real", nullable: false),
-                    OrganizationId = table.Column<string>(type: "nvarchar(450)", nullable: true),
-                    AdsId = table.Column<int>(type: "int", nullable: true),
-                    AdvertismentId = table.Column<int>(type: "int", nullable: true),
-                    TripId = table.Column<int>(type: "int", nullable: true)
+                    AdsSidesNumber = table.Column<int>(type: "int", nullable: false),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrganizationId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Vehicles", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Vehicles_Advertisments_AdvertismentId",
-                        column: x => x.AdvertismentId,
-                        principalTable: "Advertisments",
-                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Vehicles_Organizations_OrganizationId",
                         column: x => x.OrganizationId,
@@ -360,8 +376,9 @@ namespace Wasla.DataAccess.Migrations
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     LicenseImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LicenseNum = table.Column<int>(type: "int", nullable: false),
-                    OrganizationId = table.Column<string>(type: "nvarchar(450)", nullable: true)
+                    LicenseNum = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OrganizationId = table.Column<string>(type: "nvarchar(450)", nullable: true),
+                    NationalId = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -377,6 +394,30 @@ namespace Wasla.DataAccess.Migrations
                         column: x => x.Id,
                         principalSchema: "Account",
                         principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "AdvertismentVehicle",
+                columns: table => new
+                {
+                    AdvertismentId = table.Column<int>(type: "int", nullable: false),
+                    BussesId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AdvertismentVehicle", x => new { x.AdvertismentId, x.BussesId });
+                    table.ForeignKey(
+                        name: "FK_AdvertismentVehicle_Advertisments_AdvertismentId",
+                        column: x => x.AdvertismentId,
+                        principalTable: "Advertisments",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AdvertismentVehicle_Vehicles_BussesId",
+                        column: x => x.BussesId,
+                        principalTable: "Vehicles",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -488,12 +529,14 @@ namespace Wasla.DataAccess.Migrations
                         column: x => x.OrganizationId,
                         principalSchema: "Account",
                         principalTable: "Organizations",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_Trips_Vehicles_VehicleId",
                         column: x => x.VehicleId,
                         principalTable: "Vehicles",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
@@ -557,12 +600,23 @@ namespace Wasla.DataAccess.Migrations
                 column: "NormalizedEmail");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Accounts_Email",
+                schema: "Account",
+                table: "Accounts",
+                column: "Email");
+
+            migrationBuilder.CreateIndex(
                 name: "UserNameIndex",
                 schema: "Account",
                 table: "Accounts",
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AdvertismentVehicle_BussesId",
+                table: "AdvertismentVehicle",
+                column: "BussesId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_DriverRates_CustomerId",
@@ -574,9 +628,7 @@ namespace Wasla.DataAccess.Migrations
                 name: "IX_Drivers_OrganizationId",
                 schema: "Account",
                 table: "Drivers",
-                column: "OrganizationId",
-                unique: true,
-                filter: "[OrganizationId] IS NOT NULL");
+                column: "OrganizationId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Packages_TripId",
@@ -620,8 +672,7 @@ namespace Wasla.DataAccess.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Trips_VehicleId",
                 table: "Trips",
-                column: "VehicleId",
-                unique: true);
+                column: "VehicleId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserClaims_UserId",
@@ -665,11 +716,6 @@ namespace Wasla.DataAccess.Migrations
                 column: "VehicleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Vehicles_AdvertismentId",
-                table: "Vehicles",
-                column: "AdvertismentId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Vehicles_OrganizationId",
                 table: "Vehicles",
                 column: "OrganizationId",
@@ -680,6 +726,9 @@ namespace Wasla.DataAccess.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AdvertismentVehicle");
+
             migrationBuilder.DropTable(
                 name: "CustomerTripOrders");
 
@@ -704,6 +753,9 @@ namespace Wasla.DataAccess.Migrations
                 schema: "Account");
 
             migrationBuilder.DropTable(
+                name: "Station");
+
+            migrationBuilder.DropTable(
                 name: "UserClaims",
                 schema: "Account");
 
@@ -726,6 +778,9 @@ namespace Wasla.DataAccess.Migrations
                 name: "VehicleRates");
 
             migrationBuilder.DropTable(
+                name: "Advertisments");
+
+            migrationBuilder.DropTable(
                 name: "Trips");
 
             migrationBuilder.DropTable(
@@ -746,9 +801,6 @@ namespace Wasla.DataAccess.Migrations
             migrationBuilder.DropTable(
                 name: "Users",
                 schema: "Account");
-
-            migrationBuilder.DropTable(
-                name: "Advertisments");
 
             migrationBuilder.DropTable(
                 name: "Organizations",

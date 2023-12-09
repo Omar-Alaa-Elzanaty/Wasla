@@ -26,13 +26,13 @@ namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
             switch (help.role)
             {
                 case Roles.Role_Rider:
-                    _response.Data = await (new PassengerResponse(_db)).AuthRespnseFactory(help);
+                    _response.Data = await new PassengerResponse(_db).AuthRespnseFactory(help);
                     break;
                 case Roles.Role_Driver:
-                    _response.Data = await (new DriverResponse(_db)).AuthRespnseFactory(help);
+                    _response.Data = await new DriverResponse(_db).AuthRespnseFactory(help);
                     break;
                 case Roles.Role_Organization:
-                    _response.Data = await (new OrganizationResponse(_db)).AuthRespnseFactory(help);
+                    _response.Data = await new OrganizationResponse(_db).AuthRespnseFactory(help);
                     break;
                 default:
                     throw new BadRequestException(_localization["roleNotFound"].Value);

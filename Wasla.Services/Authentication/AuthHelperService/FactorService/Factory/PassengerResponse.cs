@@ -30,6 +30,7 @@ namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
             passengerResponse.LastName = passenger.LastName;
             passengerResponse.points = passenger.points;
             passengerResponse.PhotoUrl = passenger.PhotoUrl;
+
             return  passengerResponse;
             // _response.Message = _localization["LoginSuccess"].Value;
         }

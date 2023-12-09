@@ -124,7 +124,7 @@ namespace Wasla
 			}
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            //DataSeed(app);
+            DataSeed(app);
             //
             var supportedCultures = new[] { "en-US", "ar-EG" };
             var localizationOptions = new RequestLocalizationOptions()

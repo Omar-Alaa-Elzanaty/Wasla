@@ -1,18 +1,22 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using System.ComponentModel;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
+using Wasla.Model.Models;
 using Wasla.Services.AdminServices;
 using Wasla.Services.Authentication.AuthServices;
+using Wasla.Services.Exceptions.FilterException;
 using Wasla.Services.Middleware;
 
 namespace Wasla.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-  
+
     public class AuthController : ControllerBase
     {
         private readonly IMapper _mapper;
@@ -29,10 +33,10 @@ namespace Wasla.Api.Controllers
 			_adminservice = adminservice;
 			_context = context;
 		}
-        [HttpPost("passengerRegister")]
+		[HttpPost("passengerRegister")]
         public async Task<IActionResult> PassengerRegister([FromBody] PassengerRegisterDto adv)
         {
-            var result = await _authservice.RegisterPassengerAsync(adv);
+            var result = await _authservice.PassengerRegisterAsync(adv);
             return Ok(result);
         }
         //it not accept it as FromRoute make it FromBody and use class SendOtpDto or keep it 
@@ -125,6 +129,16 @@ namespace Wasla.Api.Controllers
         {
             var resualt = await _authservice.ChangePasswordByEmailAsync(changePassword);
             return Ok(resualt);
+        }
+        [OrgPermissionAuthorize("db")]
+        [HttpGet("clima")]
+        public async Task<IActionResult> getclaim()
+        {
+            return Ok(User.Claims.Select(i => new
+            {
+                i.Type,
+                i.Value
+            }));
         }
         [HttpPost("logout")]
         [Authorize(AuthenticationSchemes = "Bearer")]

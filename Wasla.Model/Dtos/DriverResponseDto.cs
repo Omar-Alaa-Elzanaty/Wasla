@@ -13,7 +13,7 @@ namespace Wasla.Model.Dtos
     {
         public IFormFile ProfileImageFile { get; set; }
         public IFormFile LicenseImageFile { get; set; }
-        public int LicenseNum { get; set; }
+        public string LicenseNum { get; set; }
         public virtual Organization? Orgainzation { get; set; }
         public virtual ICollection<Trip> Trips { get; set; }
         public virtual ICollection<DriverRate> Rates { get; set; }

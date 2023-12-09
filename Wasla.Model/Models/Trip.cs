@@ -19,7 +19,7 @@ namespace Wasla.Model.Models
 		public virtual Organization Organization { get; set; }
 		public float Price { get; set; }
 		public int VehicleId { get; set; }
-		public virtual Vehicle vehicle { get; set; }
+		public virtual Vehicle Vehicle { get; set; }
 		public TimeSpan Duration { get; set; }
 		public string From { get; set; }
 		public string To { get; set; }
@@ -38,10 +38,10 @@ namespace Wasla.Model.Models
 			}
 			this.Duration = arrivingTime.Subtract(launchingTime);
 
-			if(this.vehicle is not null)
+			if(this.Vehicle is not null)
 			{
-				AvailablePackageSpace = this.vehicle.PackageCapcity;
-				AvailableSets = this.vehicle.Capcity;
+				AvailablePackageSpace = this.Vehicle.PackageCapcity;
+				AvailableSets = this.Vehicle.Capcity;
 			}
 		}
     }
