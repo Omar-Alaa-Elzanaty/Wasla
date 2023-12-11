@@ -13,7 +13,7 @@ namespace Wasla.Api.Controllers
         {
         }
         [HttpGet]
-        //[OrgPermissionAuthorizeAttribute("OrgPermissions.TestPermissions.View.3")]//.View.3")]
+        //[OrgPermissionAuthorizeAttribute("OrgPermissions.TestPermissions.View.3")]
         //   [ServiceFilter(typeof(OrgPermissionAuthorizeAttribute),Argumen new object[] { "YourPermission" })]
 
         public IActionResult GetTrips()

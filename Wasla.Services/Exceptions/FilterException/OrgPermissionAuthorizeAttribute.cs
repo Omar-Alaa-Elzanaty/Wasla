@@ -10,37 +10,21 @@ using Microsoft.VisualBasic;
 
 namespace Wasla.Services.Exceptions.FilterException
 {
-    public class OrgPermissionAuthorizeAttribute : ActionFilterAttribute,IActionFilter
+    public class OrgPermissionAuthorizeAttribute : IAuthorizationFilter
 	{
         private readonly string _permission;
 
 		public OrgPermissionAuthorizeAttribute(string permission)
-            {
+        {
                 _permission = permission;
 		}
-        public void OnAuthorization(AuthorizationFilterContext context)
-        {
-            if (context.HttpContext.User == null)
-            {
-                context.Result = new UnauthorizedResult();
-                return;
-            }
-        
-            var hasPermission = context.HttpContext.User.Claims.Any(c =>
-                c.Type == PermissionsName.Org_Permission && c.Value == _permission && c.Issuer == "LOCAL AUTHORITY");
 
-            if (!hasPermission)
-            {
-                context.Result = new ForbidResult();
-            }
-        }
-
-		public override void OnActionExecuting(ActionExecutingContext context)
+		public void OnAuthorization(AuthorizationFilterContext context)
 		{
-			var _userManeger = (UserManager<Account>)context.HttpContext.RequestServices.GetService(typeof(UserManager<Account>));
-			var x = _userManeger.Users.ToList();
+			 
+			var _userManeger = (RoleManager<IdentityRole>)context.HttpContext.RequestServices.GetService(typeof(RoleManager<IdentityRole>));
 
-			base.OnActionExecuting(context);
+			var x = _userManeger.Roles.ToList();
 		}
 	}
     

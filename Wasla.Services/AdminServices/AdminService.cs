@@ -74,24 +74,30 @@ namespace Wasla.Services.AdminServices
 						var errors = string.Empty;
 						foreach (var error in result.Errors)
 							errors += $"{error.Description},";
-						throw new BadRequestException(errors);
+						throw new BadRequestException(_localization["RegisterFaild"].Value + '\n' + errors);
 					}
 
 					var roleResult = await _userManager.AddToRoleAsync(organization, Roles.Role_Organization);
 					if (!roleResult.Succeeded)
 					{
-						throw new ServerErrorException(_localization["RegisterFaild"].Value);
+						var errors=string.Empty;
+
+						foreach(var error in roleResult.Errors)
+						{
+							errors += error.Description + ", ";
+						}
+						throw new ServerErrorException(_localization["RegisterFaild"].Value + '\n' + errors);
 					}
 
-					await _mailService.SendEmailAsync(
-							mailTo: request.Email,
-							subject: "Wasla Email Annoucment",
-							body: "Your email has been activated,now you can login using your username and password");
+					//await _mailService.SendEmailAsync(
+					//		mailTo: request.Email,
+					//		subject: "Wasla Email Annoucment",
+					//		body: "Your email has been activated,now you can login using your username and password");
 
 					_context.OrganizationsRegisters.Remove(request);
 					await transaction.CommitAsync();
 
-					_response.Message = $"{request.Name} account confirmed";
+					_response.Message = _response.Message = _localization["RegisterSucccess"].Value;
 				}
 				catch (Exception)
 				{

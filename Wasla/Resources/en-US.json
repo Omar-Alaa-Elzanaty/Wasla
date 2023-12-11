@@ -76,5 +76,7 @@
   "save": "Save",
   "name": "Name",
   "OrganizationSuccessRequest": "Your request is under review",
-  "RemovedSuccessfully": "Removed successfully"
+  "RemovedSuccessfully": "Removed successfully",
+  "Used": "used",
+  "NotUsed": "not used"
 }

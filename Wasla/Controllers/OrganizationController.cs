@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Identity.Client;
 using System.Security.Claims;
 using Wasla.Model.Dtos;
+using Wasla.Model.Models;
 using Wasla.Services.OrganizationSerivces;
 
 namespace Wasla.Api.Controllers
@@ -14,17 +16,25 @@ namespace Wasla.Api.Controllers
 	public class OrganizationController : ControllerBase
 	{
 		private readonly IOrganizationService _orgService;
+		private readonly UserManager<Account> _userManager;
 
-		public OrganizationController(IOrganizationService organizationService)
+		public OrganizationController(IOrganizationService organizationService, UserManager<Account> userManager)
 		{
 			_orgService = organizationService;
+			_userManager = userManager;
 		}
 		[HttpPost("vehicle/add")]
 		public async Task<IActionResult> AddVehicle([FromForm] VehicleDto model)
 		{
-			var accId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+			var userName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-			return Ok(await _orgService.AddVehicleAsync(model, accId??""));
+			string? orgId = null;
+			if (userName is not null)
+			{
+				orgId = _userManager.FindByNameAsync(userName).Result?.Id;
+			}
+
+			return Ok(await _orgService.AddVehicleAsync(model, orgId));
 		}
 		[HttpPut("vehicle/update/{vehicleId}")]
 		public async Task<IActionResult> UpdateVehicle(int vehicleId,[FromForm]VehicleDto model)
@@ -35,21 +45,46 @@ namespace Wasla.Api.Controllers
 		[HttpDelete("vehicle/delete")]
 		public async Task<IActionResult>DeleteVehicle(int vehicleId)
 		{
-			return Ok(await _orgService.DeleteVehicle(vehicleId));
+			return Ok(await _orgService.DeleteVehicleAsync(vehicleId));
 		}
-		[HttpPost("addDriver")]
+		[HttpPost("driver/add")]
 		public async Task<IActionResult> AddDriver([FromForm]OrgDriverDto model)
 		{
-			var orgId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+			var userName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-			return Ok(await _orgService.AddDriver(model,orgId));
+			string? orgId = null;
+			if (userName is not null)
+			{
+				orgId = _userManager.FindByNameAsync(userName).Result?.Id;
+			}
+
+			return Ok(await _orgService.AddDriverAsync(model,orgId));
 		}
 		[HttpGet("vehicle/vehicleAnalysis")]
 		public async Task<IActionResult> VehicleAnalysis()
 		{
-			var accId=User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+			var userName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-			return Ok(await _orgService.VehicleAnalysisAsync(accId??""));
+			string? orgId = null;
+			if (userName is not null)
+			{
+				orgId = _userManager.FindByNameAsync(userName).Result?.Id;
+			}
+
+			return Ok(await _orgService.VehicleAnalysisAsync(orgId??""));
+		}
+		[HttpPost("employee/add")]
+		public async Task<IActionResult> AddEmployee([FromForm]EmployeeRegisterDto model)
+		{
+			var userName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+			string? orgId = null;
+			if(userName is not null)
+			{
+				orgId = _userManager.FindByNameAsync(userName).Result?.Id;
+			}
+
+			return Ok(await _orgService.AddEmployeeAsync(model,orgId));
 		}
 	}
 }

@@ -51,5 +51,6 @@ namespace Wasla.DataAccess
 		public virtual DbSet<DriverRate> DriverRates { get; set; }
 		public virtual DbSet<CustomerTripOrder> CustomerTripOrders { get; set; }
 		public virtual DbSet<OrganizationRegisterRequest> OrganizationsRegisters { get; set; }
+		public virtual DbSet<Employee> Employees { get; set; }
 	}
 }

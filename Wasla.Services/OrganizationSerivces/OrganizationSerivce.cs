@@ -20,7 +20,7 @@ using Wasla.Services.MediaSerivces;
 
 namespace Wasla.Services.OrganizationSerivces
 {
-	public class OrganizationSerivce:IOrganizationService
+	public class OrganizationSerivce : IOrganizationService
 	{
 		private readonly WaslaDb _context;
 		private readonly BaseResponse _response;
@@ -43,17 +43,17 @@ namespace Wasla.Services.OrganizationSerivces
 			_userManager = userManager;
 		}
 
-		public async Task<BaseResponse>AddVehicleAsync(VehicleDto vehicleModel,string orgId)
+		public async Task<BaseResponse> AddVehicleAsync(VehicleDto vehicleModel, string orgId)
 		{
-			if(await _context.Vehicles.AnyAsync(v=>v.LicenseNumber == vehicleModel.LicenseNumber||v.LicenseWord==vehicleModel.LicenseWord))
+			if (await _context.Vehicles.AnyAsync(v => v.LicenseNumber == vehicleModel.LicenseNumber || v.LicenseWord == vehicleModel.LicenseWord))
 			{
 				throw new BadRequestException(_localization["VehicleExist"]);
 			}
 
-			Vehicle car=_mapper.Map<Vehicle>(vehicleModel);
+			Vehicle car = _mapper.Map<Vehicle>(vehicleModel);
 
 			car.OrganizationId = orgId;
-			if(vehicleModel.ImageFile is not null)
+			if (vehicleModel.ImageFile is not null)
 			{
 				car.ImageUrl = await _mediaSerivce.AddAsync(vehicleModel.ImageFile);
 			}
@@ -62,27 +62,27 @@ namespace Wasla.Services.OrganizationSerivces
 
 			return _response;
 		}
-		public async Task<BaseResponse>UpdateVehicleAsync(VehicleDto model,int vehicleId)
+		public async Task<BaseResponse> UpdateVehicleAsync(VehicleDto model, int vehicleId)
 		{
 			var vehicle = await _context.Vehicles.FirstOrDefaultAsync(v => v.Id == vehicleId);
 
-			if(vehicle is null)
+			if (vehicle is null)
 			{
 				throw new KeynotFoundException(_localization["ObjectNotFound"].Value);
 			}
 
 			vehicle.Capcity = model.Capcity;
-			vehicle.PackageCapcity=model.PackageCapcity;
+			vehicle.PackageCapcity = model.PackageCapcity;
 			vehicle.Category = model.Category;
 			vehicle.AdsSidesNumber = model.AdsSidesNumber;
-			vehicle.LicenseNumber= model.LicenseNumber;
-			vehicle.LicenseWord= model.LicenseWord;
+			vehicle.LicenseNumber = model.LicenseNumber;
+			vehicle.LicenseWord = model.LicenseWord;
 			vehicle.Brand = model.Brand;
 
 			if (model.ImageFile is not null)
 			{
 				await _mediaSerivce.RemoveAsync(vehicle.ImageUrl);
-				vehicle.ImageUrl =await  _mediaSerivce.AddAsync(model.ImageFile); 
+				vehicle.ImageUrl = await _mediaSerivce.AddAsync(model.ImageFile);
 			}
 
 			_context.Update(vehicle);
@@ -90,11 +90,11 @@ namespace Wasla.Services.OrganizationSerivces
 
 			return _response;
 		}
-		public async Task<BaseResponse> DeleteVehicle(int vehicleId)
+		public async Task<BaseResponse> DeleteVehicleAsync(int vehicleId)
 		{
 			var vehicle = await _context.Vehicles.FindAsync(vehicleId);
 
-			if(vehicle is null)
+			if (vehicle is null)
 			{
 				throw new BadRequestException(_localization["ObjectNotFound"].Value);
 			}
@@ -104,7 +104,7 @@ namespace Wasla.Services.OrganizationSerivces
 			_response.Message = _localization["RemovedSuccessfully"].Value;
 			return _response;
 		}
-		public async Task<BaseResponse>VehicleAnalysisAsync(string orgId)
+		public async Task<BaseResponse> VehicleAnalysisAsync(string orgId)
 		{
 			var analysisResult = await _context.Vehicles.Where(v => v.OrganizationId == orgId).GroupBy(v => new
 			{
@@ -118,14 +118,14 @@ namespace Wasla.Services.OrganizationSerivces
 				v.Key.Capcity,
 				TotalVehicles = v.Count()
 			}).ToListAsync();
-			
-			_response.Data=analysisResult;
+
+			_response.Data = analysisResult;
 
 			return _response;
 		}
-		public async Task<BaseResponse>AddDriver(OrgDriverDto model,string orgId)
+		public async Task<BaseResponse> AddDriverAsync(OrgDriverDto model, string orgId)
 		{
-			if(orgId == null)
+			if (orgId == null)
 			{
 				throw new ArgumentNullException("Organization Id");
 			}
@@ -141,28 +141,28 @@ namespace Wasla.Services.OrganizationSerivces
 			var newDriver = new Driver()
 			{
 				OrganizationId = orgId,
-				Email=model.Email,
-				FirstName=model.FirstName,
-				LastName=model.LastName,
-				Birthdate=model.BirthDate,
-				Gender=model.Gender,
-				LicenseNum=model.LicenseNumber,
-				NationalId=model.NationalId,
+				Email = model.Email,
+				FirstName = model.FirstName,
+				LastName = model.LastName,
+				Birthdate = model.BirthDate,
+				Gender = model.Gender,
+				LicenseNum = model.LicenseNumber,
+				NationalId = model.NationalId,
 				PhoneNumber = model.PhoneNumber,
-				UserName=model.UserName
+				UserName = model.UserName
 			};
 			newDriver.LicenseImageUrl = await _mediaSerivce.AddAsync(model.LicenseImageFile);
 			newDriver.PhotoUrl = await _mediaSerivce.AddAsync(model.ImageFile);
 
-			using (var trans= await _context.Database.BeginTransactionAsync())
+			using (var trans = await _context.Database.BeginTransactionAsync())
 			{
 				try
 				{
-					var result= await _userManager.CreateAsync(newDriver, model.Password);
-					if(result is null || !result.Succeeded)
+					var result = await _userManager.CreateAsync(newDriver, model.Password);
+					if (result is null || !result.Succeeded)
 					{
 						string errors = string.Empty;
-						foreach(var error in result.Errors)
+						foreach (var error in result.Errors)
 						{
 							errors += error + ", ";
 						}
@@ -179,6 +179,47 @@ namespace Wasla.Services.OrganizationSerivces
 					if (!newDriver.PhotoUrl.IsNullOrEmpty()) await _mediaSerivce.RemoveAsync(newDriver.PhotoUrl);
 				}
 			}
+			return _response;
+		}
+		public async Task<BaseResponse> AddEmployeeAsync(EmployeeRegisterDto model,string? orgId)
+		{
+			if(orgId is null)
+			{
+				throw new ArgumentNullException(nameof(orgId));
+			}
+
+			Employee employee = _mapper.Map<Employee>(model);
+			employee.OrgId = orgId;
+			string password = string.Empty;
+			employee.UserName = model.Email.Split('@')[0].ToLower() + (model.NationalId % 10000).ToString() + '@' + "wasla.com";
+			var rand = new Random();
+
+			for (int i = 0; i < 5; i++)
+			{
+				password += rand.Next(0, 9).ToString();
+			}
+			password += "@Wasla";
+
+			if (model.PhotoFile is not null)
+			{
+				employee.PhotoUrl = await _mediaSerivce.AddAsync(model.PhotoFile);
+			}
+
+			_response.Message = _localization["RegisterSucccess"].Value;
+
+			var result = await _userManager.CreateAsync(employee, password);
+			if (!result.Succeeded)
+			{
+				string errors = string.Empty;
+				foreach (var error in result.Errors)
+				{
+					errors += error.Description + ", ";
+				}
+				if (employee.PhotoUrl is not null) await _mediaSerivce.RemoveAsync(employee.PhotoUrl);
+
+				_response.Message = _localization["RegisterFail"];
+			}
+
 			return _response;
 		}
 	} 

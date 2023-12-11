@@ -23,6 +23,7 @@ using System.Text.RegularExpressions;
 using Wasla.Services.Authentication.AuthHelperService.FactorService.IFactory;
 using Wasla.Services.EmailServices;
 using Wasla.Model.Helpers.Statics;
+using Twilio.Types;
 
 namespace Wasla.Services.Authentication.AuthServices
 {
@@ -368,12 +369,13 @@ namespace Wasla.Services.Authentication.AuthServices
                 throw new BadRequestException(_localization["userNameRequired"].Value);
             }
 
-            bool isFound = await _userManager.Users.AnyAsync(a => a.UserName != null && a.UserName.StartsWith(input));
+            bool isNotFound = !await _userManager.Users.AnyAsync(a => a.UserName != null && a.UserName.StartsWith(input));
 
-            if (!isFound)
+            _response.Data = new
             {
-                _response.Message = _localization["userNameExist"].Value;
-            }
+                Valid = isNotFound,
+                Message = isNotFound ? _localization["NotUsed"].Value : _localization["Used"].Value
+            };
 
             return _response;
         }
@@ -384,12 +386,13 @@ namespace Wasla.Services.Authentication.AuthServices
                 throw new BadRequestException(_localization["phoneNumberRequired"]);
             }
 
-            _response.IsSuccess = await _userManager.Users.AnyAsync(u => u.PhoneNumber == phoneNumber);
-            _response.Status =
-                _response.IsSuccess == true ? HttpStatusCode.BadRequest : HttpStatusCode.OK;
-			_response.Message =
-                _response.IsSuccess == true ? _localization["phoneNumberExist"].Value : _localization["PhoneNumberValid"].Value;
+            var isNotFound = !await _userManager.Users.AnyAsync(u => u.PhoneNumber == phoneNumber);
 
+            _response.Data = new
+            {
+                Valid = isNotFound,
+                Message = isNotFound ? _localization["NotUsed"].Value : _localization["Used"].Value
+            };
             return _response;
         }
 		public async Task<BaseResponse> CheckEmailAsync(string email)
@@ -399,12 +402,13 @@ namespace Wasla.Services.Authentication.AuthServices
 				throw new BadRequestException(_localization["EmailRequired"]);
 			}
 
-			_response.IsSuccess = await _userManager.Users.AnyAsync(u => u.Email == email);
-			_response.Status =
-				_response.IsSuccess == true ? HttpStatusCode.BadRequest : HttpStatusCode.OK;
-			_response.Message =
-				_response.IsSuccess == true ? _localization["EmailExist"].Value : _localization["EmailValid"].Value;
+			var isNotFound = !await _userManager.Users.AnyAsync(u => u.Email == email);
 
+            _response.Data = new
+            {
+                Valid = isNotFound,
+                Message = isNotFound ? _localization["NotUsed"].Value : _localization["Used"].Value
+            };
 			return _response;
 		}
         public async Task<BaseResponse> CreateOrgRole(AddOrgAdmRole addRole)

@@ -70,5 +70,7 @@
   "GetAllPermissions": "تم استدعاء جميع تصريحات المؤسسه",
   "getOrgRoles": " Roles تم استدعاء جميه ",
   "CreateOrgRoleSuccess": "تم انشاء الدور للمؤسسه بنجاح",
-  "RemovedSuccessfully": "تم الحذف بنجاح"
+  "RemovedSuccessfully": "تم الحذف بنجاح",
+  "Used": "مستخدم",
+  "NotUsed": "متاح"
 }

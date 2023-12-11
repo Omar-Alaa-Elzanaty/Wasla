@@ -130,7 +130,7 @@ namespace Wasla.Api.Controllers
             var resualt = await _authservice.ChangePasswordByEmailAsync(changePassword);
             return Ok(resualt);
         }
-        [OrgPermissionAuthorize("db")]
+        //[OrgPermissionAuthorize("db")]
         [HttpGet("clima")]
         public async Task<IActionResult> getclaim()
         {
