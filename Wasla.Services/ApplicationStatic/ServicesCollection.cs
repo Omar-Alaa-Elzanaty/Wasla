@@ -11,6 +11,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Wasla.Services.EmailServices;
 using Wasla.Services.Middleware;
 using Wasla.Services.OrganizationSerivces;
+using Wasla.Services.PassangerServices;
 
 namespace Wasla.Services.ApplicationStatic
 {
@@ -29,6 +30,7 @@ namespace Wasla.Services.ApplicationStatic
             services.AddScoped<IMediaSerivce,MediaService>();
             services.AddScoped<IMailServices, MailServices>();
             services.AddScoped<IOrganizationService,OrganizationSerivce>();
+            services.AddScoped<IPassangerService, PassangerService>();
          
         }
     }

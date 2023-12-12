@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,12 +24,18 @@ namespace Wasla.Model.Models
 		public TimeSpan Duration { get; set; }
 		public string From { get; set; }
 		public string To { get; set; }
-		public int AvailableSets { get; set; }
+		public int Capacity { get; set; }
 		public float AvailablePackageSpace { get; set; }
+		public virtual List<Set> RecervedSets {  get; set; }
 		public virtual ICollection<Reservation> Reservations { get; set; }
 		public virtual ICollection<Package> Packages { get; set; }
-		public Trip() { }
-        public Trip(TimeSpan launchingTime,TimeSpan arrivingTime)
+		public Trip()
+		{
+			RecervedSets = new List<Set>();
+			Reservations= new List<Reservation>();
+			Packages = new List<Package>();
+		}
+        public Trip(TimeSpan launchingTime,TimeSpan arrivingTime):this()
         {
 			if(launchingTime > arrivingTime)
 			{
@@ -41,8 +48,13 @@ namespace Wasla.Model.Models
 			if(this.Vehicle is not null)
 			{
 				AvailablePackageSpace = this.Vehicle.PackageCapcity;
-				AvailableSets = this.Vehicle.Capcity;
+				Capacity = this.Vehicle.Capcity;
 			}
 		}
     }
+	public class Set
+	{
+		public int setNum { get; set; }
+		public int TripId { get; set; }
+	}
 }

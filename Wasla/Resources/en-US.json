@@ -47,6 +47,7 @@
   "InvalidRequest": "Invalid request",
   "RoleAlreadyExsit": "this role is already exsit",
   "ObjectNotFound": "Required object not found",
+  "RepeatedName": "Name already exist",
   //success
   "PhoneNumberValid": "Phone number is valid",
   "EmailValid": "Email valid to use",
@@ -68,6 +69,7 @@
   "GetAllPermissions": "Get All Permissions Success",
   "getOrgRoles": "Get All Roles For Organization",
   "CreateOrgRoleSuccess": "create role for organization Success",
+  "CreatedAdsSuccess": "Ads add  successfully",
   "culture": "Culture",
   "date": "Date",
   "currency": "Currency",
@@ -75,8 +77,10 @@
   "create": "Create",
   "save": "Save",
   "name": "Name",
+  "Removed": "Removed",
   "OrganizationSuccessRequest": "Your request is under review",
   "RemovedSuccessfully": "Removed successfully",
   "Used": "used",
-  "NotUsed": "not used"
+  "NotUsed": "not used",
+  "SuccessProcess": "Success process"
 }

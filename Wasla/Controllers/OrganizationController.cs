@@ -23,6 +23,19 @@ namespace Wasla.Api.Controllers
 			_orgService = organizationService;
 			_userManager = userManager;
 		}
+		[HttpGet("vehicle/displayAll")]
+		public async Task<IActionResult> DisplayVehicles()
+		{
+			var userName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+			string? orgId = null;
+			if (userName is not null)
+			{
+				orgId = _userManager.FindByNameAsync(userName).Result?.Id;
+			}
+
+			return Ok(await _orgService.DisplayVehicles(orgId));
+		}
 		[HttpPost("vehicle/add")]
 		public async Task<IActionResult> AddVehicle([FromForm] VehicleDto model)
 		{
@@ -85,6 +98,24 @@ namespace Wasla.Api.Controllers
 			}
 
 			return Ok(await _orgService.AddEmployeeAsync(model,orgId));
+		}
+		[HttpDelete("employee/delete/{empId}")]
+		public async Task<IActionResult>DeleteEmployee(string empId)
+		{
+			return Ok(await _orgService.DeleteEmployeeAsync(empId));
+		}
+		[HttpGet("drvier/displayAll")]
+		public async Task<IActionResult> GetAllDrivers()
+		{
+			var userName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+			string? orgId = null;
+			if (userName is not null)
+			{
+				orgId = _userManager.FindByNameAsync(userName).Result?.Id;
+			}
+
+			return Ok(await _orgService.GetAllDrivers(orgId));
 		}
 	}
 }

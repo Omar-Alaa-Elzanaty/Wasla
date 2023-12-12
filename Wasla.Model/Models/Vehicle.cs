@@ -1,5 +1,7 @@
-﻿using System;
+﻿using Microsoft.EntityFrameworkCore;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +13,7 @@ namespace Wasla.Model.Models
         public Vehicle()
         {
             Rates=new List<VehicleRate>();
+			Advertisment = new List<Advertisment>();
         }
 
         public int Id { get; set; }
@@ -24,8 +27,9 @@ namespace Wasla.Model.Models
 		public string ImageUrl { get; set; }
 		public string? OrganizationId { get; set; }
 		public virtual Organization? Orgainzation { get; set; }
-		public virtual List<Advertisment>? Advertisment { get; set; }
+		public virtual List<Advertisment> Advertisment { get; set; }
 		public virtual List<Trip> Trips { get; set; }
 		public virtual ICollection<VehicleRate> Rates { get; set; }
 	}
+	
 }

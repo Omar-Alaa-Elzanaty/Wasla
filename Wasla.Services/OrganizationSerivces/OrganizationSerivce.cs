@@ -43,6 +43,23 @@ namespace Wasla.Services.OrganizationSerivces
 			_userManager = userManager;
 		}
 
+		public async Task<BaseResponse>DisplayVehicles(string? orgId)
+		{
+			if (orgId is null)
+			{
+				throw new UnauthorizedException(_localization["ObjectNotFound"].Value);
+			}
+
+			_response.Data = await _context.Vehicles.Where(v => v.OrganizationId == orgId).Select(v => new
+			{
+				v.Id,
+				v.LicenseWord,
+				v.LicenseNumber,
+				v.ImageUrl
+			}).ToListAsync();
+
+			return _response;
+		}
 		public async Task<BaseResponse> AddVehicleAsync(VehicleDto vehicleModel, string orgId)
 		{
 			if (await _context.Vehicles.AnyAsync(v => v.LicenseNumber == vehicleModel.LicenseNumber || v.LicenseWord == vehicleModel.LicenseWord))
@@ -123,11 +140,11 @@ namespace Wasla.Services.OrganizationSerivces
 
 			return _response;
 		}
-		public async Task<BaseResponse> AddDriverAsync(OrgDriverDto model, string orgId)
+		public async Task<BaseResponse> AddDriverAsync(OrgDriverDto model, string? orgId)
 		{
 			if (orgId == null)
 			{
-				throw new ArgumentNullException("Organization Id");
+				throw new UnauthorizedException(_localization["ObjectNotFound"].Value);
 			}
 
 			if (await _context.Drivers.AnyAsync(od => (od.NationalId == model.NationalId
@@ -185,13 +202,13 @@ namespace Wasla.Services.OrganizationSerivces
 		{
 			if(orgId is null)
 			{
-				throw new ArgumentNullException(nameof(orgId));
+				throw new UnauthorizedException(_localization["ObjectNotFound"].Value);
 			}
 
 			Employee employee = _mapper.Map<Employee>(model);
 			employee.OrgId = orgId;
-			string password = string.Empty;
 			employee.UserName = model.Email.Split('@')[0].ToLower() + (model.NationalId % 10000).ToString() + '@' + "wasla.com";
+			string password = string.Empty;
 			var rand = new Random();
 
 			for (int i = 0; i < 5; i++)
@@ -218,9 +235,152 @@ namespace Wasla.Services.OrganizationSerivces
 				if (employee.PhotoUrl is not null) await _mediaSerivce.RemoveAsync(employee.PhotoUrl);
 
 				_response.Message = _localization["RegisterFail"];
+				_response.IsSuccess = false;
 			}
+			//TODO: add employee to role
+			//result = await _userManager.AddToRoleAsync(employee, "Employee");
 
 			return _response;
 		}
+		public async Task<BaseResponse> DeleteEmployeeAsync(string employeeId)
+		{
+			var user = _context.Employees.Find(employeeId); ;
+
+			if (user is null)
+			{
+				throw new NotFoundException(_localization["UserNotFound"]);
+			}
+
+			if(user.PhotoUrl is not null)
+			{
+				await _mediaSerivce.RemoveAsync(user.PhotoUrl);
+			}
+
+			await _userManager.DeleteAsync(user);
+
+			_response.Message = _localization["RemovedSuccessfully"].Value;
+
+			return _response;
+		}
+		public async Task<BaseResponse>GetAllDrivers(string? orgId)
+		{
+			if(orgId is null)
+			{
+				throw new UnauthorizedException(_localization["ObjectNotFound"].Value);
+			}
+
+			var driver = await _context.Drivers.Where(d => d.OrganizationId == orgId).Select(d => new
+			{
+				Id=d.Id,
+				Name = d.FirstName + ' ' + d.LastName,
+			}).ToListAsync();
+
+			_response.Data = driver;
+
+			return _response;
+		}
+		#region Ads
+		public async Task<BaseResponse> AddAdsAsync(AdsDto model)
+		{
+			var adsFound = await _context.Advertisments.AnyAsync(ads => ads.Name == model.Name);
+
+			if (adsFound)
+			{
+				throw new BadRequestException(_localization["RepeatedName"].Value);
+			}
+
+			Advertisment newAds = _mapper.Map<Advertisment>(model);
+			newAds.ImageUrl = await _mediaSerivce.AddAsync(model.ImageFile);
+
+			await _context.Advertisments.AddAsync(newAds);
+			await _context.SaveChangesAsync();
+
+			_response.Message = _localization["CreatedAdsSuccess"].Value;
+
+			return _response;
+		}
+		public async Task<BaseResponse> AddAdsToVehicleAsync(int adsId, int vehicleId)
+		{
+			var vehicle = await _context.Vehicles.FindAsync(vehicleId);
+
+			var ads = await _context.Advertisments.FindAsync(adsId);
+
+			if (vehicle is null || ads is null)
+			{
+				throw new BadRequestException(_localization["ObjectNotFound"].Value);
+			}
+
+			vehicle.Advertisment.Add(ads);
+
+			_context.Update(vehicle);
+			await _context.SaveChangesAsync();
+
+			_response.Message = _localization["save"].Value;
+			return _response;
+		}
+		public async Task<BaseResponse> ReomveAdsFromVehicleAsync(int adsId, int vehicleId)
+		{
+			var vehicle = await _context.Vehicles.FindAsync(vehicleId);
+
+			var ads = await _context.Advertisments.FindAsync(adsId);
+
+			if (vehicle is null || ads is null)
+			{
+				throw new BadRequestException(_localization["ObjectNotFound"].Value);
+			}
+			vehicle.Advertisment.Remove(ads);
+
+			_context.Update(vehicle);
+			await _context.SaveChangesAsync();
+
+			_response.Message = _localization["Removed"].Value;
+			return _response;
+		}
+		public async Task<BaseResponse> UpdateAdsAsync(int adsId, AdsDto model)
+		{
+			var ads = await _context.Advertisments.FindAsync(adsId);
+
+			if (ads is null)
+			{
+				throw new KeyNotFoundException(_localization["ObjectNotFound"].Value);
+			}
+
+			if (_context.Advertisments.Any(ad => ad.Name == model.Name && ad.Id != adsId))
+			{
+				throw new BadRequestException(_localization["RepeatedName"].Value);
+			}
+
+			ads.StartDate = model.StartDate;
+			ads.EndDate = model.EndDate;
+			ads.Name = model.Name;
+			if (model.ImageFile is not null)
+			{
+				await _mediaSerivce.RemoveAsync(ads.ImageUrl);
+				ads.ImageUrl = await _mediaSerivce.AddAsync(model.ImageFile);
+			}
+
+			_context.Update(ads);
+			await _context.SaveChangesAsync();
+
+			_response.Message = _localization["SuccessProcess"].Value;
+			return _response;
+		}
+		public async Task<BaseResponse> DeleteAdsAsync(int adsId)
+		{
+			var ads = await _context.Advertisments.FindAsync(adsId);
+
+			if (ads is null)
+			{
+				throw new KeyNotFoundException(_localization["ObjectNotFound"].Value);
+			}
+
+			_context.Remove(ads);
+			await _context.SaveChangesAsync();
+
+			_response.Message = _localization["Removed"].Value;
+			return _response;
+		} 
+		#endregion
+
 	} 
 }
