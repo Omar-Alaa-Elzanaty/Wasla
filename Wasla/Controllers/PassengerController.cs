@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Wasla.Services.PassangerServices;
 namespace Wasla.Api.Controllers
 {
@@ -15,10 +16,17 @@ namespace Wasla.Api.Controllers
 			_passangerService = passangerService;
 		}
 
-		[HttpGet]
-		public async Task<IActionResult> SetsStatus()
+		[HttpGet("tripSets/{tripId}")]
+		public async Task<IActionResult> SetsStatus(int tripId)
 		{
-			return Ok(await _passangerService.SetsRecordsAsync(0));
+			return Ok(await _passangerService.SetsRecordsAsync(tripId));
+		}
+		[HttpPost("trip/Reserve/{tripId}")]
+		public async Task<IActionResult> ReserveTicket([FromBody] List<int> SetsNumbers,int tripId)
+		{
+			var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+			return Ok(await _passangerService.ReservationAsync(SetsNumbers, tripId, userId));
 		}
 	}
 }

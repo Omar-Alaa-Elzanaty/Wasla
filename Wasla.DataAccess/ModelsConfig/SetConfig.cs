@@ -15,9 +15,7 @@ namespace Wasla.DataAccess.ModelsConfig
 		{
 			builder.HasKey(s => new { s.setNum, s.TripId });
 
-			builder.HasOne<>()
-				.WithMany()
-				.HasForeignKey(i => i.TripId);
+			
 		}
 	}
 }

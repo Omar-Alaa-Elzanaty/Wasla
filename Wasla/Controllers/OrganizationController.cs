@@ -13,6 +13,7 @@ namespace Wasla.Api.Controllers
 	[Route("api/[controller]")]
 	[ApiController]
 	//[Authorize(Roles ="Organization")]
+	//TODO: get orgId depend on user type
 	public class OrganizationController : ControllerBase
 	{
 		private readonly IOrganizationService _orgService;
@@ -117,5 +118,7 @@ namespace Wasla.Api.Controllers
 
 			return Ok(await _orgService.GetAllDrivers(orgId));
 		}
+
+		//TODO: prepare ads services (already implemented)
 	}
 }
