@@ -48,6 +48,8 @@
   "RoleAlreadyExsit": "this role is already exsit",
   "ObjectNotFound": "Required object not found",
   "RepeatedName": "Name already exist",
+  "RepeatedData": "There are reapeted data",
+  "ReachToLimit": "You reach to limit",
   //success
   "PhoneNumberValid": "Phone number is valid",
   "EmailValid": "Email valid to use",

@@ -28,6 +28,7 @@ namespace Wasla.Services.MediaSerivces
 		{
 			return true;
 		}
+		//TODO: 
 		bool IsImageExtension(string ext) => (ext == ".PNG" || ext == ".jpg");
 		bool IsVideoExtension(string ext) => (ext == "d" || ext == "dd");
 
@@ -64,40 +65,33 @@ namespace Wasla.Services.MediaSerivces
 			}
 			using (Stream fileStreams = new FileStream(Path.Combine(MediaFolderPath, file + Extension), FileMode.Create))
 			{
-				await media.CopyToAsync(fileStreams);
+				media.CopyTo(fileStreams);
 				fileStreams.Flush();
 				fileStreams.Dispose();
 			}
 
 			return path + file + Extension;
 		}
-        public async Task RemoveAsync(string url)
+        public async Task DeleteAsync(string url)
 		{
-			try
-			{
-				string RootPath = _host.WebRootPath.Replace("\\\\", "\\");
-				var mediaNameToDelete = Path.GetFileNameWithoutExtension(url);
-				var EXT = Path.GetExtension(url);
-				string? oldPath = "";
-				if (IsVideoExtension(EXT))
-					oldPath = $@"{RootPath}\Videos\{mediaNameToDelete}{EXT}";
-				else if (IsImageExtension(EXT))
-					oldPath = $@"{RootPath}\Images\{mediaNameToDelete}{EXT}";
-				else
-				{
-					throw new BadRequestException(_localization["DeleteMediaFail"].Value);
-				}
-				if (File.Exists(oldPath))
-				{
-					File.Delete(oldPath);
-					return;
-				}
-				throw new BadRequestException(_localization["NotFoundMedia"].Value);
-			}
-			catch
+			string RootPath = _host.WebRootPath.Replace("\\\\", "\\");
+			var mediaNameToDelete = Path.GetFileNameWithoutExtension(url);
+			var EXT = Path.GetExtension(url);
+			string? oldPath = "";
+			if (IsVideoExtension(EXT))
+				oldPath = $@"{RootPath}\Videos\{mediaNameToDelete}{EXT}";
+			else if (IsImageExtension(EXT))
+				oldPath = $@"{RootPath}\Images\{mediaNameToDelete}{EXT}";
+			else
 			{
 				throw new BadRequestException(_localization["DeleteMediaFail"].Value);
 			}
+			if (File.Exists(oldPath))
+			{
+				File.Delete(oldPath);
+				return;
+			}
+			throw new BadRequestException(_localization["NotFoundMedia"].Value);
 		}
         public async Task<string> UpdateAsync(string oldUrl, IFormFile newMedia)
         {
@@ -125,7 +119,7 @@ namespace Wasla.Services.MediaSerivces
 				return oldUrl;
 			}
 
-			await RemoveAsync(oldUrl);
+			await DeleteAsync(oldUrl);
 
 			var addResult = await AddAsync(newMedia);
 			if (addResult == null)

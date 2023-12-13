@@ -26,7 +26,6 @@ namespace Wasla.Model.Models
 		public int AdsSidesNumber { get; set; }
 		public string ImageUrl { get; set; }
 		public string? OrganizationId { get; set; }
-		public virtual Organization? Orgainzation { get; set; }
 		public virtual List<Advertisment> Advertisment { get; set; }
 		public virtual List<Trip> Trips { get; set; }
 		public virtual ICollection<VehicleRate> Rates { get; set; }

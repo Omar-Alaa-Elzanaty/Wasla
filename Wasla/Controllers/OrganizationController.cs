@@ -13,7 +13,6 @@ namespace Wasla.Api.Controllers
 	[Route("api/[controller]")]
 	[ApiController]
 	//[Authorize(Roles ="Organization")]
-	//TODO: get orgId depend on user type
 	public class OrganizationController : ControllerBase
 	{
 		private readonly IOrganizationService _orgService;
@@ -24,30 +23,14 @@ namespace Wasla.Api.Controllers
 			_orgService = organizationService;
 			_userManager = userManager;
 		}
-		[HttpGet("vehicle/displayAll")]
-		public async Task<IActionResult> DisplayVehicles()
+		[HttpGet("{orgId}/vehicles")]
+		public async Task<IActionResult> DisplayVehicles(string orgId)
 		{
-			var userName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-			string? orgId = null;
-			if (userName is not null)
-			{
-				orgId = _userManager.FindByNameAsync(userName).Result?.Id;
-			}
-
 			return Ok(await _orgService.DisplayVehicles(orgId));
 		}
-		[HttpPost("vehicle/add")]
-		public async Task<IActionResult> AddVehicle([FromForm] VehicleDto model)
-		{
-			var userName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-			string? orgId = null;
-			if (userName is not null)
-			{
-				orgId = _userManager.FindByNameAsync(userName).Result?.Id;
-			}
-
+		[HttpPost("{orgId}/vehicle/add")]
+		public async Task<IActionResult> AddVehicle([FromForm] VehicleDto model,string orgId)
+		{ 
 			return Ok(await _orgService.AddVehicleAsync(model, orgId));
 		}
 		[HttpPut("vehicle/update/{vehicleId}")]
@@ -56,48 +39,24 @@ namespace Wasla.Api.Controllers
 
 			return Ok(await _orgService.UpdateVehicleAsync(model, vehicleId));
 		}
-		[HttpDelete("vehicle/delete")]
+		[HttpDelete("vehicle/delete/{vehicleId}")]
 		public async Task<IActionResult>DeleteVehicle(int vehicleId)
 		{
 			return Ok(await _orgService.DeleteVehicleAsync(vehicleId));
 		}
-		[HttpPost("driver/add")]
-		public async Task<IActionResult> AddDriver([FromForm]OrgDriverDto model)
+		[HttpPost("{orgId}/driver/add")]
+		public async Task<IActionResult> AddDriver([FromForm]OrgDriverDto model,string orgId)
 		{
-			var userName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-			string? orgId = null;
-			if (userName is not null)
-			{
-				orgId = _userManager.FindByNameAsync(userName).Result?.Id;
-			}
-
 			return Ok(await _orgService.AddDriverAsync(model,orgId));
 		}
-		[HttpGet("vehicle/vehicleAnalysis")]
-		public async Task<IActionResult> VehicleAnalysis()
+		[HttpGet("{orgId}/vehicle/vehicle-analysis")]
+		public async Task<IActionResult> VehicleAnalysis(string orgId)
 		{
-			var userName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-			string? orgId = null;
-			if (userName is not null)
-			{
-				orgId = _userManager.FindByNameAsync(userName).Result?.Id;
-			}
-
 			return Ok(await _orgService.VehicleAnalysisAsync(orgId??""));
 		}
-		[HttpPost("employee/add")]
-		public async Task<IActionResult> AddEmployee([FromForm]EmployeeRegisterDto model)
+		[HttpPost("{orgId}/employee/add")]
+		public async Task<IActionResult> AddEmployee([FromForm]EmployeeRegisterDto model,string orgId)
 		{
-			var userName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-			string? orgId = null;
-			if(userName is not null)
-			{
-				orgId = _userManager.FindByNameAsync(userName).Result?.Id;
-			}
-
 			return Ok(await _orgService.AddEmployeeAsync(model,orgId));
 		}
 		[HttpDelete("employee/delete/{empId}")]
@@ -105,20 +64,37 @@ namespace Wasla.Api.Controllers
 		{
 			return Ok(await _orgService.DeleteEmployeeAsync(empId));
 		}
-		[HttpGet("drvier/displayAll")]
-		public async Task<IActionResult> GetAllDrivers()
+		[HttpGet("{orgId}/drviers")]
+		public async Task<IActionResult> GetAllDrivers(string orgId)
 		{
-			var userName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
-			string? orgId = null;
-			if (userName is not null)
-			{
-				orgId = _userManager.FindByNameAsync(userName).Result?.Id;
-			}
-
 			return Ok(await _orgService.GetAllDrivers(orgId));
 		}
-
-		//TODO: prepare ads services (already implemented)
+		#region Ads
+		[HttpPost("{orgId}/ads/add")]
+		public async Task<IActionResult> AddAds([FromForm]AdsDto model, string orgId)
+		{
+			return Ok(await _orgService.AddAdsAsync(model, orgId));
+		}
+		[HttpPost("vehicle/{vehicleId}/ads/add/{adsId}")]
+		public async Task<IActionResult> AddVehicleAds(int adsId, int vehicleId)
+		{
+			return Ok(await _orgService.AddAdsToVehicleAsync(adsId, vehicleId));
+		}
+		[HttpDelete("vehicle/{vehicleId}/ads/remove/{adsId}")]
+		public async Task<IActionResult> RemoveVehicleAds(int adsId, int vehicleId)
+		{
+			return Ok(await _orgService.RemoveAdsFromVehicleAsync(adsId, vehicleId));
+		}
+		[HttpPut("ads/update/{adsId}")]
+		public async Task<IActionResult> UpdateAds(int adsId,[FromForm] AdsDto model)
+		{
+			return Ok(await _orgService.UpdateAdsAsync(adsId, model));
+		}
+		[HttpDelete("ads/delete/adsId")]
+		public async Task<IActionResult> DeleteAds(int adsId)
+		{
+			return Ok(await _orgService.DeleteAdsAsync(adsId));
+		} 
+		#endregion
 	}
 }

@@ -49,6 +49,8 @@
   "RoleAlreadyExsit": "موحودع بالفعل",
   "ObjectNotFound": "لم يتم العثور على العنصر",
   "RepeatedName": "الاسم مستخدم مسبقا",
+  "RepeatedData": "يوجد تكرار فى اليانات",
+  "ReachToLimit": "لقد وصلت للحد الاقصى",
   //success
 
   "PhoneNumberValid": "رقم الهاتف صالح للاستخدام",

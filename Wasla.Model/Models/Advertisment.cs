@@ -13,6 +13,7 @@ namespace Wasla.Model.Models
 		public DateTime StartDate { get; set; }
 		public DateTime EndDate { get; set; }
 		public string ImageUrl { get; set; }
+		public string organizationId { get; set; }
 		public virtual ICollection<Vehicle> Busses { get; set; }
 	}
 }

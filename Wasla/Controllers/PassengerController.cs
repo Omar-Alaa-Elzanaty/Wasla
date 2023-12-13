@@ -4,7 +4,7 @@ using System.Security.Claims;
 using Wasla.Services.PassangerServices;
 namespace Wasla.Api.Controllers
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class PassengerController : ControllerBase
     {
@@ -21,11 +21,9 @@ namespace Wasla.Api.Controllers
 		{
 			return Ok(await _passangerService.SetsRecordsAsync(tripId));
 		}
-		[HttpPost("trip/Reserve/{tripId}")]
-		public async Task<IActionResult> ReserveTicket([FromBody] List<int> SetsNumbers,int tripId)
+		[HttpPost("{userId}/trip/reserve/{tripId}")]
+		public async Task<IActionResult> ReserveTicket([FromBody] List<int> SetsNumbers,int tripId,string userId)
 		{
-			var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-
 			return Ok(await _passangerService.ReservationAsync(SetsNumbers, tripId, userId));
 		}
 	}

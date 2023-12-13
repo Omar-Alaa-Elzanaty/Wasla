@@ -12,8 +12,8 @@ using Wasla.DataAccess;
 namespace Wasla.DataAccess.Migrations
 {
     [DbContext(typeof(WaslaDb))]
-    [Migration("20231212102716_addTables")]
-    partial class addTables
+    [Migration("20231213080158_editvehicleorg")]
+    partial class editvehicleorg
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -266,6 +266,10 @@ namespace Wasla.DataAccess.Migrations
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<string>("organizationId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -603,9 +607,7 @@ namespace Wasla.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("OrganizationId")
-                        .IsUnique()
-                        .HasFilter("[OrganizationId] IS NOT NULL");
+                    b.HasIndex("OrganizationId");
 
                     b.ToTable("Vehicles");
                 });
@@ -946,12 +948,9 @@ namespace Wasla.DataAccess.Migrations
 
             modelBuilder.Entity("Wasla.Model.Models.Vehicle", b =>
                 {
-                    b.HasOne("Wasla.Model.Models.Organization", "Orgainzation")
-                        .WithOne()
-                        .HasForeignKey("Wasla.Model.Models.Vehicle", "OrganizationId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.Navigation("Orgainzation");
+                    b.HasOne("Wasla.Model.Models.Organization", null)
+                        .WithMany("Vehicles")
+                        .HasForeignKey("OrganizationId");
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.VehicleRate", b =>
@@ -1057,6 +1056,8 @@ namespace Wasla.DataAccess.Migrations
                     b.Navigation("Stations");
 
                     b.Navigation("TripList");
+
+                    b.Navigation("Vehicles");
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.Customer", b =>

@@ -14,8 +14,6 @@ namespace Wasla.DataAccess.ModelsConfig
 		public void Configure(EntityTypeBuilder<Set> builder)
 		{
 			builder.HasKey(s => new { s.setNum, s.TripId });
-
-			
 		}
 	}
 }

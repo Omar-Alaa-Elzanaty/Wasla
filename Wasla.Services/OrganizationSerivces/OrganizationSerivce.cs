@@ -11,9 +11,11 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
+using Twilio.Rest.Video.V1.Room.Participant;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
+using Wasla.Model.Helpers.Statics;
 using Wasla.Model.Models;
 using Wasla.Services.Exceptions;
 using Wasla.Services.MediaSerivces;
@@ -43,13 +45,8 @@ namespace Wasla.Services.OrganizationSerivces
 			_userManager = userManager;
 		}
 
-		public async Task<BaseResponse>DisplayVehicles(string? orgId)
+		public async Task<BaseResponse>DisplayVehicles(string orgId)
 		{
-			if (orgId is null)
-			{
-				throw new UnauthorizedException(_localization["ObjectNotFound"].Value);
-			}
-
 			_response.Data = await _context.Vehicles.Where(v => v.OrganizationId == orgId).Select(v => new
 			{
 				v.Id,
@@ -74,7 +71,7 @@ namespace Wasla.Services.OrganizationSerivces
 			{
 				car.ImageUrl = await _mediaSerivce.AddAsync(vehicleModel.ImageFile);
 			}
-			_context.Add(car);
+			await _context.Vehicles.AddAsync(car);
 			_ = await _context.SaveChangesAsync();
 
 			return _response;
@@ -88,6 +85,11 @@ namespace Wasla.Services.OrganizationSerivces
 				throw new KeynotFoundException(_localization["ObjectNotFound"].Value);
 			}
 
+			if(await _context.Vehicles.AnyAsync(v => v.Id != vehicleId && v.LicenseNumber == model.LicenseNumber && v.LicenseWord == model.LicenseWord))
+			{
+				throw new BadRequestException(_localization["RepeatedData"].Value);
+			}
+
 			vehicle.Capcity = model.Capcity;
 			vehicle.PackageCapcity = model.PackageCapcity;
 			vehicle.Category = model.Category;
@@ -98,7 +100,7 @@ namespace Wasla.Services.OrganizationSerivces
 
 			if (model.ImageFile is not null)
 			{
-				await _mediaSerivce.RemoveAsync(vehicle.ImageUrl);
+				await _mediaSerivce.DeleteAsync(vehicle.ImageUrl);
 				vehicle.ImageUrl = await _mediaSerivce.AddAsync(model.ImageFile);
 			}
 
@@ -115,8 +117,12 @@ namespace Wasla.Services.OrganizationSerivces
 			{
 				throw new BadRequestException(_localization["ObjectNotFound"].Value);
 			}
+			var imageUrl = vehicle.ImageUrl;
 
 			_context.Vehicles.Remove(vehicle);
+			await _context.SaveChangesAsync();
+
+			await _mediaSerivce.DeleteAsync(imageUrl);
 
 			_response.Message = _localization["RemovedSuccessfully"].Value;
 			return _response;
@@ -140,13 +146,8 @@ namespace Wasla.Services.OrganizationSerivces
 
 			return _response;
 		}
-		public async Task<BaseResponse> AddDriverAsync(OrgDriverDto model, string? orgId)
+		public async Task<BaseResponse> AddDriverAsync(OrgDriverDto model, string orgId)
 		{
-			if (orgId == null)
-			{
-				throw new UnauthorizedException(_localization["ObjectNotFound"].Value);
-			}
-
 			if (await _context.Drivers.AnyAsync(od => (od.NationalId == model.NationalId
 									|| od.PhoneNumber == model.PhoneNumber
 									|| od.LicenseNum == model.LicenseNumber
@@ -178,33 +179,30 @@ namespace Wasla.Services.OrganizationSerivces
 					var result = await _userManager.CreateAsync(newDriver, model.Password);
 					if (result is null || !result.Succeeded)
 					{
-						string errors = string.Empty;
-						foreach (var error in result.Errors)
-						{
-							errors += error + ", ";
-						}
-						throw new BadRequestException(errors);
+						throw new BadRequestException(HelperServices.CollectIdentityResultErrors(result));
 					}
+					result = await _userManager.AddToRoleAsync(newDriver, Roles.Role_Driver);
+
+					if(result is null || !result.Succeeded)
+					{
+						throw new BadRequestException(HelperServices.CollectIdentityResultErrors(result));
+					}
+
 					await trans.CommitAsync();
 				}
 				catch (Exception)
 				{
 					await trans.RollbackAsync();
 
-					if (!newDriver.LicenseImageUrl.IsNullOrEmpty()) await _mediaSerivce.RemoveAsync(newDriver.LicenseImageUrl);
+					if (!newDriver.LicenseImageUrl.IsNullOrEmpty()) await _mediaSerivce.DeleteAsync(newDriver.LicenseImageUrl);
 
-					if (!newDriver.PhotoUrl.IsNullOrEmpty()) await _mediaSerivce.RemoveAsync(newDriver.PhotoUrl);
+					if (!newDriver.PhotoUrl.IsNullOrEmpty()) await _mediaSerivce.DeleteAsync(newDriver.PhotoUrl);
 				}
 			}
 			return _response;
 		}
-		public async Task<BaseResponse> AddEmployeeAsync(EmployeeRegisterDto model,string? orgId)
+		public async Task<BaseResponse> AddEmployeeAsync(EmployeeRegisterDto model,string orgId)
 		{
-			if(orgId is null)
-			{
-				throw new UnauthorizedException(_localization["ObjectNotFound"].Value);
-			}
-
 			Employee employee = _mapper.Map<Employee>(model);
 			employee.OrgId = orgId;
 			employee.UserName = model.Email.Split('@')[0].ToLower() + (model.NationalId % 10000).ToString() + '@' + "wasla.com";
@@ -232,7 +230,7 @@ namespace Wasla.Services.OrganizationSerivces
 				{
 					errors += error.Description + ", ";
 				}
-				if (employee.PhotoUrl is not null) await _mediaSerivce.RemoveAsync(employee.PhotoUrl);
+				if (employee.PhotoUrl is not null) await _mediaSerivce.DeleteAsync(employee.PhotoUrl);
 
 				_response.Message = _localization["RegisterFail"];
 				_response.IsSuccess = false;
@@ -253,7 +251,7 @@ namespace Wasla.Services.OrganizationSerivces
 
 			if(user.PhotoUrl is not null)
 			{
-				await _mediaSerivce.RemoveAsync(user.PhotoUrl);
+				await _mediaSerivce.DeleteAsync(user.PhotoUrl);
 			}
 
 			await _userManager.DeleteAsync(user);
@@ -262,13 +260,8 @@ namespace Wasla.Services.OrganizationSerivces
 
 			return _response;
 		}
-		public async Task<BaseResponse>GetAllDrivers(string? orgId)
-		{
-			if(orgId is null)
-			{
-				throw new UnauthorizedException(_localization["ObjectNotFound"].Value);
-			}
-
+		public async Task<BaseResponse>GetAllDrivers(string orgId)
+		{ 
 			var driver = await _context.Drivers.Where(d => d.OrganizationId == orgId).Select(d => new
 			{
 				Id=d.Id,
@@ -280,7 +273,7 @@ namespace Wasla.Services.OrganizationSerivces
 			return _response;
 		}
 		#region Ads
-		public async Task<BaseResponse> AddAdsAsync(AdsDto model)
+		public async Task<BaseResponse> AddAdsAsync(AdsDto model,string orgId)
 		{
 			var adsFound = await _context.Advertisments.AnyAsync(ads => ads.Name == model.Name);
 
@@ -290,6 +283,7 @@ namespace Wasla.Services.OrganizationSerivces
 			}
 
 			Advertisment newAds = _mapper.Map<Advertisment>(model);
+			newAds.organizationId= orgId;
 			newAds.ImageUrl = await _mediaSerivce.AddAsync(model.ImageFile);
 
 			await _context.Advertisments.AddAsync(newAds);
@@ -310,6 +304,11 @@ namespace Wasla.Services.OrganizationSerivces
 				throw new BadRequestException(_localization["ObjectNotFound"].Value);
 			}
 
+			if(vehicle.Advertisment.Count()==vehicle.AdsSidesNumber)
+			{
+				throw new BadRequestException(_localization["ReachToLimit"].Value);
+			}
+
 			vehicle.Advertisment.Add(ads);
 
 			_context.Update(vehicle);
@@ -318,7 +317,7 @@ namespace Wasla.Services.OrganizationSerivces
 			_response.Message = _localization["save"].Value;
 			return _response;
 		}
-		public async Task<BaseResponse> ReomveAdsFromVehicleAsync(int adsId, int vehicleId)
+		public async Task<BaseResponse> RemoveAdsFromVehicleAsync(int adsId, int vehicleId)
 		{
 			var vehicle = await _context.Vehicles.FindAsync(vehicleId);
 
@@ -355,7 +354,7 @@ namespace Wasla.Services.OrganizationSerivces
 			ads.Name = model.Name;
 			if (model.ImageFile is not null)
 			{
-				await _mediaSerivce.RemoveAsync(ads.ImageUrl);
+				await _mediaSerivce.DeleteAsync(ads.ImageUrl);
 				ads.ImageUrl = await _mediaSerivce.AddAsync(model.ImageFile);
 			}
 
@@ -374,13 +373,28 @@ namespace Wasla.Services.OrganizationSerivces
 				throw new KeyNotFoundException(_localization["ObjectNotFound"].Value);
 			}
 
-			_context.Remove(ads);
-			await _context.SaveChangesAsync();
+			var imageUrl = ads.ImageUrl;
+			using (var trans = await _context.Database.BeginTransactionAsync())
+			{
+				try
+				{
+					_context.Remove(ads);
+					await _context.SaveChangesAsync();
+					await _mediaSerivce.DeleteAsync(imageUrl);
+
+					await trans.CommitAsync();
+				}
+				catch
+				{
+					await trans.RollbackAsync();
+					throw;
+				}
+			}
+
 
 			_response.Message = _localization["Removed"].Value;
 			return _response;
 		} 
 		#endregion
-
 	} 
 }
