@@ -1,13 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 using Wasla.Model.Dtos;
-using Twilio.Rest.Api.V2010.Account;
 using Wasla.Model.Helpers;
-using Wasla.Model.Models;
-
 namespace Wasla.Services.Authentication.AuthServices
 {
     public interface IAuthService
@@ -31,12 +24,13 @@ namespace Wasla.Services.Authentication.AuthServices
         Task<BaseResponse> ConfirmEmailAsync(ConfirmEmailDto confirmEmailDto);
         Task <BaseResponse> ResetPasswordByphoneAsync(ResetPasswordDto resetPassword);
         Task<BaseResponse> ResetPasswordByEmailAsync(ResetPasswordDto resetPassword);
-        Task<BaseResponse> ChangePasswordByEmailAsync(ChangePasswordDto changePassword);
-        Task<BaseResponse> ChangePasswordByPhoneAsync(ChangePasswordDto changePassword);
+        Task<BaseResponse> ChangePasswordAsync(ChangePasswordDto changePassword);
         Task<BaseResponse> CreateOrgRole(AddOrgAdmRole addRole);
         Task<BaseResponse> GetOrgRoles(string userName);
         Task<BaseResponse> GetRolePermissions(string roleName);
         Task<BaseResponse> GetAllPermissionsAsync();
         Task<BaseResponse> AddRolePermissions(CreateRolePermissions rolePermissions);
+        Task<string> gnOtp();
+
     }
 }

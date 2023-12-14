@@ -18,9 +18,6 @@ namespace Wasla.DataAccess.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.13")
-                .HasAnnotation("Proxies:ChangeTracking", false)
-                .HasAnnotation("Proxies:CheckEquality", false)
-                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -445,11 +442,11 @@ namespace Wasla.DataAccess.Migrations
 
             modelBuilder.Entity("Wasla.Model.Models.Station", b =>
                 {
-                    b.Property<string>("OrganizationId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("StationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StationId"));
 
                     b.Property<string>("Langtitude")
                         .IsRequired()
@@ -459,9 +456,19 @@ namespace Wasla.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("OrganizationId", "Name");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("Station");
+                    b.Property<string>("OrganizationId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("StationId");
+
+                    b.HasIndex("OrganizationId");
+
+                    b.ToTable("Stations");
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.Trip", b =>

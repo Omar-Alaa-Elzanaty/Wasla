@@ -18,12 +18,10 @@ using Twilio.Rest.Api.V2010.Account;
 using Microsoft.Extensions.Localization;
 using Wasla.DataAccess;
 using Wasla.Services.MediaSerivces;
-using Microsoft.Extensions.Logging;
 using System.Text.RegularExpressions;
 using Wasla.Services.Authentication.AuthHelperService.FactorService.IFactory;
 using Wasla.Services.EmailServices;
 using Wasla.Model.Helpers.Statics;
-using Twilio.Types;
 
 namespace Wasla.Services.Authentication.AuthServices
 {
@@ -94,19 +92,17 @@ namespace Wasla.Services.Authentication.AuthServices
             return false;
         }
 
-        public async Task<BaseResponse> PassengerRegisterAsync(PassengerRegisterDto Input)
+        public async Task<BaseResponse> PassengerRegisterAsync(PassengerRegisterDto input)
         {
-            _ = await CheckPhoneNumber(Input.PhoneNumber);
-            _ = await CheckUserName(Input.UserName);
+            if (input.Email == null && input.PhoneNumber == null)
+                throw new BadRequestException(_localization["phoneOremailRequired"].Value);
+            if (input.PhoneNumber is not null) await CheckPhoneNumber(input.PhoneNumber);
+            if (input.Email is not null) await CheckEmail(input.Email);
+            _ = await CheckUserName(input.UserName);
 
-            if (Input.Email != null)
-            {
-                await CheckEmail(Input.Email);
-            }
-
-            var user = _mapper.Map<Customer>(Input);
-            var result = await _userManager.CreateAsync(user, Input.Password);
-            var role = Roles.Role_Rider;
+            var user = _mapper.Map<Customer>(input);
+            var result = await _userManager.CreateAsync(user, input.Password);
+            var role = Roles.Role_Passenger;
             if (!result.Succeeded)
             {
                 throw new BadRequestException(_localization["RegisterFaild"].Value);
@@ -114,7 +110,7 @@ namespace Wasla.Services.Authentication.AuthServices
             await _userManager.AddToRoleAsync(user, role);
 
             var tokens = await GetTokenhelp(user, role);
-            var response = await _baseFactory.BaseAuthResponseAsync(tokens);
+            var response = await _baseFactory.BaseAuthResponseAsync(tokens,role);
             response.Message = _localization["RegisterSucccess"].Value;
 
             return response;
@@ -168,8 +164,6 @@ namespace Wasla.Services.Authentication.AuthServices
             user.LicenseImageUrl = await _mediaServices.AddAsync(model.LicenseImageFile);
             user.PhotoUrl = await _mediaServices.AddAsync(model.ProfileImageFile);
             var role = Roles.Role_Driver;
-          /*  var newRefreshToken = GenerateRefreshToken();
-            user.RefreshTokens.Add(newRefreshToken);*/
 
             using (var transaction = await _dbContext.Database.BeginTransactionAsync())
             {
@@ -187,25 +181,10 @@ namespace Wasla.Services.Authentication.AuthServices
                 await transaction.CommitAsync();
             }
             var tokens = await GetTokenhelp(user,role);
-            var response = await _baseFactory.BaseAuthResponseAsync(tokens);
+            var response = await _baseFactory.BaseAuthResponseAsync(tokens,role);
             response.Message = _localization["RegisterSucccess"].Value;
             return response;
-            /*  var jwtSecurityToken = await CreateToken(user);
-              var driverResponse = new DataAuthResponse();
-              driverResponse.ConnectionData.Email = user.Email;
-              driverResponse.UserName = user.UserName;
-              driverResponse.ConnectionData.phone = user.PhoneNumber;
-              driverResponse.TokensData.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
-              driverResponse.IsAuthenticated = true;
-              driverResponse.TokensData.TokenExpiryDate = jwtSecurityToken.ValidTo;
-              driverResponse.Role = Roles.Role_Driver;
-              driverResponse.TokensData.RefreshToken = newRefreshToken.RefToken;
-              driverResponse.TokensData.RefTokenExpiryDate = newRefreshToken.ExpiresOn;
-
-              _response.Message = _localization["RegisterSucccess"].Value;
-              _response.Data = driverResponse;
-
-              return _response;*/
+          
         }
 
 
@@ -260,24 +239,9 @@ namespace Wasla.Services.Authentication.AuthServices
             _response.Message = _localization["EmailConfirmSuccess"].Value;
             return _response;
         }
-        public async Task<BaseResponse> ChangePasswordByPhoneAsync(ChangePasswordDto changePassword)
+        public async Task<BaseResponse> ChangePasswordAsync(ChangePasswordDto changePassword)
         {
-            var user = await getUserByPhone(changePassword.UserName);
-            if (!await _userManager.CheckPasswordAsync(user, changePassword.OldPassword))
-            {
-                throw new BadRequestException(_localization["userOrpasswordNotCorrect"].Value);
-            }
-            var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var result = await _userManager.ResetPasswordAsync(user, resetToken, changePassword.NewPassword);
-            if (!result.Succeeded)
-                throw new BadRequestException(_localization["ResetPassword"].Value);
-           
-            _response.Message = _localization["PasswordChanged"].Value;
-            return _response;
-        }
-        public async Task<BaseResponse> ChangePasswordByEmailAsync(ChangePasswordDto changePassword)
-        {
-            var user = await getUserByEmail(changePassword.UserName);
+            var user = await getUserByToken(changePassword.token);
             if (!await _userManager.CheckPasswordAsync(user, changePassword.OldPassword))
             {
                 throw new BadRequestException(_localization["userOrpasswordNotCorrect"].Value);
@@ -290,6 +254,7 @@ namespace Wasla.Services.Authentication.AuthServices
             _response.Message = _localization["PasswordChanged"].Value;
             return _response;
         }
+       
         public async Task<BaseResponse> ResetPasswordByphoneAsync(ResetPasswordDto resetPassword)
         {
             var user = await getUserByPhone(resetPassword.UserName);
@@ -330,9 +295,18 @@ namespace Wasla.Services.Authentication.AuthServices
             {
                 throw new BadHttpRequestException(_localization["generateRefreshToken"].Value);
             }
-            var roles = await _userManager.GetRolesAsync(user);
-            var tokens = await GetTokenhelp(user, roles[0]);
-            var response = await _baseFactory.BaseAuthResponseAsync(tokens);
+             var roles = await _userManager.GetRolesAsync(user);
+             var tokens = await GetTokenhelp(user, roles[0]);
+             string role = roles[0];
+              if (roles[0].StartsWith("Org_"))
+              {
+                if (roles[0].EndsWith("_SuperAdmin"))
+                    role = Roles.Role_Org_SuperAdmin;
+                else
+                    role=Roles.Role_Org_Employee;
+
+              }
+            var response = await _baseFactory.BaseAuthResponseAsync(tokens,role);
             response.Message = _localization["refreshTokenCreatedSuccess"].Value;
             return response;
         }
@@ -353,12 +327,12 @@ namespace Wasla.Services.Authentication.AuthServices
         }
         public async Task<BaseResponse> LoginAsync(LoginDto input)
         {
-            var org = input.role == Roles.Role_Organization;
+            var org = input.role == Roles.Role_Org_SuperAdmin;
             var checkedUser = await CheckUser(input,org);
-            if (checkedUser.role != input.role)
-                throw new UnauthorizedException(_localization["roleNotMatch"].Value);
-            var tokens = await GetTokenhelp(checkedUser.user, input.role);
-            var response = await _baseFactory.BaseAuthResponseAsync(tokens);
+           // if (checkedUser.role != input.role)
+            //    throw new UnauthorizedException(_localization["roleNotMatch"].Value);
+            var tokens = await GetTokenhelp(checkedUser.user, checkedUser.role);
+            var response = await _baseFactory.BaseAuthResponseAsync(tokens,input.role);
             response.Message = _localization["LoginSuccess"].Value;
             return response;
         }
@@ -413,9 +387,9 @@ namespace Wasla.Services.Authentication.AuthServices
 		}
         public async Task<BaseResponse> CreateOrgRole(AddOrgAdmRole addRole)
         {
-            var role = "Org_" + addRole.AdminUserName + "_" + addRole.RoleName;
+            var role = "Org_" + addRole.AdminUserName.Split('@')[0] + "_" + addRole.RoleName;
             if (await _roleManager.RoleExistsAsync(role))
-            throw new BadHttpRequestException(_localization["RoleAlreadyExsit"].Value); 
+                throw new BadHttpRequestException(_localization["RoleAlreadyExsit"].Value);
             var newRole = new IdentityRole(role);
             var result = await _roleManager.CreateAsync(newRole);
             _response.Data = result;
@@ -451,15 +425,15 @@ namespace Wasla.Services.Authentication.AuthServices
         }
         public async Task<BaseResponse> AddRolePermissions(CreateRolePermissions rolePermissions)
         {
-            var role = await _roleManager.FindByIdAsync(rolePermissions.RoleId);
-            if (role == null)
+            var roleClaim = await _roleManager.FindByNameAsync(rolePermissions.RoleName);
+            if (roleClaim == null)
                 throw new NotFoundException(_localization["roleNotFound"].Value);
-            var roleClaims = await _roleManager.GetClaimsAsync(role);
-               foreach (var claim in roleClaims)
-                await _roleManager.RemoveClaimAsync(role, claim);
-              var permissions = rolePermissions.RolePermissions;
-               foreach (var permission in permissions)
-                await _roleManager.AddClaimAsync(role, new Claim(PermissionsName.Org_Permission, permission));
+            var roleClaims = await _roleManager.GetClaimsAsync(roleClaim);
+            foreach (var claim in roleClaims)
+                await _roleManager.RemoveClaimAsync(roleClaim, claim);
+            var permissions = rolePermissions.RolePermissions;
+            foreach (var permission in permissions)
+                await _roleManager.AddClaimAsync(roleClaim, new Claim(PermissionsName.Org_Permission, permission));
             _response.Data = permissions;
             _response.Message = _localization["AddRolePermission"].Value;
             return _response;
@@ -504,10 +478,6 @@ namespace Wasla.Services.Authentication.AuthServices
                 throw new NotFoundException(_localization["PhoneNumberWrong"].Value);
             return user;
         }
-
-        /// <summary>
-        /// get user depend on its type
-        /// </summary>
         private async Task<CheckUserExit> CheckUser(LoginDto login,bool org=false)
         {
             const string emailPattern = @"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$";
@@ -542,7 +512,7 @@ namespace Wasla.Services.Authentication.AuthServices
             };
             return checkUser;
         }
-        private async Task<AuthResponseFactoryHelp> GetTokenhelp(Account user, string role)
+        private async Task<AuthResponseFactoryHelp> GetTokenhelp(Account user,string role)
         {
             var newRefreshToken = GenerateRefreshToken();
             var jwtSecurityToken = await CreateToken(user);
@@ -569,6 +539,13 @@ namespace Wasla.Services.Authentication.AuthServices
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
                 throw new NotFoundException(_localization["EmailNotFound"].Value);
+            return user;
+        }
+        private async Task<Account> getUserByToken(string token)
+        {
+            var user = await _userManager.Users.SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.RefToken == token));
+            if (user == null)
+                throw new NotFoundException(_localization["refreshTokenNotFound"].Value);
             return user;
         }
         private async Task<Account> checkEmailExitInOrgOrOrgRegister(string email)
@@ -652,6 +629,11 @@ namespace Wasla.Services.Authentication.AuthServices
             };
             _httpContextAccessor.HttpContext.Response.Cookies.Append("storeOtp", otp, cookieOptions);
         }
- 
+        public async Task<string> gnOtp()
+        {
+            string otp = await GenerateOtp();
+            SetOtpInCookie(otp);
+            return otp;
+        }
     }
 }

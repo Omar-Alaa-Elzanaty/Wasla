@@ -21,6 +21,7 @@ namespace Wasla.Services.Exceptions.FilterException
         {
             if (!context.ModelState.IsValid)
             {
+                var errors= context.ModelState.Values.Select(v=>v.Errors).ToList();
                 var httpContext = context.HttpContext;
                 httpContext.Response.ContentType = "application/json";
                 var errorResponse = new BaseResponse
@@ -31,7 +32,6 @@ namespace Wasla.Services.Exceptions.FilterException
                     Data = null,
                     Status = HttpStatusCode.BadRequest,
                     IsSuccess = false
-                    
                 };
                 context.Result = new ObjectResult(errorResponse)
                 {

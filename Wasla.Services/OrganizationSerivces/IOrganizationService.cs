@@ -16,5 +16,18 @@ namespace Wasla.Services.OrganizationSerivces
 		Task<BaseResponse> DeleteVehicleAsync(int vehicleId);
 		Task<BaseResponse> AddDriverAsync(OrgDriverDto model, string orgId);
 		Task<BaseResponse> AddEmployeeAsync(EmployeeRegisterDto model, string? orgId);
-	}
+        Task<BaseResponse> AddStationAsync(StationDto model, string orgId);
+        Task<BaseResponse> UpdateStationAsync(StationDto model,string orgId);
+        Task<BaseResponse> GetStationsAsync(string orgId);
+        Task<BaseResponse> GetStationAsync(int id);
+        Task<BaseResponse> DeleteStationAsync(int id);
+        Task<BaseResponse> AddTripAsync(AddTripDto model, string orgId);
+        Task<BaseResponse> UpdateTripAsync(UpdateTripDto model, int id);
+		Task<BaseResponse> GetTripsAsync(string orgId);
+        Task<BaseResponse> GetTripAsync(int id);
+		Task<BaseResponse> GetTripsForDriverAsync(string orgId, string driverId);
+        Task<BaseResponse> GetTripsForUserAsync(string orgId, string name);
+        Task<BaseResponse> GetTripsForUserWithToAndFromAsync(string orgId, string from, string to);
+        Task<BaseResponse> DeleteTripAsync(int id);
+    }
 }
