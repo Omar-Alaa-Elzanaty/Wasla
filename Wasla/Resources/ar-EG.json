@@ -48,6 +48,9 @@
   "roleNotFound": "لم يتم العثور علي هذا role",
   "RoleAlreadyExsit": "موحودع بالفعل",
   "ObjectNotFound": "لم يتم العثور على العنصر",
+  "RepeatedName": "الاسم مستخدم مسبقا",
+  "RepeatedData": "يوجد تكرار فى اليانات",
+  "ReachToLimit": "لقد وصلت للحد الاقصى",
   //success
 
   "PhoneNumberValid": "رقم الهاتف صالح للاستخدام",
@@ -69,10 +72,13 @@
   "getPermissionsRoleSuccess": "تم استدعاء التصريحات لهذا الدور",
   "GetAllPermissions": "تم استدعاء جميع تصريحات المؤسسه",
   "getOrgRoles": " Roles تم استدعاء جميه ",
+  "CreatedAdsSuccess": "تم اضافة الاعلان بنجاح",
   "CreateOrgRoleSuccess": "تم انشاء الدور للمؤسسه بنجاح",
   "RemovedSuccessfully": "تم الحذف بنجاح",
   "StationExist": "هذه المنطقه موحوجه بالفعل",
   "StationNotFound": "المنطقه ليس موجوده",
+  "Removed": "تم الحذف",
   "Used": "مستخدم",
-  "NotUsed": "متاح"
+  "NotUsed": "متاح",
+  "SuccessProcess": "عملية ناجحة"
 }

@@ -11,7 +11,7 @@ namespace Wasla.Services.MediaSerivces
 	public interface IMediaSerivce
 	{
 		Task<string> AddAsync(IFormFile media);
-		Task RemoveAsync(string url);
+		Task DeleteAsync(string url);
 		Task<string> UpdateAsync(string oldUrl, IFormFile newMedia);
 
 	}

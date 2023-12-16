@@ -25,6 +25,7 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<Trip,UpdateTripDto>().ReverseMap();
             CreateMap<Trip,TripDto>().ReverseMap();
             CreateMap<Trip,TripForDriverDto>().ReverseMap();
+            CreateMap<AdsDto, Advertisment>();
         }
     }
 }
