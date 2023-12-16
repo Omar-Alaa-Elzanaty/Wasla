@@ -20,6 +20,11 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<Driver,DriverResponseDto>().ReverseMap();
             CreateMap<VehicleDto, Vehicle>().ReverseMap();
             CreateMap<EmployeeRegisterDto, Employee>();
+            CreateMap<Station,StationDto>().ReverseMap();
+            CreateMap<Trip,AddTripDto>().ReverseMap();
+            CreateMap<Trip,UpdateTripDto>().ReverseMap();
+            CreateMap<Trip,TripDto>().ReverseMap();
+            CreateMap<Trip,TripForDriverDto>().ReverseMap();
             CreateMap<AdsDto, Advertisment>();
         }
     }

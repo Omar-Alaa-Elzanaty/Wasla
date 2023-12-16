@@ -1,12 +1,6 @@
-﻿using Azure.Core;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Wasla.DataAccess.ModelsConfig;
 using Wasla.Model.Models;
 
@@ -52,6 +46,7 @@ namespace Wasla.DataAccess
 		public virtual DbSet<CustomerTripOrder> CustomerTripOrders { get; set; }
 		public virtual DbSet<OrganizationRegisterRequest> OrganizationsRegisters { get; set; }
 		public virtual DbSet<Employee> Employees { get; set; }
+        public virtual DbSet<Station> Stations { get; set; }
 		public virtual DbSet<Set>Sets { get; set; }
 	}
 }

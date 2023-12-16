@@ -75,6 +75,8 @@
   "CreatedAdsSuccess": "تم اضافة الاعلان بنجاح",
   "CreateOrgRoleSuccess": "تم انشاء الدور للمؤسسه بنجاح",
   "RemovedSuccessfully": "تم الحذف بنجاح",
+  "StationExist": "هذه المنطقه موحوجه بالفعل",
+  "StationNotFound": "المنطقه ليس موجوده",
   "Removed": "تم الحذف",
   "Used": "مستخدم",
   "NotUsed": "متاح",

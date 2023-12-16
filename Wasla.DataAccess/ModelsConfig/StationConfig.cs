@@ -13,7 +13,7 @@ namespace Wasla.DataAccess.ModelsConfig
 	{
 		public void Configure(EntityTypeBuilder<Station> builder)
 		{
-			builder.HasKey(s => new {s.OrganizationId, s.Name});
+			builder.HasKey(s => s.StationId);
 			
 		}
 	}

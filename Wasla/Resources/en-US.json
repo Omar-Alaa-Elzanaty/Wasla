@@ -1,5 +1,6 @@
 {
   //required
+
   "phoneNumberRequired": "the Phone Number is required",
   "userNameRequired": "User Name is required",
   "PasswordRequired": "Password is required.",
@@ -72,6 +73,8 @@
   "getOrgRoles": "Get All Roles For Organization",
   "CreateOrgRoleSuccess": "create role for organization Success",
   "CreatedAdsSuccess": "Ads add  successfully",
+  "StationExist": "Station is Already Exsit",
+  "StationNotFound": "Station Not Found",
   "culture": "Culture",
   "date": "Date",
   "currency": "Currency",

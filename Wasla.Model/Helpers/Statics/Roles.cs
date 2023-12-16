@@ -10,7 +10,8 @@ namespace Wasla.Model.Helpers.Statics
     {
         public const string Role_Admin = "Admin";
         public const string Role_Driver = "Driver";
-        public const string Role_Rider = "Passenger";
-        public const string Role_Organization = "Organization";
+        public const string Role_Passenger = "Passenger";
+        public const string Role_Org_SuperAdmin = "Org_SuperAdmin";
+        public const string Role_Org_Employee = "Org_Employee";
     }
 }
