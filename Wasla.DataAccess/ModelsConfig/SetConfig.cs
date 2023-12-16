@@ -9,9 +9,9 @@ using Wasla.Model.Models;
 
 namespace Wasla.DataAccess.ModelsConfig
 {
-	internal class SetConfig : IEntityTypeConfiguration<Set>
+	internal class SetConfig : IEntityTypeConfiguration<Seat>
 	{
-		public void Configure(EntityTypeBuilder<Set> builder)
+		public void Configure(EntityTypeBuilder<Seat> builder)
 		{
 			builder.HasKey(s => new { s.setNum, s.TripId });
 		}

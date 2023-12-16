@@ -50,11 +50,21 @@ namespace Wasla
                 }
             });
             });
+
             builder.Services.AddDbContext<WaslaDb>(option =>
-                option/*UseLazyLoadingProxies()*/.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+                option.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
                                     b => b.MigrationsAssembly(typeof(WaslaDb).Assembly.FullName))
                                     );
-            builder.Services.AddIdentity<Account, IdentityRole>().AddEntityFrameworkStores<WaslaDb>().AddDefaultTokenProviders();
+            builder.Services.AddIdentity<Account, IdentityRole>(opt =>
+            {
+				opt.Password.RequireDigit = false;
+				opt.Password.RequireLowercase = false;
+				opt.Password.RequireUppercase = false;
+                opt.Password.RequiredLength = 0; // Set the desired password length here
+				opt.Password.RequireNonAlphanumeric = false;
+			})
+                .AddEntityFrameworkStores<WaslaDb>().AddDefaultTokenProviders();
+
             builder.Services.AddDistributedMemoryCache();
             builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
             builder.Services.Configure<TwilioSetting>(builder.Configuration.GetSection("Twilio"));

@@ -39,7 +39,7 @@ namespace Wasla.Services.PassangerServices
 				throw new KeyNotFoundException(_localization["ObjectNotFound"].Value);
 			}
 
-			var reciveredSets = trip.RecervedSets.Select(s => s.setNum).ToList();
+			var reciveredSets = trip.RecervedSets.Select(s => s.setNum).ToHashSet();
 
 			var sets = new List<SetStatusDto>();
 
@@ -67,7 +67,7 @@ namespace Wasla.Services.PassangerServices
 			{
 				try
 				{
-					_context.Sets.Add(new Set() { setNum = set, TripId = tripId });
+					_context.Seats.Add(new Seat() { setNum = set, TripId = tripId });
 					_context.SaveChanges();
 					completeReserve.Add(new Reservation()
 					{

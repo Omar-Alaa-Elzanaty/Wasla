@@ -30,10 +30,16 @@ namespace Wasla.Services.Middleware.ExceptionMiddleware
                     response.IsSuccess = false;
                     response.Message =_localization["Unauthorized"].Value;
                     response.Status = HttpStatusCode.Unauthorized;
+					httpContext.Response.ContentType = "application/json";
+					httpContext.Response.StatusCode = (int)HttpStatusCode.OK;
 
-                    var exceptionResult = JsonSerializer.Serialize(response);
-                    httpContext.Response.ContentType = "application/json";
-                    httpContext.Response.StatusCode = (int)HttpStatusCode.OK;
+                    JsonSerializerOptions options = new JsonSerializerOptions
+                    {
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+                    };
+                    var exceptionResult = JsonSerializer.Serialize(response, options);
+
+                    
                     await httpContext.Response.WriteAsync(exceptionResult);
                     return;
                 }
@@ -78,10 +84,15 @@ namespace Wasla.Services.Middleware.ExceptionMiddleware
                 response.Message = ex.Message;
                 response.Status = HttpStatusCode.InternalServerError;
             }
-            var exceptionResault = JsonSerializer.Serialize(response);
-            httpContext.Response.ContentType = "application/json";
+			JsonSerializerOptions options = new JsonSerializerOptions
+			{
+				PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+			};
+			var exceptionResult = JsonSerializer.Serialize(response, options);
+
+			httpContext.Response.ContentType = "application/json";
             httpContext.Response.StatusCode=(int)HttpStatusCode.OK;
-            return httpContext.Response.WriteAsync(exceptionResault);
+            return httpContext.Response.WriteAsync(exceptionResult);
         }
     }
 }
