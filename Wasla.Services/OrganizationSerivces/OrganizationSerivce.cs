@@ -1,17 +1,8 @@
 ﻿using AutoMapper;
-using Azure;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.IdentityModel.Tokens;
-using Org.BouncyCastle.Tls;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
-using Twilio.Rest.Video.V1.Room.Participant;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
@@ -45,7 +36,7 @@ namespace Wasla.Services.OrganizationSerivces
 			_userManager = userManager;
 		}
 
-		public async Task<BaseResponse>DisplayVehicles(string orgId)
+		public async Task<BaseResponse> DisplayVehicles(string orgId)
 		{
 			_response.Data = await _context.Vehicles.Where(v => v.OrganizationId == orgId).Select(v => new
 			{
@@ -85,7 +76,7 @@ namespace Wasla.Services.OrganizationSerivces
 				throw new KeynotFoundException(_localization["ObjectNotFound"].Value);
 			}
 
-			if(await _context.Vehicles.AnyAsync(v => v.Id != vehicleId && v.LicenseNumber == model.LicenseNumber && v.LicenseWord == model.LicenseWord))
+			if (await _context.Vehicles.AnyAsync(v => v.Id != vehicleId && v.LicenseNumber == model.LicenseNumber && v.LicenseWord == model.LicenseWord))
 			{
 				throw new BadRequestException(_localization["RepeatedData"].Value);
 			}
@@ -100,8 +91,7 @@ namespace Wasla.Services.OrganizationSerivces
 
 			if (model.ImageFile is not null)
 			{
-				await _mediaSerivce.DeleteAsync(vehicle.ImageUrl);
-				vehicle.ImageUrl = await _mediaSerivce.AddAsync(model.ImageFile);
+				vehicle.ImageUrl = await _mediaSerivce.UpdateAsync(vehicle.ImageUrl,model.ImageFile);
 			}
 
 			_context.Update(vehicle);
@@ -183,7 +173,7 @@ namespace Wasla.Services.OrganizationSerivces
 					}
 					result = await _userManager.AddToRoleAsync(newDriver, Roles.Role_Driver);
 
-					if(result is null || !result.Succeeded)
+					if (result is null || !result.Succeeded)
 					{
 						throw new BadRequestException(HelperServices.CollectIdentityResultErrors(result));
 					}
@@ -201,7 +191,7 @@ namespace Wasla.Services.OrganizationSerivces
 			}
 			return _response;
 		}
-		public async Task<BaseResponse> AddEmployeeAsync(EmployeeRegisterDto model,string orgId)
+		public async Task<BaseResponse> AddEmployeeAsync(EmployeeRegisterDto model, string orgId)
 		{
 			Employee employee = _mapper.Map<Employee>(model);
 			employee.OrgId = orgId;
@@ -249,7 +239,7 @@ namespace Wasla.Services.OrganizationSerivces
 				throw new NotFoundException(_localization["UserNotFound"]);
 			}
 
-			if(user.PhotoUrl is not null)
+			if (user.PhotoUrl is not null)
 			{
 				await _mediaSerivce.DeleteAsync(user.PhotoUrl);
 			}
@@ -260,11 +250,11 @@ namespace Wasla.Services.OrganizationSerivces
 
 			return _response;
 		}
-		public async Task<BaseResponse>GetAllDrivers(string orgId)
-		{ 
+		public async Task<BaseResponse> GetAllDrivers(string orgId)
+		{
 			var driver = await _context.Drivers.Where(d => d.OrganizationId == orgId).Select(d => new
 			{
-				Id=d.Id,
+				Id = d.Id,
 				Name = d.FirstName + ' ' + d.LastName,
 			}).ToListAsync();
 
@@ -273,7 +263,7 @@ namespace Wasla.Services.OrganizationSerivces
 			return _response;
 		}
 		#region Ads
-		public async Task<BaseResponse> AddAdsAsync(AdsDto model,string orgId)
+		public async Task<BaseResponse> AddAdsAsync(AdsDto model, string orgId)
 		{
 			var adsFound = await _context.Advertisments.AnyAsync(ads => ads.Name == model.Name);
 
@@ -283,7 +273,7 @@ namespace Wasla.Services.OrganizationSerivces
 			}
 
 			Advertisment newAds = _mapper.Map<Advertisment>(model);
-			newAds.organizationId= orgId;
+			newAds.organizationId = orgId;
 			newAds.ImageUrl = await _mediaSerivce.AddAsync(model.ImageFile);
 
 			await _context.Advertisments.AddAsync(newAds);
@@ -304,7 +294,7 @@ namespace Wasla.Services.OrganizationSerivces
 				throw new BadRequestException(_localization["ObjectNotFound"].Value);
 			}
 
-			if(vehicle.Advertisment.Count()==vehicle.AdsSidesNumber)
+			if (vehicle.Advertisment.Count() == vehicle.AdsSidesNumber)
 			{
 				throw new BadRequestException(_localization["ReachToLimit"].Value);
 			}
@@ -352,14 +342,25 @@ namespace Wasla.Services.OrganizationSerivces
 			ads.StartDate = model.StartDate;
 			ads.EndDate = model.EndDate;
 			ads.Name = model.Name;
-			if (model.ImageFile is not null)
+			using (var transaction = await _context.Database.BeginTransactionAsync())
 			{
-				await _mediaSerivce.DeleteAsync(ads.ImageUrl);
-				ads.ImageUrl = await _mediaSerivce.AddAsync(model.ImageFile);
-			}
+				try
+				{
+					if (model.ImageFile is not null)
+					{
+						await _mediaSerivce.DeleteAsync(ads.ImageUrl);
+						ads.ImageUrl = await _mediaSerivce.UpdateAsync(ads.ImageUrl, model.ImageFile);
+					}
+					_context.Update(ads);
+					await _context.SaveChangesAsync();
+					await transaction.CommitAsync();
+				}
+				catch
+				{
 
-			_context.Update(ads);
-			await _context.SaveChangesAsync();
+					await transaction.RollbackAsync();
+				}
+			}
 
 			_response.Message = _localization["SuccessProcess"].Value;
 			return _response;
@@ -394,7 +395,7 @@ namespace Wasla.Services.OrganizationSerivces
 
 			_response.Message = _localization["Removed"].Value;
 			return _response;
-		} 
+		}
 		#endregion
-	} 
+	}
 }

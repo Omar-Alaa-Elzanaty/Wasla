@@ -118,13 +118,16 @@ namespace Wasla.Services.MediaSerivces
 			{
 				return oldUrl;
 			}
-
-			await DeleteAsync(oldUrl);
-
 			var addResult = await AddAsync(newMedia);
-			if (addResult == null)
+
+			try
 			{
-				throw new BadRequestException(_localization["UploadMediaFail"].Value);
+				await DeleteAsync(oldUrl);
+			}
+			catch
+			{
+				await DeleteAsync(addResult);
+				throw;
 			}
 			return addResult;
 		}

@@ -88,7 +88,7 @@ namespace Wasla.Services.AdminServices
 						}
 						throw new ServerErrorException(_localization["RegisterFaild"].Value + '\n' + errors);
 					}
-
+					//TODO: remove comment
 					//await _mailService.SendEmailAsync(
 					//		mailTo: request.Email,
 					//		subject: "Wasla Email Annoucment",
