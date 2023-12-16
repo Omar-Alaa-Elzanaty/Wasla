@@ -8,7 +8,7 @@ namespace Wasla.Model.Helpers
 {
     public class CreateRolePermissions
     {
-        public string RoleId { get; set; }
+        public string RoleName { get; set; }
         public List<string> RolePermissions { get; set; }
     }
 }

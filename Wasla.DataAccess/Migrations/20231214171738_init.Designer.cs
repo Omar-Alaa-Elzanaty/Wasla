@@ -12,8 +12,8 @@ using Wasla.DataAccess;
 namespace Wasla.DataAccess.Migrations
 {
     [DbContext(typeof(WaslaDb))]
-    [Migration("20231204133457_test")]
-    partial class test
+    [Migration("20231214171738_init")]
+    partial class init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -21,9 +21,6 @@ namespace Wasla.DataAccess.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "7.0.13")
-                .HasAnnotation("Proxies:ChangeTracking", false)
-                .HasAnnotation("Proxies:CheckEquality", false)
-                .HasAnnotation("Proxies:LazyLoading", true)
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
@@ -448,11 +445,11 @@ namespace Wasla.DataAccess.Migrations
 
             modelBuilder.Entity("Wasla.Model.Models.Station", b =>
                 {
-                    b.Property<string>("OrganizationId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("StationId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("StationId"));
 
                     b.Property<string>("Langtitude")
                         .IsRequired()
@@ -462,9 +459,19 @@ namespace Wasla.DataAccess.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("OrganizationId", "Name");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
-                    b.ToTable("Station");
+                    b.Property<string>("OrganizationId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("StationId");
+
+                    b.HasIndex("OrganizationId");
+
+                    b.ToTable("Stations");
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.Trip", b =>
@@ -688,6 +695,22 @@ namespace Wasla.DataAccess.Migrations
                     b.HasIndex("OrganizationId");
 
                     b.ToTable("Drivers", "Account");
+                });
+
+            modelBuilder.Entity("Wasla.Model.Models.Employee", b =>
+                {
+                    b.HasBaseType("Wasla.Model.Models.User");
+
+                    b.Property<long>("NationalId")
+                        .HasColumnType("bigint");
+
+                    b.Property<string>("OrgId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasIndex("OrgId");
+
+                    b.ToTable("Employees", "Account");
                 });
 
             modelBuilder.Entity("AdvertismentVehicle", b =>
@@ -964,6 +987,23 @@ namespace Wasla.DataAccess.Migrations
                     b.Navigation("Orgainzation");
                 });
 
+            modelBuilder.Entity("Wasla.Model.Models.Employee", b =>
+                {
+                    b.HasOne("Wasla.Model.Models.User", null)
+                        .WithOne()
+                        .HasForeignKey("Wasla.Model.Models.Employee", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Wasla.Model.Models.Organization", "Organization")
+                        .WithMany("Employees")
+                        .HasForeignKey("OrgId")
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
+
+                    b.Navigation("Organization");
+                });
+
             modelBuilder.Entity("Wasla.Model.Models.Trip", b =>
                 {
                     b.Navigation("Packages");
@@ -981,6 +1021,8 @@ namespace Wasla.DataAccess.Migrations
             modelBuilder.Entity("Wasla.Model.Models.Organization", b =>
                 {
                     b.Navigation("Drivers");
+
+                    b.Navigation("Employees");
 
                     b.Navigation("Stations");
 

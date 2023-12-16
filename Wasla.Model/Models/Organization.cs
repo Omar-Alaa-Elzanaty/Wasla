@@ -12,7 +12,7 @@ namespace Wasla.Model.Models
 			TripList = new List<Trip>();
 			Stations=new List<Station>();
 			Drivers=new List<Driver>();
-			
+			Employees=new List<Employee>();
 		}
 		public string Name { get; set; }
 		public string Address { get; set; }
@@ -23,5 +23,6 @@ namespace Wasla.Model.Models
 		public virtual List<Driver> Drivers { get; set; }
 		public virtual ICollection<Trip> TripList { get; set; }
 		public virtual ICollection<Station>Stations { get; set; }
+		public virtual ICollection<Employee> Employees { get; set; }
 	}
 }

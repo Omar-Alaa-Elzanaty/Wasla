@@ -5,7 +5,7 @@ namespace Wasla.Services.Authentication.AuthHelperService.FactorService.IFactory
 {
     public interface IBaseFactoryResponse
     {
-        Task<BaseResponse> BaseAuthResponseAsync(AuthResponseFactoryHelp help);
+        Task<BaseResponse> BaseAuthResponseAsync(AuthResponseFactoryHelp help, string role);
 
     }
 }

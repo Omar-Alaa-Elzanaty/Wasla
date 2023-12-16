@@ -18,6 +18,8 @@ namespace Wasla.Model.Helpers
 
         [Required(ErrorMessage = "firstNameRequired")]
         public string FirstName { get; set; }
+        [Required(ErrorMessage ="middleNameReqired")]
+        public string MiddleName { get; set; }
         [Required(ErrorMessage = "lastNameRequired")]
         public string? LastName { get; set; }
 

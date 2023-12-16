@@ -1,5 +1,6 @@
 {
   //required
+
   "phoneNumberRequired": "the Phone Number is required",
   "userNameRequired": "User Name is required",
   "PasswordRequired": "Password is required.",
@@ -68,6 +69,8 @@
   "GetAllPermissions": "Get All Permissions Success",
   "getOrgRoles": "Get All Roles For Organization",
   "CreateOrgRoleSuccess": "create role for organization Success",
+  "StationExist": "Station is Already Exsit",
+  "StationNotFound": "Station Not Found",
   "culture": "Culture",
   "date": "Date",
   "currency": "Currency",
@@ -76,5 +79,8 @@
   "save": "Save",
   "name": "Name",
   "OrganizationSuccessRequest": "Your request is under review",
-  "RemovedSuccessfully": "Removed successfully"
+  "RemovedSuccessfully": "Removed successfully",
+  "Used": "used",
+  "NotUsed": "not used"
+
 }

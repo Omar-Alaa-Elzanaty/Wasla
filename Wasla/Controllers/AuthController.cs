@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel;
+using System.Security.Claims;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
@@ -55,6 +56,8 @@ namespace Wasla.Api.Controllers
                _response.Data = messag;
                return Ok(_response);
            }*/
+
+       
         [HttpGet]//("sendEmail")]
         [Route("sendEmail/{email}")]
         public async Task<IActionResult> SendEmail([FromRoute] string email)
@@ -117,20 +120,14 @@ namespace Wasla.Api.Controllers
 
             return Ok(resualt);
         }
-        [HttpPost("changePasswordByPhone")]
-        public async Task<IActionResult> ChangePasswordByPhone([FromBody] ChangePasswordDto changePassword)
+       
+        [HttpPost("changePassword")]
+        public async Task<IActionResult> ChangePasswordBy([FromBody] ChangePasswordDto changePassword)
         {
-            var resualt = await _authservice.ChangePasswordByPhoneAsync(changePassword);
-
+            var resualt = await _authservice.ChangePasswordAsync(changePassword);
             return Ok(resualt);
         }
-        [HttpPost("changePasswordByEmail")]
-        public async Task<IActionResult> ChangePasswordByEmail([FromBody] ChangePasswordDto changePassword)
-        {
-            var resualt = await _authservice.ChangePasswordByEmailAsync(changePassword);
-            return Ok(resualt);
-        }
-        [OrgPermissionAuthorize("db")]
+        //[OrgPermissionAuthorize("db")]
         [HttpGet("clima")]
         public async Task<IActionResult> getclaim()
         {
@@ -192,6 +189,12 @@ namespace Wasla.Api.Controllers
         public async Task<IActionResult> CreateRolePermissions(CreateRolePermissions createRolePermissions)
         {
             return Ok(await _authservice.AddRolePermissions(createRolePermissions));
+        }
+        [HttpGet("genOtp")]
+
+        public async Task<IActionResult> genOtp()
+        {
+            return Ok(await _authservice.gnOtp());
         }
     }
 }

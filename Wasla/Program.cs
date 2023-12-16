@@ -51,7 +51,7 @@ namespace Wasla
             });
             });
             builder.Services.AddDbContext<WaslaDb>(option =>
-                option.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
+                option/*UseLazyLoadingProxies()*/.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"),
                                     b => b.MigrationsAssembly(typeof(WaslaDb).Assembly.FullName))
                                     );
             builder.Services.AddIdentity<Account, IdentityRole>().AddEntityFrameworkStores<WaslaDb>().AddDefaultTokenProviders();

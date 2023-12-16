@@ -9,12 +9,14 @@ using Wasla.Model.Models;
 
 namespace Wasla.DataAccess.ModelsConfig
 {
-	internal class StationConfig : IEntityTypeConfiguration<Station>
+	internal class EmployeeConfig : IEntityTypeConfiguration<Employee>
 	{
-		public void Configure(EntityTypeBuilder<Station> builder)
+		public void Configure(EntityTypeBuilder<Employee> builder)
 		{
-			builder.HasKey(s => s.StationId);
-			
+			builder.HasOne(e => e.Organization)
+				.WithMany(o => o.Employees)
+				.HasForeignKey(e => e.OrgId)
+				.OnDelete(deleteBehavior:DeleteBehavior.NoAction);
 		}
 	}
 }

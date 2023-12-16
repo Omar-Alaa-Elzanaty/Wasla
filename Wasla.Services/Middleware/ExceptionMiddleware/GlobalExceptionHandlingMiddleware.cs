@@ -35,7 +35,6 @@ namespace Wasla.Services.Middleware.ExceptionMiddleware
                     httpContext.Response.ContentType = "application/json";
                     httpContext.Response.StatusCode = (int)HttpStatusCode.OK;
                     await httpContext.Response.WriteAsync(exceptionResult);
-
                     return;
                 }
             }

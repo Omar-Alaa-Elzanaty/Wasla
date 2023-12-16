@@ -22,7 +22,6 @@ namespace Wasla.Model.Models
 		public string? PhotoUrl { get; set; }
 		public Gender Gender { get; set; }
 		public DateTime? Birthdate { get; set; }
-		//public Account Account { get; set; }
 
     }
     public  enum Gender:byte
