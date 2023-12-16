@@ -20,4 +20,8 @@
     <ProjectReference Include="..\Wasla.Model\Wasla.Model.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>

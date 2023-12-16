@@ -16,6 +16,7 @@ namespace Wasla.Model.Dtos
 		public string MiddleName { get; set; }
 		public string LastName { get; set; }
 		public string PhoneNumber { get; set; }
+		public string Role { get; set; }
 		public string ? Email { get; set; }
 		public long NationalId { get; set; }
 		public IFormFile? PhotoFile { get; set; }

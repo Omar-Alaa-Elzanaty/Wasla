@@ -159,7 +159,7 @@ namespace Wasla.Api.Controllers
 			return Ok(await _orgService.GetTripAsync(id));
 		}
 		[HttpGet("trip/driver/{orgId}/{id}")]
-		[OrgPermissionAuthorize("OrgPermissions.TestPermissions.Create.1")]
+		//[OrgPermissionAuthorize("OrgPermissions.TestPermissions.Create.1")]
 		public async Task<IActionResult> GetTripForDriver([FromRoute] string orgId, [FromRoute] string id)
 		{
 			return Ok(await _orgService.GetTripsForDriverAsync(orgId, id));

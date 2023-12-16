@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.IdentityModel.Tokens;
+using System.Data;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
@@ -21,12 +22,14 @@ namespace Wasla.Services.OrganizationSerivces
 		private readonly IMapper _mapper;
 		private readonly IMediaSerivce _mediaSerivce;
 		private readonly UserManager<Account> _userManager;
+		private readonly RoleManager<IdentityRole> _roleManager;
 		public OrganizationSerivce(
 			WaslaDb context,
 			IStringLocalizer<OrganizationSerivce> localization,
 			IMapper mapper,
 			IMediaSerivce mediaSerivce,
-			UserManager<Account> userManager)
+			UserManager<Account> userManager,
+			RoleManager<IdentityRole> roleManager)
 		{
 			_context = context;
 			_response = new();
@@ -34,6 +37,7 @@ namespace Wasla.Services.OrganizationSerivces
 			_mapper = mapper;
 			_mediaSerivce = mediaSerivce;
 			_userManager = userManager;
+			_roleManager = roleManager;
 		}
 
 		public async Task<BaseResponse> DisplayVehicles(string orgId)
@@ -91,7 +95,7 @@ namespace Wasla.Services.OrganizationSerivces
 
 			if (model.ImageFile is not null)
 			{
-				vehicle.ImageUrl = await _mediaSerivce.UpdateAsync(vehicle.ImageUrl,model.ImageFile);
+				vehicle.ImageUrl = await _mediaSerivce.UpdateAsync(vehicle.ImageUrl, model.ImageFile);
 			}
 
 			_context.Update(vehicle);
@@ -191,7 +195,7 @@ namespace Wasla.Services.OrganizationSerivces
 			}
 			return _response;
 		}
-		public async Task<BaseResponse> AddEmployeeAsync(EmployeeRegisterDto model, string orgId)
+		public async Task<BaseResponse> AddEmployeeAsync(EmployeeRegisterDto model, string? orgId)
 		{
 			Employee employee = _mapper.Map<Employee>(model);
 			employee.OrgId = orgId;
@@ -225,8 +229,14 @@ namespace Wasla.Services.OrganizationSerivces
 				_response.Message = _localization["RegisterFail"];
 				_response.IsSuccess = false;
 			}
-			//TODO: add employee to role
-			//result = await _userManager.AddToRoleAsync(employee, "Employee");
+
+			var roleFound = await _roleManager.RoleExistsAsync(model.Role);
+			if (!roleFound)
+			{
+				throw new BadRequestException(_localization["roleNotFound"].Value);
+			}
+
+			await _userManager.AddToRoleAsync(employee, model.Role);
 
 			return _response;
 		}
@@ -415,15 +425,20 @@ namespace Wasla.Services.OrganizationSerivces
 		public async Task<BaseResponse> UpdateStationAsync(StationDto stationDto, string orgId)
 		{
 			var station = await _context.Stations.FirstOrDefaultAsync(v => v.Name == stationDto.Name && v.OrganizationId == orgId);
+
 			if (station is null)
 				throw new NotFoundException(_localization["StationNotFound"].Value);
+
 			station.OrganizationId = orgId;
 			station.Latitude = stationDto.Latitude;
 			station.Langtitude = stationDto.Langtitude;
 			station.Name = stationDto.Name;
+
 			var result = _context.Stations.Update(station);
 			await _context.SaveChangesAsync();
+
 			_response.Data = result;
+
 			return _response;
 		}
 		public async Task<BaseResponse> GetStationsAsync(string orgId)
@@ -458,9 +473,12 @@ namespace Wasla.Services.OrganizationSerivces
 		{
 			var trip = _mapper.Map<Trip>(model);
 			trip.OrganizationId = orgId;
+
 			await _context.Trips.AddAsync(trip);
 			_ = await _context.SaveChangesAsync();
+
 			_response.Data = trip;
+
 			return _response;
 		}
 		public async Task<BaseResponse> UpdateTripAsync(UpdateTripDto model, int id)
@@ -471,7 +489,6 @@ namespace Wasla.Services.OrganizationSerivces
 			if (tripCheck.Driver != null)
 			{
 				tripCheck.AvailablePackageSpace = tripCheck.Vehicle.PackageCapcity;
-				tripCheck.AvailableSets = tripCheck.Vehicle.Capcity;
 			}
 			tripCheck.OrganizationId = model.orgId;
 			tripCheck.From = model.From;
@@ -533,7 +550,5 @@ namespace Wasla.Services.OrganizationSerivces
 			_response.Data = tripRes;
 			return _response;
 		}
-
-
 	}
 }
