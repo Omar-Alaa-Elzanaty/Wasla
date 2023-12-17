@@ -17,7 +17,6 @@ namespace Wasla.Model.Dtos
         public float MinWeight { get; set; }
         public string WebsiteLink { get; set; }
         public List<string> OrgPermissions { get; set; }
-
         public virtual ICollection<Trip> TripList { get; set; }
     }
 }

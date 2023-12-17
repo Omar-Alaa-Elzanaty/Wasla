@@ -39,5 +39,6 @@ namespace Wasla.Services.OrganizationSerivces
         Task<BaseResponse> GetTripsForUserAsync(string orgId, string name);
         Task<BaseResponse> GetTripsForUserWithToAndFromAsync(string orgId, string from, string to);
         Task<BaseResponse> DeleteTripAsync(int id);
+		Task<BaseResponse> GetOriganizationsWithName(string name);
     }
 }

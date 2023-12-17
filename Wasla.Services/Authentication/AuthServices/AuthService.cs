@@ -93,9 +93,9 @@ namespace Wasla.Services.Authentication.AuthServices
 
 		public async Task<BaseResponse> PassengerRegisterAsync(PassengerRegisterDto input)
 		{
-			if (input.Email == null && input.PhoneNumber == null)
+			if (input.Email == null && input.Phone == null)
 				throw new BadRequestException(_localization["phoneOremailRequired"].Value);
-			if (input.PhoneNumber is not null) await CheckPhoneNumber(input.PhoneNumber);
+			if (input.Phone is not null) await CheckPhoneNumber(input.Phone);
 			if (input.Email is not null) await CheckEmail(input.Email);
 			_ = await CheckUserName(input.UserName);
 
@@ -151,7 +151,7 @@ namespace Wasla.Services.Authentication.AuthServices
 
 		public async Task<BaseResponse> DriverRegisterAsync(DriverRegisterDto model)
 		{
-			await CheckPhoneNumber(model.PhoneNumber);
+			await CheckPhoneNumber(model.Phone);
 			await CheckEmail(model.Email);
 
 			if (await _dbContext.Drivers.AnyAsync(u => u.LicenseNum == model.LicenseNum))
@@ -236,9 +236,9 @@ namespace Wasla.Services.Authentication.AuthServices
 			_response.Message = _localization["EmailConfirmSuccess"].Value;
 			return _response;
 		}
-		public async Task<BaseResponse> ChangePasswordAsync(ChangePasswordDto changePassword)
+		public async Task<BaseResponse> ChangePasswordAsync(string token,ChangePasswordDto changePassword)
 		{
-			var user = await getUserByToken(changePassword.token);
+			var user = await getUserByToken(token);
 			if (!await _userManager.CheckPasswordAsync(user, changePassword.OldPassword))
 			{
 				throw new BadRequestException(_localization["userOrpasswordNotCorrect"].Value);
@@ -252,9 +252,9 @@ namespace Wasla.Services.Authentication.AuthServices
 			return _response;
 		}
 
-		public async Task<BaseResponse> ResetPasswordByphoneAsync(ResetPasswordDto resetPassword)
+		public async Task<BaseResponse> ResetPasswordByphoneAsync(ResetPasswordByPhoneDto resetPassword)
 		{
-			var user = await getUserByPhone(resetPassword.UserName);
+			var user = await getUserByPhone(resetPassword.Phone);
 			var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
 			var result = await _userManager.ResetPasswordAsync(user, resetToken, resetPassword.NewPassword);
 			if (!result.Succeeded)
@@ -267,9 +267,9 @@ namespace Wasla.Services.Authentication.AuthServices
 			_response.Message = _localization["PasswordChanged"].Value;
 			return _response;
 		}
-		public async Task<BaseResponse> ResetPasswordByEmailAsync(ResetPasswordDto resetPassword)
+		public async Task<BaseResponse> ResetPasswordByEmailAsync(ResetPasswordByEmailDto resetPassword)
 		{
-			var user = await getUserByEmail(resetPassword.UserName);
+			var user = await getUserByEmail(resetPassword.Email);
 			var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
 			var result = await _userManager.ResetPasswordAsync(user, resetToken, resetPassword.NewPassword);
 			if (!result.Succeeded)
@@ -283,9 +283,9 @@ namespace Wasla.Services.Authentication.AuthServices
 			_response.Message = _localization["PasswordChanged"].Value;
 			return _response;
 		}
-		public async Task<BaseResponse> RefreshTokenAsync(RefTokenDto token)
+		public async Task<BaseResponse> RefreshTokenAsync(string token)
 		{
-			var user = await _userManager.Users.SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.RefToken == token.RefToken));
+			var user = await _userManager.Users.SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.RefToken == token));
 
 			var revoke = await RevokeTokenAsync(token);
 			if (!revoke)
@@ -310,7 +310,7 @@ namespace Wasla.Services.Authentication.AuthServices
 
 			return response;
 		}
-		public async Task<BaseResponse> LogoutAsync(RefTokenDto token)
+		public async Task<BaseResponse> LogoutAsync(string token)
 		{
 			var resaul = await RevokeTokenAsync(token);
 			if (!resaul)
@@ -585,15 +585,15 @@ namespace Wasla.Services.Authentication.AuthServices
 				signingCredentials: signingCredentials);
 			return jwtSecurityToken;
 		}
-		private async Task<bool> RevokeTokenAsync(RefTokenDto token)
+		private async Task<bool> RevokeTokenAsync(string token)
 		{
-			var user = await _userManager.Users.SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.RefToken == token.RefToken));
+			var user = await _userManager.Users.SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.RefToken == token));
 
 			if (user == null)
 			{
 				throw new NotFoundException(_localization["refreshTokenNotFound"].Value);
 			}
-			var refreshToken = user.RefreshTokens.Single(t => t.RefToken == token.RefToken);
+			var refreshToken = user.RefreshTokens.Single(t => t.RefToken == token);
 
 			if (!refreshToken.IsActive)
 			{

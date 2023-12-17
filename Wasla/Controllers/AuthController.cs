@@ -1,17 +1,11 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System.ComponentModel;
-using System.Security.Claims;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
-using Wasla.Model.Models;
 using Wasla.Services.AdminServices;
 using Wasla.Services.Authentication.AuthServices;
-using Wasla.Services.Exceptions.FilterException;
-using Wasla.Services.Middleware;
 
 namespace Wasla.Api.Controllers
 {
@@ -40,7 +34,6 @@ namespace Wasla.Api.Controllers
             var result = await _authservice.PassengerRegisterAsync(adv);
             return Ok(result);
         }
-        //it not accept it as FromRoute make it FromBody and use class SendOtpDto or keep it 
         //https://localhost:44366/api/Auth/SendMessage?phone=%2B201118499698
         [HttpGet("sendMessage")]
         public async Task<IActionResult> SendMessage([FromQuery] string phone)
@@ -49,17 +42,8 @@ namespace Wasla.Api.Controllers
             _response.Data = messag;
             return Ok(_response);
         }
-        /*   [HttpPost]
-           public async Task<IActionResult> SendMessage([FromBody] SendOtpDto input)
-           {
-               var messag = await _authservice.SendOtpMessageAsync(input.SendData);
-               _response.Data = messag;
-               return Ok(_response);
-           }*/
-
-       
-        [HttpGet]//("sendEmail")]
-        [Route("sendEmail/{email}")]
+        
+        [HttpGet("sendEmail/{email}")]//("sendEmail")]
         public async Task<IActionResult> SendEmail([FromRoute] string email)
         {
             var messag = await _authservice.SendOtpEmailAsync(email);
@@ -92,12 +76,12 @@ namespace Wasla.Api.Controllers
             var resualt = await _authservice.ConfirmEmailAsync(confirmEmail);
             return Ok(resualt);
         }
-        [HttpPost("RefreshToken")]
+        [HttpPost("RefreshToken/{refreshToken}")]
         [Authorize]
-        public async Task<IActionResult> RefreshToken([FromBody] RefTokenDto refToken)
+        public async Task<IActionResult> RefreshToken([FromRoute] string refreshToken)
         {
 
-            var resualt = await _authservice.RefreshTokenAsync(refToken);
+            var resualt = await _authservice.RefreshTokenAsync(refreshToken);
             return Ok(resualt);
         }
         [HttpPost("login")]
@@ -107,41 +91,32 @@ namespace Wasla.Api.Controllers
             return Ok(resualt);
         }
         [HttpPost("resetPasswordByPhone")]
-        public async Task<IActionResult> ResetPasswordByPhone([FromBody] ResetPasswordDto resetPassword)
+        public async Task<IActionResult> ResetPasswordByPhone([FromBody] ResetPasswordByPhoneDto resetPassword)
         {
             var resualt = await _authservice.ResetPasswordByphoneAsync(resetPassword);
 
             return Ok(resualt);
         }
         [HttpPost("resetPasswordByEmail")]
-        public async Task<IActionResult> ResetPasswordByEmail([FromBody] ResetPasswordDto resetPassword)
+        public async Task<IActionResult> ResetPasswordByEmail([FromBody] ResetPasswordByEmailDto resetPassword)
         {
             var resualt = await _authservice.ResetPasswordByEmailAsync(resetPassword);
 
             return Ok(resualt);
         }
        
-        [HttpPost("changePassword")]
-        public async Task<IActionResult> ChangePasswordBy([FromBody] ChangePasswordDto changePassword)
+        [HttpPost("changePassword/{refreshToken}")]
+        public async Task<IActionResult> ChangePasswordBy([FromRoute] string refreshToken,[FromBody] ChangePasswordDto changePassword)
         {
-            var resualt = await _authservice.ChangePasswordAsync(changePassword);
+            var resualt = await _authservice.ChangePasswordAsync(refreshToken,changePassword);
             return Ok(resualt);
         }
-        //[OrgPermissionAuthorize("db")]
-        [HttpGet("clima")]
-        public async Task<IActionResult> getclaim()
-        {
-            return Ok(User.Claims.Select(i => new
-            {
-                i.Type,
-                i.Value
-            }));
-        }
-        [HttpPost("logout")]
+        
+        [HttpPost("logout/{refreshToken}")]
         [Authorize(AuthenticationSchemes = "Bearer")]
-        public async Task<IActionResult> Logout(RefTokenDto token)
+        public async Task<IActionResult> Logout(string refreshToken)
         {
-            var resault = await _authservice.LogoutAsync(token);
+            var resault = await _authservice.LogoutAsync(refreshToken);
             return Ok(resault);
         }
         [HttpPost("organizationRegister")]
@@ -191,7 +166,6 @@ namespace Wasla.Api.Controllers
             return Ok(await _authservice.AddRolePermissions(createRolePermissions));
         }
         [HttpGet("genOtp")]
-
         public async Task<IActionResult> genOtp()
         {
             return Ok(await _authservice.gnOtp());
