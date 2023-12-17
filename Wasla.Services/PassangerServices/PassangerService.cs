@@ -92,7 +92,7 @@ namespace Wasla.Services.PassangerServices
 					var customer = await _context.Customers.FindAsync(custId);
 					var trip = await _context.Trips.FindAsync(tripId);
 
-					customer.points *= trip.Points;
+					customer.points += completeReserve.Count * trip.Points;
 
 					await _context.SaveChangesAsync();
 					await trans.CommitAsync();
