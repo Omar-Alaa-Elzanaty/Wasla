@@ -9,8 +9,6 @@ namespace Wasla.Model.Dtos
 {
     public class PassengerResponseDto:BaseData
     {
-        
-       
         public int points { get; set; }
     }
 }
