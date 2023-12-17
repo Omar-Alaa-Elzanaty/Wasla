@@ -24,6 +24,7 @@ namespace Wasla.Model.Models
 		public int VehicleId { get; set; }
 		public virtual Vehicle Vehicle { get; set; }
 		public TimeSpan Duration { get; set; }
+		public int Points { get; set; }
 		public string From { get; set; }
 		public string To { get; set; }
 		public int Capacity { get; set; }

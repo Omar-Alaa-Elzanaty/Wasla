@@ -80,5 +80,8 @@
   "Removed": "تم الحذف",
   "Used": "مستخدم",
   "NotUsed": "متاح",
-  "SuccessProcess": "عملية ناجحة"
+  "SuccessProcess": "عملية ناجحة",
+  "AddRate": "تم اضافة تقييم",
+  "UpdateRate": "تم تعديل التقييم",
+  "RemoveRate": "تم حذف التقييم"
 }

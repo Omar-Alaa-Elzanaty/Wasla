@@ -87,5 +87,8 @@
   "RemovedSuccessfully": "Removed successfully",
   "Used": "used",
   "NotUsed": "not used",
-  "SuccessProcess": "Success process"
+  "SuccessProcess": "Success process",
+  "AddRate": "A new rate added",
+  "UpdateRate": "Rate has been updated",
+  "RemoveRate": "Rate removed"
 }

@@ -1,18 +1,17 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using Wasla.Model.Models;
 using Wasla.Services.PassangerServices;
 namespace Wasla.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/passanger")]
     [ApiController]
     public class PassengerController : ControllerBase
     {
-        private readonly IMapper _mapper;
         private readonly IPassangerService _passangerService;
-		public PassengerController(IMapper mapper, IPassangerService passangerService)
+		public PassengerController(IPassangerService passangerService)
 		{
-			_mapper = mapper;
 			_passangerService = passangerService;
 		}
 
@@ -25,6 +24,16 @@ namespace Wasla.Api.Controllers
 		public async Task<IActionResult> ReserveTicket([FromBody] List<int> SetsNumbers,int tripId,string userId)
 		{
 			return Ok(await _passangerService.ReservationAsync(SetsNumbers, tripId, userId));
+		}
+		[HttpPost("organization/rate")]
+		public async Task<IActionResult> RateOrganize([FromBody] OrganizationRate model)
+		{
+			return Ok(await _passangerService.OrganizationRateAsync(model));
+		}
+		[HttpDelete("organization/rate/remove")]
+		public async Task<IActionResult>RemoveOrganizationRate(string orgainzationId,string customerId)
+		{
+			return Ok(await _passangerService.OrganizationRateRemoveAsync(orgainzationId, customerId));
 		}
 	}
 }

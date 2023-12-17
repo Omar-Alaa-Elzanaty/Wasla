@@ -15,7 +15,7 @@ using Wasla.Services.Middleware;
 
 namespace Wasla.Api.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     [ApiController]
 
     public class AuthController : ControllerBase

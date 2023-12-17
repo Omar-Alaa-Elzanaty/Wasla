@@ -11,7 +11,7 @@ using Wasla.Services.Exceptions.FilterException;
 
 namespace Wasla.Api.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api/organization")]
 	[ApiController]
 	//[Authorize(Roles ="Organization")]
 	public class OrganizationController : ControllerBase
