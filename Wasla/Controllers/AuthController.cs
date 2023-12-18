@@ -43,7 +43,7 @@ namespace Wasla.Api.Controllers
             return Ok(_response);
         }
         
-        [HttpGet("send-email/{email}")]//("sendEmail")]
+        [HttpGet("sendEmail/{email}")]//("sendEmail")]
         public async Task<IActionResult> SendEmail([FromRoute] string email)
         {
             var messag = await _authservice.SendOtpEmailAsync(email);
@@ -57,20 +57,20 @@ namespace Wasla.Api.Controllers
         }
 
         [HttpGet]//("compareOtp")]
-        [Route("compare-Otp/{recOtp}")]
+        [Route("compareOtp/{recOtp}")]
         public async Task<IActionResult> CompareOtp([FromRoute] string recOtp)
         {
             // var otp = recOtp.UserOtp;
             var res = await _authservice.CompareOtpAsync(recOtp);
             return Ok(res);
         }
-        [HttpPut("confirm-phone")]
+        [HttpPut("confirmPhone")]
         public async Task<IActionResult> ConfirmPhone([FromBody] ConfirmNumberDto confirmNumber)
         {
             var resualt = await _authservice.ConfirmPhoneAsync(confirmNumber);
             return Ok(resualt);
         }
-        [HttpPut("confirm-email")]
+        [HttpPut("confirmEmail")]
         public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailDto confirmEmail)
         {
             var resualt = await _authservice.ConfirmEmailAsync(confirmEmail);
@@ -97,7 +97,7 @@ namespace Wasla.Api.Controllers
 
             return Ok(resualt);
         }
-        [HttpPost("reset-password/email")]
+        [HttpPost("resetPassword/email")]
         public async Task<IActionResult> ResetPasswordByEmail([FromBody] ResetPasswordByEmailDto resetPassword)
         {
             var resualt = await _authservice.ResetPasswordByEmailAsync(resetPassword);
@@ -105,7 +105,7 @@ namespace Wasla.Api.Controllers
             return Ok(resualt);
         }
        
-        [HttpPost("change-password/{refreshToken}")]
+        [HttpPost("changePassword/{refreshToken}")]
         public async Task<IActionResult> ChangePasswordBy([FromRoute] string refreshToken,[FromBody] ChangePasswordDto changePassword)
         {
             var resualt = await _authservice.ChangePasswordAsync(refreshToken,changePassword);
@@ -129,12 +129,12 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _adminservice.ConfirmOrgnaizationRequestAsync(id));
         }
-        [HttpGet("check-phone/{phoneNumber}")]
+        [HttpGet("checkPhone/{phoneNumber}")]
         public async Task<IActionResult> CheckPhoneNumber(string phoneNumber)
         {
             return Ok(await _authservice.CheckPhoneNumberAsync(phoneNumber));
         }
-        [HttpGet("check-email/{email}")]
+        [HttpGet("checkEmail/{email}")]
         public async Task<IActionResult> CheckEmail(string email)
         {
             return Ok(await _authservice.CheckEmailAsync(email));

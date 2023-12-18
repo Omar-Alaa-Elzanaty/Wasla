@@ -14,8 +14,8 @@ namespace Wasla.Model.Helpers.Statics
                 $"{PermissionsName.Org_Permission}.{module}.View.3",
                 $"{PermissionsName.Org_Permission}.{module}.Delete.4"
             };
-            list.Add($"{PermissionsName.Org_Permission}.AddPermissionsForRole.Create.1");
-            list.Add($"{PermissionsName.Org_Permission}.GetOrgPermissions.View.3");
+            list.Add($"{PermissionsName.Org_Permission}.PermissionsForRole.Create.1");
+            list.Add($"{PermissionsName.Org_Permission}.PermissionsForRole.View.3");
 
             return list;
         }

@@ -27,8 +27,8 @@ namespace Wasla.Api.Controllers
             _authservice = authService;
 
         }
-        [HttpPost("Role/create")]
-		[OrgPermissionAuthorize("OrgPermissions.Role.Create.1")]
+        [HttpPost("role/create")]
+		//[OrgPermissionAuthorize("OrgPermissions.Role.Create.1")]
         public async Task<IActionResult> CreateOrgRole(AddOrgAdmRole addRole)
         {
             var res = await _authservice.CreateOrgRole(addRole);
@@ -41,7 +41,7 @@ namespace Wasla.Api.Controllers
             return Ok(await _authservice.GetOrgRoles(userName));
         }
         [HttpGet("permissions")]
-        [OrgPermissionAuthorize("OrgPermissions.GetOrgPermissions.View.3")]
+        //  [OrgPermissionAuthorize("OrgPermissions.PermissionsForRole.View.3")]
         public async Task<IActionResult> GetOrgPermissions()
         {
             return Ok(await _authservice.GetAllPermissionsAsync());
