@@ -35,7 +35,7 @@ namespace Wasla.Api.Controllers
             return Ok(res);
         }
         [HttpGet("roles/{userName}")]
-		[OrgPermissionAuthorize("OrgPermissions.Role.View.3")]
+		//[OrgPermissionAuthorize("OrgPermissions.Role.View.3")]
         public async Task<IActionResult> GetOrgRoles([FromRoute]string userName)
         {
             return Ok(await _authservice.GetOrgRoles(userName));
