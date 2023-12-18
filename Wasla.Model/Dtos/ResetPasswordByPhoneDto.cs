@@ -7,10 +7,10 @@ using System.Threading.Tasks;
 
 namespace Wasla.Model.Dtos
 {
-    public class ResetPasswordDto
+    public class ResetPasswordByPhoneDto
     {
-        [Required(ErrorMessage = "userNameRequired")]
-        public string UserName { get; set; }
+        [Required(ErrorMessage = "phoneNumberRequired")]
+        public string Phone { get; set; }
         [Required(ErrorMessage = "PasswordRequired")]
         [StringLength(20, ErrorMessage = "PasswordLength", MinimumLength = 6)]
         public string NewPassword { get; set; }

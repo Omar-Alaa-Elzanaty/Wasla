@@ -1,13 +1,11 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Identity.Client;
 using System.Security.Claims;
 using Wasla.Model.Dtos;
 using Wasla.Model.Models;
 using Wasla.Services.OrganizationSerivces;
-using Wasla.Services.Exceptions.FilterException;
+
+
 
 namespace Wasla.Api.Controllers
 {
@@ -135,18 +133,18 @@ namespace Wasla.Api.Controllers
 		[HttpDelete("station/{id}")]
 		public async Task<IActionResult> DeleteStation([FromRoute] int id)
 		{
-			return Ok(await _orgService.DeleteStationAsync(id));
+		   return Ok(await _orgService.DeleteStationAsync(id));
 		}
 		[HttpPost("trip/add/{orgId}")]
 		public async Task<IActionResult> AddTrip([FromRoute] string orgId, [FromBody] AddTripDto model)
 		{
-			return Ok(await _orgService.AddTripAsync(model, orgId));
+		   return Ok(await _orgService.AddTripAsync(model, orgId));
 		}
 
 		[HttpPut("trip/{id}")]
 		public async Task<IActionResult> UpdateTrip([FromRoute] int id, [FromBody] UpdateTripDto model)
 		{
-			return Ok(await _orgService.UpdateTripAsync(model, id));
+		   return Ok(await _orgService.UpdateTripAsync(model, id));
 		}
 		[HttpGet("trips/{orgId}")]
 		public async Task<IActionResult> GetTrips([FromRoute] string orgId)
@@ -164,20 +162,29 @@ namespace Wasla.Api.Controllers
 		{
 			return Ok(await _orgService.GetTripsForDriverAsync(orgId, id));
 		}
+
 		[HttpGet("trip/user/{orgId}/{name}")]
 		public async Task<IActionResult> GetTripForUser([FromRoute] string orgId, [FromQuery] string name)
 		{
 			return Ok(await _orgService.GetTripsForUserAsync(orgId, name));
 		}
+
 		[HttpGet("trip/user/{orgId}/{from}/{to}")]
 		public async Task<IActionResult> GetTripForUserWithFromTo([FromRoute] string orgId, [FromQuery] string from, [FromQuery] string to)
 		{
 			return Ok(await _orgService.GetTripsForUserWithToAndFromAsync(orgId, from, to));
 		}
+
 		[HttpDelete("trip/{id}")]
 		public async Task<IActionResult> DeleteTrip([FromRoute] int id)
 		{
 			return Ok(await _orgService.DeleteTripAsync(id));
+		}
+
+		[HttpGet("getOrgsByName")]
+		public async Task<IActionResult> GetOrganizationaWithName(string name)
+		{
+		   return Ok(await _orgService.GetOriganizationsWithName(name));
 		}
 	}
 }

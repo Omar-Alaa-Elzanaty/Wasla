@@ -551,5 +551,11 @@ namespace Wasla.Services.OrganizationSerivces
 			_response.Data = tripRes;
 			return _response;
 		}
+		public async Task<BaseResponse> GetOriganizationsWithName(string name)
+		{
+			var organizations=await _context.Organizations.Select(s=>s.Name.StartsWith(name)).ToListAsync();
+			_response.Data = _mapper.Map<ResponseOrgSearch>(organizations);
+			return _response;
+		}
 	}
 }
