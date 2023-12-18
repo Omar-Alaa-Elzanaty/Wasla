@@ -139,32 +139,7 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _authservice.CheckEmailAsync(email));
 		}
-        [HttpPost("createRole")]
-        public async Task<IActionResult> CreateRole(AddOrgAdmRole addRole)
-        {
-            var res = await _authservice.CreateOrgRole(addRole);
-            return Ok(res);
-        }
-        [HttpGet("getOrgRoles")]
-        public async Task<IActionResult> GetOrgRoles(string userName)
-        {
-            return Ok(await _authservice.GetOrgRoles(userName));
-        }
-        [HttpGet("getOrgPermissions")]
-        public async Task<IActionResult> GetOrgPermissions()
-        {
-            return Ok(await _authservice.GetAllPermissionsAsync());
-        }
-        [HttpGet("getRoleOrgPermissions/{roleName}")]
-        public async Task<IActionResult> GetRoleOrgPermissions([FromRoute]string roleName)
-        {
-            return Ok(await _authservice.GetRolePermissions(roleName));
-        }
-        [HttpPost("createRolePermissions")]
-        public async Task<IActionResult> CreateRolePermissions(CreateRolePermissions createRolePermissions)
-        {
-            return Ok(await _authservice.AddRolePermissions(createRolePermissions));
-        }
+      
         [HttpGet("genOtp")]
         public async Task<IActionResult> genOtp()
         {
