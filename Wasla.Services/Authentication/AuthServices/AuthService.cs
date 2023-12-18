@@ -93,9 +93,9 @@ namespace Wasla.Services.Authentication.AuthServices
 
 		public async Task<BaseResponse> PassengerRegisterAsync(PassengerRegisterDto input)
 		{
-			if (input.Email == null && input.Phone == null)
+			if (input.Email == null && input.PhoneNumber == null)
 				throw new BadRequestException(_localization["phoneOremailRequired"].Value);
-			if (input.Phone is not null) await CheckPhoneNumber(input.Phone);
+			if (input.PhoneNumber is not null) await CheckPhoneNumber(input.PhoneNumber);
 			if (input.Email is not null) await CheckEmail(input.Email);
 			_ = await CheckUserName(input.UserName);
 
@@ -151,7 +151,7 @@ namespace Wasla.Services.Authentication.AuthServices
 
 		public async Task<BaseResponse> DriverRegisterAsync(DriverRegisterDto model)
 		{
-			await CheckPhoneNumber(model.Phone);
+			await CheckPhoneNumber(model.PhoneNumber);
 			await CheckEmail(model.Email);
 
 			if (await _dbContext.Drivers.AnyAsync(u => u.LicenseNum == model.LicenseNum))
@@ -569,7 +569,7 @@ namespace Wasla.Services.Authentication.AuthServices
 			{
 				new Claim(JwtRegisteredClaimNames.Sub, account.UserName),
 				new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-				new Claim(JwtRegisteredClaimNames.Email, account.Email),
+			//	new Claim(JwtRegisteredClaimNames.Email, account.Email!=null),
 				new Claim("uid", account.Id)
 			}
 			.Union(userClaims)

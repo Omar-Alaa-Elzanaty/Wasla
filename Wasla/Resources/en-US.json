@@ -13,6 +13,7 @@
   "ProfileImageFileRequire": "the profile Image Require",
   "LicenseImageFileRequire": "Image Of License Is Require",
   "LicenseNumRequire": "Number of license is require",
+  "phoneOremailRequired": "enter Your Phone Or Email",
   //errors
   "AccountExist": "Account already Exist before",
   "EmailExist": "this E-mail already Exist",
