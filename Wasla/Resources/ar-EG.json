@@ -52,6 +52,7 @@
   "RepeatedData": "يوجد تكرار فى اليانات",
   "ReachToLimit": "لقد وصلت للحد الاقصى",
   "ReservationFail": "فشل الحجز",
+  "phoneOremailRequired": "قم بادخال رقم الهاتف او الايميل",
   //success
 
   "PhoneNumberValid": "رقم الهاتف صالح للاستخدام",

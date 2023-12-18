@@ -9,8 +9,8 @@ namespace Wasla.Model.Helpers
 {
     public class RegisterHelp
     {
-        [Required(ErrorMessage = "phoneNumberRequired")]
-        public string Phone { get; set; }
+      //  [Required(ErrorMessage = "phoneNumberRequired")]
+        public string? PhoneNumber { get; set; }
         [Required(ErrorMessage = "PasswordRequired")]
         public string Password { get; set; }
         public string? Email { get; set; }
