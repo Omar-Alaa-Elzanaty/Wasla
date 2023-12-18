@@ -14,6 +14,7 @@ namespace Wasla.Model.Models
 			Drivers=new List<Driver>();
 			Employees=new List<Employee>();
 			Vehicles=new List<Vehicle>();
+			Rates = new List<OrganizationRate>();
 		}
 		public string Name { get; set; }
 		public string Address { get; set; }
@@ -26,5 +27,6 @@ namespace Wasla.Model.Models
 		public virtual ICollection<Station>Stations { get; set; }
 		public virtual ICollection<Employee> Employees { get; set; }
 		public virtual ICollection<Vehicle> Vehicles { get; set; }
+		public virtual ICollection<OrganizationRate> Rates { get; set; }
 	}
 }

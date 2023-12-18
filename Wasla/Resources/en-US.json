@@ -51,6 +51,7 @@
   "RepeatedName": "Name already exist",
   "RepeatedData": "There are reapeted data",
   "ReachToLimit": "You reach to limit",
+  "ReservationFail": "Reservation Failed",
   //success
   "PhoneNumberValid": "Phone number is valid",
   "EmailValid": "Email valid to use",
@@ -87,5 +88,8 @@
   "RemovedSuccessfully": "Removed successfully",
   "Used": "used",
   "NotUsed": "not used",
-  "SuccessProcess": "Success process"
+  "SuccessProcess": "Success process",
+  "AddRate": "A new rate added",
+  "UpdateRate": "Rate has been updated",
+  "RemoveRate": "Rate removed"
 }

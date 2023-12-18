@@ -91,11 +91,11 @@ namespace Wasla.Services.AdminServices
 					var permissions = OrgPermissions.GenerateAllPermissions();
 					foreach (var permission in permissions)
 						await _roleManager.AddClaimAsync(roleClaim, new Claim(PermissionsName.Org_Permission, permission));
-
-					await _mailService.SendEmailAsync(
+					//TODO: remove comment
+					/*await _mailService.SendEmailAsync(
 						  mailTo: request.Email,
 						  subject: "Wasla Email Annoucment",
-						  body: "Your email has been activated,now you can login using your username and password");
+						  body: "Your email has been activated,now you can login using your username and password");*/
 
 					_context.OrganizationsRegisters.Remove(request);
 					await transaction.CommitAsync();

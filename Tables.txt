@@ -24,3 +24,4 @@ driverRate: NoAction -> driverId
 customTripOrder[ NO Action ]
 VehicleRate : NoAction VehicleId
 Employee:NoAction -> OrgId
+organizationRate:Restrict -> organizationId

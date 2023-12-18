@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Globalization;
@@ -58,10 +59,10 @@ namespace Wasla
             builder.Services.AddIdentity<Account, IdentityRole>(opt =>
             {
 				opt.Password.RequireDigit = false;
-				opt.Password.RequireLowercase = false;
-				opt.Password.RequireUppercase = false;
-                opt.Password.RequiredLength = 0; // Set the desired password length here
+				opt.Password.RequiredLength = 4;
 				opt.Password.RequireNonAlphanumeric = false;
+				opt.Password.RequireUppercase = false;
+				opt.Password.RequireLowercase = false;
 			})
                 .AddEntityFrameworkStores<WaslaDb>().AddDefaultTokenProviders();
 

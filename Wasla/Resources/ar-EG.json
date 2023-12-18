@@ -51,6 +51,7 @@
   "RepeatedName": "الاسم مستخدم مسبقا",
   "RepeatedData": "يوجد تكرار فى اليانات",
   "ReachToLimit": "لقد وصلت للحد الاقصى",
+  "ReservationFail": "فشل الحجز",
   //success
 
   "PhoneNumberValid": "رقم الهاتف صالح للاستخدام",
@@ -80,5 +81,8 @@
   "Removed": "تم الحذف",
   "Used": "مستخدم",
   "NotUsed": "متاح",
-  "SuccessProcess": "عملية ناجحة"
+  "SuccessProcess": "عملية ناجحة",
+  "AddRate": "تم اضافة تقييم",
+  "UpdateRate": "تم تعديل التقييم",
+  "RemoveRate": "تم حذف التقييم"
 }
