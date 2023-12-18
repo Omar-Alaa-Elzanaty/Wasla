@@ -118,7 +118,7 @@ namespace Wasla.Services.Authentication.AuthServices
 		public async Task<BaseResponse> OrgnaizationRegisterAsync(OrgRegisterRequestDto request)
 		{
 			//TODO: remove comment
-			_ = CheckOtp(request.Otp);
+			//_ = CheckOtp(request.Otp);
 
 			if (await _dbContext.OrganizationsRegisters.AnyAsync(o => o.Email == request.Email)
 				|| await CheckEmail(request.Email))

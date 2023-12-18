@@ -10,6 +10,7 @@ namespace Wasla.Model.Models
 	{
 		public int Id { get; set; }
 		public int SetNum { get; set; }
+		public string QrCodeUrl { get; set; }
 		public DateTime ReservationDate { get; set; }
 		public string CustomerId { get; set; }
 		public virtual Customer Customer { get; set; }

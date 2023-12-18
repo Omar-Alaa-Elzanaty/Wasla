@@ -1,30 +1,32 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Localization;
-using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Extensions.Localization;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
 using Wasla.Model.Models;
 using Wasla.Services.Exceptions;
+using Wasla.Services.MediaSerivces;
 
 namespace Wasla.Services.PassangerServices
 {
-	public class PassangerService:IPassangerService
+	public class PassangerService : IPassangerService
 	{
 		private readonly WaslaDb _context;
 		private readonly BaseResponse _response;
+		private readonly IMediaSerivce _mediaSerivce;
 		private readonly IStringLocalizer<PassangerService> _localization;
 
 		public PassangerService
 			(WaslaDb context,
-			IStringLocalizer<PassangerService> localization)
+			IStringLocalizer<PassangerService> localization,
+			IMediaSerivce mediaSerivce)
 		{
 			_context = context;
 			_response = new();
 			_localization = localization;
+			_mediaSerivce = mediaSerivce;
 		}
 
-		public async Task<BaseResponse> SetsRecordsAsync(int tripId)
+		public async Task<BaseResponse> SeatsRecordsAsync(int tripId)
 		{
 			var trip = await _context.Trips.FindAsync(tripId);
 
@@ -33,7 +35,7 @@ namespace Wasla.Services.PassangerServices
 				throw new KeyNotFoundException(_localization["ObjectNotFound"].Value);
 			}
 
-			var reciveredSets = trip.RecervedSets.Select(s => s.setNum).ToList();
+			var reciveredSets = trip.RecervedSets.Select(s => s.setNum).ToHashSet();
 
 			var sets = new List<SetStatusDto>();
 
@@ -43,7 +45,7 @@ namespace Wasla.Services.PassangerServices
 				{
 					SetNum = setNum,
 					ISAvailable = !reciveredSets.Contains(setNum)
-				});  
+				});
 			}
 
 			_response.Data = sets;
@@ -51,41 +53,107 @@ namespace Wasla.Services.PassangerServices
 			return _response;
 
 		}
-		public async Task<BaseResponse> ReservationAsync(List<int>SetsNum,int tripId,string custId)
+		public async Task<BaseResponse> ReservationAsync(ReservationDto order)
 		{
-			//TODO: need more work
-			List<int>failed = new List<int>();
 			List<Reservation> completeReserve = new List<Reservation>();
 
-			foreach(var set in SetsNum)
+			using (var trans = await _context.Database.BeginTransactionAsync())
 			{
 				try
 				{
-					_context.Sets.Add(new Set() { setNum = set, TripId = tripId });
-					_context.SaveChanges();
-					completeReserve.Add(new Reservation()
+					foreach (var set in order.seats)
 					{
-						SetNum=set,
-						CustomerId=custId,
-						ReservationDate=DateTime.Now,
-						TripId=tripId
-					});
+						_context.Seats.Add(new Seat() { setNum = set.SeatNum, TripId = order.TripId });
+						_context.SaveChanges();
+						completeReserve.Add(new Reservation()
+						{
+							SetNum = set.SeatNum,
+							CustomerId = order.CustomerId,
+							ReservationDate = DateTime.Now,
+							TripId = order.TripId,
+							QrCodeUrl = " "//await _mediaSerivce.AddAsync(set.QrCodeFile)
+						});
+
+					}
+					await _context.Reservations.AddRangeAsync(completeReserve);
+
+					var customer = await _context.Customers.FindAsync(order.CustomerId);
+					var trip = await _context.Trips.FindAsync(order.TripId);
+
+					if (customer is null || trip is null)
+					{
+						throw new KeynotFoundException(_localization["ReservationFail"].Value);
+					}
+
+					customer.points += completeReserve.Count * trip.Points;
+
+					await _context.SaveChangesAsync();
+					await trans.CommitAsync();
+				}
+				catch (KeynotFoundException)
+				{
+					await trans.RollbackAsync();
+					throw;
 				}
 				catch
 				{
-					failed.Add(set);
+					await trans.RollbackAsync();
+					throw;
 				}
-			}
-			await _context.AddAsync(completeReserve);
-			await _context.SaveChangesAsync();
-
-			if (failed.IsNullOrEmpty())
-			{
-				_response.Data = failed; 
-				return _response;
 			}
 
 			_response.Message = _localization["SuccessProcess"].Value;
+			_response.Data = completeReserve.Select(t => new
+			{
+				t.Id,
+				t.SetNum,
+				t.TripId,
+				t.QrCodeUrl,
+				t.ReservationDate
+			});
+
+			return _response;
+		}
+		public async Task<BaseResponse> OrganizationRateAsync(OrganizationRate model)
+		{
+			var customer = _context.Customers.SingleOrDefault(c => c.Id == model.CustomerId);
+			var rate = customer?.OrganizationRates.FirstOrDefault(r => r.OrgId == model.OrgId);
+
+			if (customer is not null && rate is null)
+			{
+				customer.OrganizationRates.Add(model);
+
+				_response.Message = _localization["AddRate"].Value;
+			}
+			else if (customer is not null && rate is not null)
+			{
+				rate.OrgId = model.OrgId;
+				rate.CustomerId = model.CustomerId;
+				rate.Rate = model.Rate;
+
+				_response.Message = _localization["UpdateRate"].Value;
+			}
+
+			await _context.SaveChangesAsync();
+
+			return _response;
+		}
+		public async Task<BaseResponse> OrganizationRateRemoveAsync(string organizationId, string customerId)
+		{
+			var customer = _context.Customers.SingleOrDefault(c => c.Id == customerId);
+			var rate = customer?.OrganizationRates
+					.SingleOrDefault(r => r.OrgId == organizationId);
+
+			if (customer is null || rate is null)
+			{
+				throw new KeynotFoundException(_localization["ObjectNotFound"].Value);
+			}
+
+			customer.OrganizationRates.Remove(rate);
+			await _context.SaveChangesAsync();
+
+			_response.Message = _localization["RemoveRate"].Value;
+
 			return _response;
 		}
 	}

@@ -47,6 +47,6 @@ namespace Wasla.DataAccess
 		public virtual DbSet<OrganizationRegisterRequest> OrganizationsRegisters { get; set; }
 		public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<Station> Stations { get; set; }
-		public virtual DbSet<Set> Sets { get; set; }
+		public virtual DbSet<Seat> Seats { get; set; }
 	}
 }

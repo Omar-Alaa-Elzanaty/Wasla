@@ -12,7 +12,7 @@ using Wasla.Services.OrganizationSerivces;
 
 namespace Wasla.Api.Controllers
 {
-	[Route("api/[controller]")]
+	[Route("api/organization")]
 	[ApiController]
 	//[Authorize(Roles ="Organization")]
 	public class OrganizationController : ControllerBase
@@ -27,43 +27,42 @@ namespace Wasla.Api.Controllers
             _authservice = authService;
 
         }
-        [HttpPost("CreateOrgRole")]
+        [HttpPost("Role/create")]
 		[OrgPermissionAuthorize("OrgPermissions.Role.Create.1")]
         public async Task<IActionResult> CreateOrgRole(AddOrgAdmRole addRole)
         {
             var res = await _authservice.CreateOrgRole(addRole);
             return Ok(res);
         }
-
-        [HttpGet("getOrgRoles")]
+        [HttpGet("roles/{userName}")]
 		[OrgPermissionAuthorize("OrgPermissions.Role.View.3")]
-        public async Task<IActionResult> GetOrgRoles(string userName)
+        public async Task<IActionResult> GetOrgRoles([FromRoute]string userName)
         {
             return Ok(await _authservice.GetOrgRoles(userName));
         }
-        [HttpGet("getOrgPermissions")]
-		[OrgPermissionAuthorize("OrgPermissions.GetOrgPermissions.View.3")]
+        [HttpGet("permissions")]
+        [OrgPermissionAuthorize("OrgPermissions.GetOrgPermissions.View.3")]
         public async Task<IActionResult> GetOrgPermissions()
         {
             return Ok(await _authservice.GetAllPermissionsAsync());
         }
-        [HttpGet("getRoleOrgPermissions/{roleName}")]
+        [HttpGet("role/permissions/{roleName}")]
         public async Task<IActionResult> GetRoleOrgPermissions([FromRoute] string roleName)
         {
             return Ok(await _authservice.GetRolePermissions(roleName));
         }
-        [HttpPost("createRolePermissions")]
+        [HttpPost("role/permissions/create")]
         public async Task<IActionResult> CreateRolePermissions(CreateRolePermissions createRolePermissions)
         {
             return Ok(await _authservice.AddRolePermissions(createRolePermissions));
         }
         [HttpGet("{orgId}/vehicles")]
-		public async Task<IActionResult> DisplayVehicles(string orgId)
+		public async Task<IActionResult> DisplayVehicles([FromRoute]string orgId)
 		{
 			return Ok(await _orgService.DisplayVehicles(orgId));
 		}
 		[HttpPost("{orgId}/vehicle/add")]
-		public async Task<IActionResult> AddVehicle([FromForm] VehicleDto model,string orgId)
+		public async Task<IActionResult> AddVehicle([FromRoute] string orgId,[FromForm] VehicleDto model)
 		{ 
 			return Ok(await _orgService.AddVehicleAsync(model, orgId));
 		}
@@ -79,7 +78,7 @@ namespace Wasla.Api.Controllers
 			return Ok(await _orgService.DeleteVehicleAsync(vehicleId));
 		}
 		[HttpPost("{orgId}/driver/add")]
-		public async Task<IActionResult> AddDriver([FromForm]OrgDriverDto model,string orgId)
+		public async Task<IActionResult> AddDriver([FromRoute] string orgId,[FromForm]OrgDriverDto model)
 		{
 			return Ok(await _orgService.AddDriverAsync(model,orgId));
 		}

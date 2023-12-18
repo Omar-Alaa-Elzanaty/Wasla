@@ -264,7 +264,7 @@ namespace Wasla.Services.OrganizationSerivces
 		{
 			var driver = await _context.Drivers.Where(d => d.OrganizationId == orgId).Select(d => new
 			{
-				Id = d.Id,
+				d.Id,
 				Name = d.FirstName + ' ' + d.LastName,
 			}).ToListAsync();
 
@@ -513,8 +513,9 @@ namespace Wasla.Services.OrganizationSerivces
 		}
 		public async Task<BaseResponse> GetTripAsync(int id)
 		{
-			var trip = await _context.Trips.Where(t => t.Id == id).Include(t => t.Driver).Include(t => t.Vehicle).FirstOrDefaultAsync();
+			var trip = await _context.Trips.Where(t => t.Id == id).FirstOrDefaultAsync();
 			var tripRes = _mapper.Map<TripDto>(trip);
+
 			_response.Data = tripRes;
 			return _response;
 		}

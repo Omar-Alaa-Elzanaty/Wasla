@@ -9,16 +9,16 @@ using Wasla.Services.Authentication.AuthServices;
 
 namespace Wasla.Api.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
+	[Route("api/auth")]
+	[ApiController]
 
-    public class AuthController : ControllerBase
-    {
-        private readonly IMapper _mapper;
-        private readonly IAuthService _authservice;
-        private readonly BaseResponse _response;
-        private readonly IAdminService _adminservice;
-        private readonly WaslaDb _context;
+	public class AuthController : ControllerBase
+	{
+		private readonly IMapper _mapper;
+		private readonly IAuthService _authservice;
+		private readonly BaseResponse _response;
+		private readonly IAdminService _adminservice;
+		private readonly WaslaDb _context;
 
 		public AuthController(IMapper mapper, IAuthService authService, IAdminService adminservice, WaslaDb context)
 		{
@@ -28,7 +28,7 @@ namespace Wasla.Api.Controllers
 			_adminservice = adminservice;
 			_context = context;
 		}
-		[HttpPost("passengerRegister")]
+		[HttpPost("passenger/register")]
         public async Task<IActionResult> PassengerRegister([FromBody] PassengerRegisterDto adv)
         {
             var result = await _authservice.PassengerRegisterAsync(adv);
@@ -43,7 +43,7 @@ namespace Wasla.Api.Controllers
             return Ok(_response);
         }
         
-        [HttpGet("sendEmail/{email}")]//("sendEmail")]
+        [HttpGet("send-email/{email}")]//("sendEmail")]
         public async Task<IActionResult> SendEmail([FromRoute] string email)
         {
             var messag = await _authservice.SendOtpEmailAsync(email);
@@ -57,26 +57,26 @@ namespace Wasla.Api.Controllers
         }
 
         [HttpGet]//("compareOtp")]
-        [Route("compareOtp/{recOtp}")]
+        [Route("compare-Otp/{recOtp}")]
         public async Task<IActionResult> CompareOtp([FromRoute] string recOtp)
         {
             // var otp = recOtp.UserOtp;
             var res = await _authservice.CompareOtpAsync(recOtp);
             return Ok(res);
         }
-        [HttpPut("confirmPhone")]
+        [HttpPut("confirm-phone")]
         public async Task<IActionResult> ConfirmPhone([FromBody] ConfirmNumberDto confirmNumber)
         {
             var resualt = await _authservice.ConfirmPhoneAsync(confirmNumber);
             return Ok(resualt);
         }
-        [HttpPut("confirmEmail")]
+        [HttpPut("confirm-email")]
         public async Task<IActionResult> ConfirmEmail([FromBody] ConfirmEmailDto confirmEmail)
         {
             var resualt = await _authservice.ConfirmEmailAsync(confirmEmail);
             return Ok(resualt);
         }
-        [HttpPost("RefreshToken/{refreshToken}")]
+        [HttpPost("refreshToken/{refreshToken}")]
         [Authorize]
         public async Task<IActionResult> RefreshToken([FromRoute] string refreshToken)
         {
@@ -97,7 +97,7 @@ namespace Wasla.Api.Controllers
 
             return Ok(resualt);
         }
-        [HttpPost("resetPasswordByEmail")]
+        [HttpPost("reset-password/email")]
         public async Task<IActionResult> ResetPasswordByEmail([FromBody] ResetPasswordByEmailDto resetPassword)
         {
             var resualt = await _authservice.ResetPasswordByEmailAsync(resetPassword);
@@ -105,7 +105,7 @@ namespace Wasla.Api.Controllers
             return Ok(resualt);
         }
        
-        [HttpPost("changePassword/{refreshToken}")]
+        [HttpPost("change-password/{refreshToken}")]
         public async Task<IActionResult> ChangePasswordBy([FromRoute] string refreshToken,[FromBody] ChangePasswordDto changePassword)
         {
             var resualt = await _authservice.ChangePasswordAsync(refreshToken,changePassword);
@@ -119,28 +119,28 @@ namespace Wasla.Api.Controllers
             var resault = await _authservice.LogoutAsync(refreshToken);
             return Ok(resault);
         }
-        [HttpPost("organizationRegister")]
+        [HttpPost("organization/register")]
         public async Task<IActionResult> OrganizationRegister([FromForm] OrgRegisterRequestDto request)
         {
             return Ok(await _authservice.OrgnaizationRegisterAsync(request));
         }
-        [HttpGet("confrimOrganizationAccount/{id}")]
+        [HttpGet("organization/account/confirm/{id}")]
         public async Task<IActionResult> ConfrimOrganizationAccount(int id)
         {
             return Ok(await _adminservice.ConfirmOrgnaizationRequestAsync(id));
         }
-        [HttpGet("checkPhoneNumber/phoneNumber")]
+        [HttpGet("check-phone/{phoneNumber}")]
         public async Task<IActionResult> CheckPhoneNumber(string phoneNumber)
         {
             return Ok(await _authservice.CheckPhoneNumberAsync(phoneNumber));
         }
-        [HttpGet("checkEmail/email")]
+        [HttpGet("check-email/{email}")]
         public async Task<IActionResult> CheckEmail(string email)
         {
             return Ok(await _authservice.CheckEmailAsync(email));
 		}
-      
-        [HttpGet("genOtp")]
+
+        [HttpGet("opt/generate")]
         public async Task<IActionResult> genOtp()
         {
             return Ok(await _authservice.gnOtp());
