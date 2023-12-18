@@ -97,7 +97,7 @@ namespace Wasla.Api.Controllers
 
             return Ok(resualt);
         }
-        [HttpPost("resetPassword/email")]
+        [HttpPost("resetPasswordByEmail")]
         public async Task<IActionResult> ResetPasswordByEmail([FromBody] ResetPasswordByEmailDto resetPassword)
         {
             var resualt = await _authservice.ResetPasswordByEmailAsync(resetPassword);
