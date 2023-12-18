@@ -7,13 +7,17 @@ namespace Wasla.Model.Helpers.Statics
     {
         public static List<string> GeneratePermissionsList(string module)
         {
-            return new List<string>()
+            var list= new List<string>()
             {
                 $"{PermissionsName.Org_Permission}.{module}.Create.1",
                 $"{PermissionsName.Org_Permission}.{module}.Update.2",
                 $"{PermissionsName.Org_Permission}.{module}.View.3",
                 $"{PermissionsName.Org_Permission}.{module}.Delete.4"
             };
+            list.Add($"{PermissionsName.Org_Permission}.AddPermissionsForRole.Create.1");
+            list.Add($"{PermissionsName.Org_Permission}.GetOrgPermissions.View.3");
+
+            return list;
         }
         public static List<string> GenerateAllPermissions()
         {

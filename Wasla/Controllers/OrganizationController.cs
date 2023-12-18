@@ -2,7 +2,10 @@
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Wasla.Model.Dtos;
+using Wasla.Model.Helpers;
 using Wasla.Model.Models;
+using Wasla.Services.Authentication.AuthServices;
+using Wasla.Services.Exceptions.FilterException;
 using Wasla.Services.OrganizationSerivces;
 
 
@@ -16,19 +19,50 @@ namespace Wasla.Api.Controllers
 	{
 		private readonly IOrganizationService _orgService;
 		private readonly UserManager<Account> _userManager;
-
-		public OrganizationController(IOrganizationService organizationService, UserManager<Account> userManager)
+        private readonly IAuthService _authservice;
+        public OrganizationController(IOrganizationService organizationService, UserManager<Account> userManager,IAuthService authService)
 		{
 			_orgService = organizationService;
 			_userManager = userManager;
-		}
-		[HttpGet("{orgId}/vehicles")]
-		public async Task<IActionResult> DisplayVehicles(string orgId)
+            _authservice = authService;
+
+        }
+        [HttpPost("Role/create")]
+		[OrgPermissionAuthorize("OrgPermissions.Role.Create.1")]
+        public async Task<IActionResult> CreateOrgRole(AddOrgAdmRole addRole)
+        {
+            var res = await _authservice.CreateOrgRole(addRole);
+            return Ok(res);
+        }
+        [HttpGet("roles/{userName}")]
+		[OrgPermissionAuthorize("OrgPermissions.Role.View.3")]
+        public async Task<IActionResult> GetOrgRoles([FromRoute]string userName)
+        {
+            return Ok(await _authservice.GetOrgRoles(userName));
+        }
+        [HttpGet("permissions")]
+        [OrgPermissionAuthorize("OrgPermissions.GetOrgPermissions.View.3")]
+        public async Task<IActionResult> GetOrgPermissions()
+        {
+            return Ok(await _authservice.GetAllPermissionsAsync());
+        }
+        [HttpGet("role/permissions/{roleName}")]
+        public async Task<IActionResult> GetRoleOrgPermissions([FromRoute] string roleName)
+        {
+            return Ok(await _authservice.GetRolePermissions(roleName));
+        }
+        [HttpPost("role/permissions/create")]
+        public async Task<IActionResult> CreateRolePermissions(CreateRolePermissions createRolePermissions)
+        {
+            return Ok(await _authservice.AddRolePermissions(createRolePermissions));
+        }
+        [HttpGet("{orgId}/vehicles")]
+		public async Task<IActionResult> DisplayVehicles([FromRoute]string orgId)
 		{
 			return Ok(await _orgService.DisplayVehicles(orgId));
 		}
 		[HttpPost("{orgId}/vehicle/add")]
-		public async Task<IActionResult> AddVehicle([FromForm] VehicleDto model,string orgId)
+		public async Task<IActionResult> AddVehicle([FromRoute] string orgId,[FromForm] VehicleDto model)
 		{ 
 			return Ok(await _orgService.AddVehicleAsync(model, orgId));
 		}
@@ -44,7 +78,7 @@ namespace Wasla.Api.Controllers
 			return Ok(await _orgService.DeleteVehicleAsync(vehicleId));
 		}
 		[HttpPost("{orgId}/driver/add")]
-		public async Task<IActionResult> AddDriver([FromForm]OrgDriverDto model,string orgId)
+		public async Task<IActionResult> AddDriver([FromRoute] string orgId,[FromForm]OrgDriverDto model)
 		{
 			return Ok(await _orgService.AddDriverAsync(model,orgId));
 		}

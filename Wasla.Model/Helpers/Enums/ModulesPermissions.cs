@@ -8,6 +8,11 @@ namespace Wasla.Model.Helpers.Enums
 {
     public enum ModulesPermissions
     {
-        TestPermissions
+        Driver,
+        Employee,
+        Stations,
+        Trip,
+        Vehicle,
+        Role
     }
 }
