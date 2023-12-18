@@ -51,6 +51,7 @@
   "RepeatedName": "Name already exist",
   "RepeatedData": "There are reapeted data",
   "ReachToLimit": "You reach to limit",
+  "ReservationFail": "Reservation Failed",
   //success
   "PhoneNumberValid": "Phone number is valid",
   "EmailValid": "Email valid to use",
