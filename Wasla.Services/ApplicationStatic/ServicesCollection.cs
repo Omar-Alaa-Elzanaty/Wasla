@@ -12,6 +12,7 @@ using Wasla.Services.EmailServices;
 using Wasla.Services.Middleware;
 using Wasla.Services.OrganizationSerivces;
 using Wasla.Services.PassangerServices;
+using Wasla.Services.Authentication.VerifyService;
 
 namespace Wasla.Services.ApplicationStatic
 {
@@ -31,6 +32,7 @@ namespace Wasla.Services.ApplicationStatic
             services.AddScoped<IMailServices, MailServices>();
             services.AddScoped<IOrganizationService,OrganizationSerivce>();
             services.AddScoped<IPassangerService, PassangerService>();
+            services.AddScoped<IVerifyService,VerifyService>();
          
         }
     }

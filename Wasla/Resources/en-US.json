@@ -77,6 +77,8 @@
   "CreatedAdsSuccess": "Ads add  successfully",
   "StationExist": "Station is Already Exsit",
   "StationNotFound": "Station Not Found",
+  "PhoneEditSuccess": "Phone Edit Success",
+  "EmailEditSuccess": "Email Edit Success",
   "culture": "Culture",
   "date": "Date",
   "currency": "Currency",
