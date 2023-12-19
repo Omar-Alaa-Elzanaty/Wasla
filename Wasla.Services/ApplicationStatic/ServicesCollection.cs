@@ -8,15 +8,16 @@ using Wasla.Services.MultLanguageService.JsonLocalizer;
 using Wasla.Services.Authentication.AuthHelperService.FactorService.IFactory;
 using Wasla.Services.Authentication.AuthHelperService.FactorService.Factory;
 using Microsoft.Extensions.DependencyInjection;
-using Wasla.Services.EmailServices;
 using Wasla.Services.Middleware;
 using Wasla.Services.OrganizationSerivces;
 using Wasla.Services.PassangerServices;
 using Wasla.Services.Authentication.VerifyService;
+using Wasla.Services.ShareService.EmailServices;
+using Wasla.Services.ShareService.AuthVerifyShareService;
 
 namespace Wasla.Services.ApplicationStatic
 {
-	public static class ServicesCollection
+    public static class ServicesCollection
     {
         public static void AddServices(this IServiceCollection services)
         {
@@ -33,6 +34,7 @@ namespace Wasla.Services.ApplicationStatic
             services.AddScoped<IOrganizationService,OrganizationSerivce>();
             services.AddScoped<IPassangerService, PassangerService>();
             services.AddScoped<IVerifyService,VerifyService>();
+            services.AddScoped<IAuthVerifyService, AuthVerifyService>();
          
         }
     }

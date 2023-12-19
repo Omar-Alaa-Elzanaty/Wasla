@@ -10,39 +10,35 @@ using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
 using Wasla.Model.Models;
-using Wasla.Services.EmailServices;
 using Wasla.Services.Exceptions;
 using Wasla.Services.MediaSerivces;
+using Wasla.Services.ShareService.AuthVerifyShareService;
+using Wasla.Services.ShareService.EmailServices;
 
 namespace Wasla.Services.Authentication.VerifyService
 {
     public class VerifyService : IVerifyService
     {
         private readonly UserManager<Account> _userManager;
-        private readonly RoleManager<IdentityRole> _roleManager;
         private readonly TwilioSetting _twilio;
-        private readonly JWT _jwt;
         private readonly IStringLocalizer<VerifyService> _localization;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly BaseResponse _response;
-        private readonly WaslaDb _dbContext;
         private readonly IMailServices _mailService;
-
+        private readonly IAuthVerifyService _authVerifyService;
         public VerifyService
             (
-            UserManager<Account> userManager, RoleManager<IdentityRole> roleManager,
-            IOptions<JWT> jwt,
+            UserManager<Account> userManager, 
             IOptions<TwilioSetting> twilio,
             IStringLocalizer<VerifyService> localization,
-            WaslaDb dbContext, IHttpContextAccessor httpContextAccessor)
+            IAuthVerifyService authVerifyService
+            , IHttpContextAccessor httpContextAccessor)
         {
             _userManager = userManager;
-            _roleManager = roleManager;
-            _jwt = jwt.Value;
             _twilio = twilio.Value;
             _localization = localization;
+            _authVerifyService = authVerifyService;
             _response = new();
-            _dbContext = dbContext;
             _httpContextAccessor = httpContextAccessor;
         }
         public async Task<BaseResponse> SendOtpMessageAsync(string userPhone)
@@ -120,7 +116,7 @@ namespace Wasla.Services.Authentication.VerifyService
 
         public async Task<BaseResponse> ChangePasswordAsync(string token, ChangePasswordDto changePassword)
         {
-            var user = await getUserByToken(token);
+            var user = await _authVerifyService.getUserByToken(token);
             if (!await _userManager.CheckPasswordAsync(user, changePassword.OldPassword))
             {
                 throw new BadRequestException(_localization["userOrpasswordNotCorrect"].Value);
@@ -135,7 +131,7 @@ namespace Wasla.Services.Authentication.VerifyService
         }
         public async Task<BaseResponse> ConfirmPhoneAsync(ConfirmNumberDto confirmNumberDto)
         {
-            var user = await getUserByPhone(confirmNumberDto.Phone);
+            var user = await _authVerifyService.getUserByPhone(confirmNumberDto.Phone);
 
             bool checkotp = CheckOtp(confirmNumberDto.RecOtp);
             if (!checkotp)
@@ -149,7 +145,7 @@ namespace Wasla.Services.Authentication.VerifyService
         }
         public async Task<BaseResponse> ConfirmEmailAsync(ConfirmEmailDto confirmEmailDto)
         {
-            var user = await getUserByEmail(confirmEmailDto.Email);
+            var user = await _authVerifyService.getUserByEmail(confirmEmailDto.Email);
 
             bool checkotp = CheckOtp(confirmEmailDto.RecOtp);
             if (!checkotp)
@@ -170,8 +166,8 @@ namespace Wasla.Services.Authentication.VerifyService
         }
         public async Task<BaseResponse> EditEmailAsync(string RefreshToken, string newEmail)
         {
-             var user=await getUserByToken(RefreshToken);
-              await CheckEmail(newEmail);
+             var user=await _authVerifyService.getUserByToken(RefreshToken);
+              await _authVerifyService.CheckEmail(newEmail);
               user.Email=newEmail;
             await _userManager.UpdateAsync(user);
             _response.Message = _localization["EmailEditSuccess"].Value;
@@ -180,50 +176,14 @@ namespace Wasla.Services.Authentication.VerifyService
 
         public async Task<BaseResponse> EditPhoneAsync(string RefreshToken, string newPhone)
         {
-            var user = await getUserByToken(RefreshToken);
-            await CheckPhoneNumber(newPhone);
+            var user = await _authVerifyService.getUserByToken(RefreshToken);
+            await _authVerifyService.CheckPhoneNumber(newPhone);
             user.PhoneNumber = newPhone;
             await _userManager.UpdateAsync(user);
             _response.Message = _localization["PhoneEditSuccess"].Value;
             return _response;
         }
-        private async Task<Account> getUserByToken(string token)
-        {
-            var user = await _userManager.Users.SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.RefToken == token));
-            if (user == null)
-                throw new NotFoundException(_localization["refreshTokenNotFound"].Value);
-            return user;
-        }
-        private async Task<Account> getUserByPhone(string phoneNumber)
-        {
-            var user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
-            if (user == null)
-                throw new NotFoundException(_localization["PhoneNumberWrong"].Value);
-            return user;
-        }
-        private async Task<Account> getUserByEmail(string email)
-        {
-            var user = await _userManager.FindByEmailAsync(email);
-            if (user == null)
-                throw new NotFoundException(_localization["EmailNotFound"].Value);
-            return user;
-        }
-        private async Task<bool> CheckPhoneNumber(string PhoneNumber)
-        {
-            if (await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == PhoneNumber) is not null)
-            {
-                throw new BadRequestException(_localization["phoneNumberExist"].Value);
-            }
-            return false;
-        }
-        private async Task<bool> CheckEmail(string Email)
-        {
-            if (await _userManager.FindByEmailAsync(Email) is not null)
-            {
-                throw new BadRequestException(_localization["EmailExist"].Value);
-            }
-            return false;
-        }
+     
         private void SetOtpInCookie(string otp)
         {
             var cookieOptions = new CookieOptions

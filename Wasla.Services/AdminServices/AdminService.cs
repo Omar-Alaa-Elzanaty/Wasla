@@ -7,13 +7,14 @@ using Wasla.DataAccess;
 using Wasla.Model.Helpers;
 using Wasla.Model.Helpers.Statics;
 using Wasla.Model.Models;
-using Wasla.Services.EmailServices;
 using Wasla.Services.Exceptions;
 using Wasla.Services.MediaSerivces;
+using Wasla.Services.ShareService;
+using Wasla.Services.ShareService.EmailServices;
 
 namespace Wasla.Services.AdminServices
 {
-	public class AdminService : IAdminService
+    public class AdminService : IAdminService
 	{
 		private readonly WaslaDb _context;
 		private readonly BaseResponse _response;

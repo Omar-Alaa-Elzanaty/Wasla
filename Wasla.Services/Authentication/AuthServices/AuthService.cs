@@ -10,17 +10,15 @@ using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
 using System.Text.RegularExpressions;
-using Twilio;
-using Twilio.Rest.Api.V2010.Account;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
 using Wasla.Model.Helpers.Statics;
 using Wasla.Model.Models;
 using Wasla.Services.Authentication.AuthHelperService.FactorService.IFactory;
-using Wasla.Services.EmailServices;
 using Wasla.Services.Exceptions;
 using Wasla.Services.MediaSerivces;
+using Wasla.Services.ShareService.AuthVerifyShareService;
 
 namespace Wasla.Services.Authentication.AuthServices
 {
@@ -35,8 +33,10 @@ namespace Wasla.Services.Authentication.AuthServices
 		private readonly IBaseFactoryResponse _baseFactory;
 		private readonly WaslaDb _dbContext;
 		private readonly IMediaSerivce _mediaServices;
+        private readonly IAuthVerifyService _authVerifyService;
 
-		public AuthService
+
+        public AuthService
 			(
 			IBaseFactoryResponse baseFactory,
 			UserManager<Account> userManager,
@@ -45,7 +45,7 @@ namespace Wasla.Services.Authentication.AuthServices
 			IMapper mapper,
 			IStringLocalizer<AuthService> localization,
 			IMediaSerivce mediaSerivces,
-			WaslaDb dbContext)
+			WaslaDb dbContext, IAuthVerifyService authVerifyService)
 		{
 			_userManager = userManager;
 			_roleManager = roleManager;
@@ -54,19 +54,12 @@ namespace Wasla.Services.Authentication.AuthServices
 			_localization = localization;
 			_response = new();
 			_dbContext = dbContext;
-			_mediaServices = mediaSerivces;
+            _authVerifyService = authVerifyService;
+            _mediaServices = mediaSerivces;
 			_mediaServices = mediaSerivces;
 			_baseFactory = baseFactory;
 		}
 
-		private async Task<bool> CheckPhoneNumber(string PhoneNumber)
-		{
-			if (await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == PhoneNumber) is not null)
-			{
-				throw new BadRequestException(_localization["phoneNumberExist"].Value);
-			}
-			return false;
-		}
 		private async Task<bool> CheckUserName(string UserName)
 		{
 			if (await _userManager.FindByNameAsync(UserName) is not null)
@@ -75,21 +68,13 @@ namespace Wasla.Services.Authentication.AuthServices
 			}
 			return false;
 		}
-		private async Task<bool> CheckEmail(string Email)
-		{
-			if (await _userManager.FindByEmailAsync(Email) is not null)
-			{
-				throw new BadRequestException(_localization["EmailExist"].Value);
-			}
-			return false;
-		}
 
 		public async Task<BaseResponse> PassengerRegisterAsync(PassengerRegisterDto input)
 		{
 			if (input.Email == null && input.PhoneNumber == null)
 				throw new BadRequestException(_localization["phoneOremailRequired"].Value);
-			if (input.PhoneNumber is not null) await CheckPhoneNumber(input.PhoneNumber);
-			if (input.Email is not null) await CheckEmail(input.Email);
+			if (input.PhoneNumber is not null) await _authVerifyService.CheckPhoneNumber(input.PhoneNumber);
+			if (input.Email is not null) await _authVerifyService.CheckEmail(input.Email);
 			_ = await CheckUserName(input.UserName);
 
 			var user = _mapper.Map<Customer>(input);
@@ -114,7 +99,7 @@ namespace Wasla.Services.Authentication.AuthServices
 			//_ = CheckOtp(request.Otp);
 
 			if (await _dbContext.OrganizationsRegisters.AnyAsync(o => o.Email == request.Email)
-				|| await CheckEmail(request.Email))
+				|| await _authVerifyService.CheckEmail(request.Email))
 			{
 				throw new BadRequestException(_localization["EmailExist"].Value);
 			}
@@ -124,7 +109,7 @@ namespace Wasla.Services.Authentication.AuthServices
 				throw new BadRequestException(_localization["OrganizationNameExist"].Value);
 			}
 
-			if (await CheckPhoneNumber(request.PhoneNumber)
+			if (await _authVerifyService.CheckPhoneNumber(request.PhoneNumber)
 				|| await _dbContext.OrganizationsRegisters.AnyAsync(o => o.PhoneNumber == request.PhoneNumber))
 			{
 				throw new BadRequestException(_localization["phoneNumberExist"]);
@@ -144,8 +129,8 @@ namespace Wasla.Services.Authentication.AuthServices
 
 		public async Task<BaseResponse> DriverRegisterAsync(DriverRegisterDto model)
 		{
-			await CheckPhoneNumber(model.PhoneNumber);
-			await CheckEmail(model.Email);
+			await _authVerifyService.CheckPhoneNumber(model.PhoneNumber);
+			await _authVerifyService.CheckEmail(model.Email);
 
 			if (await _dbContext.Drivers.AnyAsync(u => u.LicenseNum == model.LicenseNum))
 			{
@@ -183,7 +168,7 @@ namespace Wasla.Services.Authentication.AuthServices
 	
 		public async Task<BaseResponse> ResetPasswordByphoneAsync(ResetPasswordByPhoneDto resetPassword)
 		{
-			var user = await getUserByPhone(resetPassword.Phone);
+			var user = await _authVerifyService.getUserByPhone(resetPassword.Phone);
 			var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
 			var result = await _userManager.ResetPasswordAsync(user, resetToken, resetPassword.NewPassword);
 			if (!result.Succeeded)
@@ -198,7 +183,7 @@ namespace Wasla.Services.Authentication.AuthServices
 		}
 		public async Task<BaseResponse> ResetPasswordByEmailAsync(ResetPasswordByEmailDto resetPassword)
 		{
-			var user = await getUserByEmail(resetPassword.Email);
+			var user = await _authVerifyService.getUserByEmail(resetPassword.Email);
 			var resetToken = await _userManager.GeneratePasswordResetTokenAsync(user);
 			var result = await _userManager.ResetPasswordAsync(user, resetToken, resetPassword.NewPassword);
 			if (!result.Succeeded)
@@ -315,14 +300,6 @@ namespace Wasla.Services.Authentication.AuthServices
 		}
 		
 		
-		
-		private async Task<Account> getUserByPhone(string phoneNumber)
-		{
-			var user = await _userManager.Users.FirstOrDefaultAsync(u => u.PhoneNumber == phoneNumber);
-			if (user == null)
-				throw new NotFoundException(_localization["PhoneNumberWrong"].Value);
-			return user;
-		}
 		private async Task<CheckUserExit> CheckUser(LoginDto login, bool org = false)
 		{
 			const string emailPattern = @"^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$";
@@ -333,11 +310,11 @@ namespace Wasla.Services.Authentication.AuthServices
 			{
 				if (org)
 					_ = await checkEmailExitInOrgOrOrgRegister(login.UserName);
-				user = await getUserByEmail(login.UserName);
+				user = await _authVerifyService.getUserByEmail(login.UserName);
 			}
 			else if (Regex.IsMatch(login.UserName, phonePattern))
 			{
-				user = await getUserByPhone(login.UserName);
+				user = await _authVerifyService.getUserByPhone(login.UserName);
 			}
 			else
 			{
@@ -380,20 +357,6 @@ namespace Wasla.Services.Authentication.AuthServices
 				throw new NotFoundException(_localization["UserNameNotFound"].Value);
 			return user;
 		}
-		private async Task<Account> getUserByEmail(string email)
-		{
-			var user = await _userManager.FindByEmailAsync(email);
-			if (user == null)
-				throw new NotFoundException(_localization["EmailNotFound"].Value);
-			return user;
-		}
-        private async Task<Account> getUserByToken(string token)
-        {
-            var user = await _userManager.Users.SingleOrDefaultAsync(u => u.RefreshTokens.Any(t => t.RefToken == token));
-            if (user == null)
-                throw new NotFoundException(_localization["refreshTokenNotFound"].Value);
-            return user;
-        }
         private async Task<Account> checkEmailExitInOrgOrOrgRegister(string email)
 		{
 			var user = await _userManager.FindByEmailAsync(email);
@@ -432,7 +395,7 @@ namespace Wasla.Services.Authentication.AuthServices
 		}
 		private async Task<bool> RevokeTokenAsync(string token)
 		{
-			var user = await getUserByToken(token);
+			var user = await _authVerifyService.getUserByToken(token);
 			var refreshToken = user.RefreshTokens.Single(t => t.RefToken == token);
 
 			if (!refreshToken.IsActive)

@@ -11,10 +11,11 @@ using Wasla.Model.Helpers.Statics;
 using Wasla.Model.Models;
 using Wasla.Services.Exceptions;
 using Wasla.Services.MediaSerivces;
+using Wasla.Services.ShareService;
 
 namespace Wasla.Services.OrganizationSerivces
 {
-	public class OrganizationSerivce : IOrganizationService
+    public class OrganizationSerivce : IOrganizationService
 	{
 		private readonly WaslaDb _context;
 		private readonly BaseResponse _response;
