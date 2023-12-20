@@ -1,10 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Wasla.Model.Dtos;
 using Wasla.Model.Models;
-using Wasla.Services.PassangerServices;
+using Wasla.Services.EntitiesServices.PassangerServices;
 namespace Wasla.Api.Controllers
 {
-	[Route("api/passanger")]
+    [Route("api/passanger")]
 	[ApiController]
 	public class PassengerController : ControllerBase
 	{

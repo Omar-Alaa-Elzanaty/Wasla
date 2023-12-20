@@ -17,12 +17,12 @@ using Wasla.Model.Helpers.Statics;
 using Wasla.Model.Models;
 using Wasla.Services.Authentication.AuthHelperService.FactorService.IFactory;
 using Wasla.Services.Exceptions;
-using Wasla.Services.MediaSerivces;
+using Wasla.Services.HlepServices.MediaSerivces;
 using Wasla.Services.ShareService.AuthVerifyShareService;
 
 namespace Wasla.Services.Authentication.AuthServices
 {
-	public class AuthService : IAuthService
+    public class AuthService : IAuthService
 	{
 		private readonly UserManager<Account> _userManager;
 		private readonly RoleManager<IdentityRole> _roleManager;

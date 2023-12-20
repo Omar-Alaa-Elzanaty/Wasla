@@ -2,7 +2,8 @@
 using Microsoft.Extensions.Localization;
 using Newtonsoft.Json;
 using System.Text;
-namespace Wasla.Services.MultLanguageService.JsonLocalizer
+
+namespace Wasla.Services.HlepServices.MultLanguageService.JsonLocalizer
 {
     public class JsonStringLocalizer : IStringLocalizer
     {

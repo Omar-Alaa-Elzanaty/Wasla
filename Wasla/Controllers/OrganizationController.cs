@@ -5,14 +5,14 @@ using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
 using Wasla.Model.Models;
 using Wasla.Services.Authentication.AuthServices;
+using Wasla.Services.EntitiesServices.OrganizationSerivces;
 using Wasla.Services.Exceptions.FilterException;
-using Wasla.Services.OrganizationSerivces;
 
 
 
 namespace Wasla.Api.Controllers
 {
-	[Route("api/organization")]
+    [Route("api/organization")]
 	[ApiController]
 	//[Authorize(Roles ="Organization")]
 	public class OrganizationController : ControllerBase

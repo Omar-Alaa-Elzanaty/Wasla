@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.Mvc;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
-using Wasla.Services.AdminServices;
+using Wasla.Services.Authentication.AdminServices;
 using Wasla.Services.Authentication.AuthServices;
 
 namespace Wasla.Api.Controllers
 {
-	[Route("api/auth")]
+    [Route("api/auth")]
 	[ApiController]
 
 	public class AuthController : ControllerBase
@@ -51,14 +51,14 @@ namespace Wasla.Api.Controllers
             var resualt = await _authservice.LoginAsync(riderLoginDto);
             return Ok(resualt);
         }
-        [HttpPost("resetPasswordByPhone")]
+        [HttpPost("resetPassword/phone")]
         public async Task<IActionResult> ResetPasswordByPhone([FromBody] ResetPasswordByPhoneDto resetPassword)
         {
             var resualt = await _authservice.ResetPasswordByphoneAsync(resetPassword);
 
             return Ok(resualt);
         }
-        [HttpPost("resetPasswordByEmail")]
+        [HttpPost("resetPassword/email")]
         public async Task<IActionResult> ResetPasswordByEmail([FromBody] ResetPasswordByEmailDto resetPassword)
         {
             var resualt = await _authservice.ResetPasswordByEmailAsync(resetPassword);

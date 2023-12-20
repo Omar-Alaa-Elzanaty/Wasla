@@ -9,9 +9,9 @@ namespace Wasla.Model.Dtos
 {
     public class TripDto
     {
-        public Driver Driver { get; set; }
+        public OrgDriverDto Driver { get; set; }
         public float Price { get; set; }
-        public Vehicle Vehicle { get; set; }
+    //    public Vehicle Vehicle { get; set; }
         public TimeSpan Duration { get; set; }
         public string From { get; set; }
         public string To { get; set; }
@@ -19,4 +19,5 @@ namespace Wasla.Model.Dtos
         public float AvailablePackageSpace { get; set; }
 
     }
+   
 }

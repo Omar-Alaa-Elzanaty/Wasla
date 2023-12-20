@@ -5,7 +5,7 @@ using System.Text.Json;
 using Wasla.Model.Helpers;
 using Wasla.Services.Exceptions;
 
-namespace Wasla.Services.Middleware.ExceptionMiddleware
+namespace Wasla.Services.StartServices.Middleware.ExceptionMiddleware
 {
     public class GlobalExceptionHandlingMiddleware
     {
@@ -22,16 +22,16 @@ namespace Wasla.Services.Middleware.ExceptionMiddleware
             try
             {
                 await _next(httpContext);
-            
+
                 if (httpContext.Response.StatusCode == (int)HttpStatusCode.Unauthorized)
                 {
 
                     var response = new BaseResponse();
                     response.IsSuccess = false;
-                    response.Message =_localization["Unauthorized"].Value;
+                    response.Message = _localization["Unauthorized"].Value;
                     response.Status = HttpStatusCode.Unauthorized;
-					httpContext.Response.ContentType = "application/json";
-					httpContext.Response.StatusCode = (int)HttpStatusCode.OK;
+                    httpContext.Response.ContentType = "application/json";
+                    httpContext.Response.StatusCode = (int)HttpStatusCode.OK;
 
                     JsonSerializerOptions options = new JsonSerializerOptions
                     {
@@ -39,39 +39,39 @@ namespace Wasla.Services.Middleware.ExceptionMiddleware
                     };
                     var exceptionResult = JsonSerializer.Serialize(response, options);
 
-                    
+
                     await httpContext.Response.WriteAsync(exceptionResult);
                     return;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
-                await HandlingExceptionsAsync(httpContext,ex);
-            }     
+                await HandlingExceptionsAsync(httpContext, ex);
+            }
         }
         private static Task HandlingExceptionsAsync(HttpContext httpContext, Exception ex)
         {
             var response = new BaseResponse();
             response.IsSuccess = false;
-            var exceptionType= ex.GetType();
-            if(exceptionType == typeof(BadRequestException))
-            {
-                response.Message= ex.Message;
-                response.Status=HttpStatusCode.BadRequest;  
-            }
-           else if (exceptionType == typeof(NotFoundException))
+            var exceptionType = ex.GetType();
+            if (exceptionType == typeof(BadRequestException))
             {
                 response.Message = ex.Message;
-                response.Status= HttpStatusCode.NotFound;
+                response.Status = HttpStatusCode.BadRequest;
             }
-           else if (exceptionType == typeof(UnauthorizedException))
+            else if (exceptionType == typeof(NotFoundException))
             {
-                response.Message= ex.Message;
+                response.Message = ex.Message;
+                response.Status = HttpStatusCode.NotFound;
+            }
+            else if (exceptionType == typeof(UnauthorizedException))
+            {
+                response.Message = ex.Message;
                 response.Status = HttpStatusCode.Unauthorized;
             }
-           else if (exceptionType == typeof(NotImplementeException))
+            else if (exceptionType == typeof(NotImplementeException))
             {
-                response.Message= ex.Message;
+                response.Message = ex.Message;
                 response.Status = HttpStatusCode.NotImplemented;
             }
             else if (exceptionType == typeof(ForbiddenException))
@@ -84,14 +84,14 @@ namespace Wasla.Services.Middleware.ExceptionMiddleware
                 response.Message = ex.Message;
                 response.Status = HttpStatusCode.InternalServerError;
             }
-			JsonSerializerOptions options = new JsonSerializerOptions
-			{
-				PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-			};
-			var exceptionResult = JsonSerializer.Serialize(response, options);
+            JsonSerializerOptions options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            };
+            var exceptionResult = JsonSerializer.Serialize(response, options);
 
-			httpContext.Response.ContentType = "application/json";
-            httpContext.Response.StatusCode=(int)HttpStatusCode.OK;
+            httpContext.Response.ContentType = "application/json";
+            httpContext.Response.StatusCode = (int)HttpStatusCode.OK;
             return httpContext.Response.WriteAsync(exceptionResult);
         }
     }

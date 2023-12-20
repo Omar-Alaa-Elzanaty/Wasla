@@ -23,6 +23,8 @@ namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
             driverResponse.ConnectionData.Email = driver.Email;
             driverResponse.UserName = driver.UserName;
             driverResponse.ConnectionData.phone = driver.PhoneNumber;
+            driverResponse.ConnectionData.EmailConfirmed = driver.EmailConfirmed;
+            driverResponse.ConnectionData.PhoneConfirmed = driver.PhoneNumberConfirmed;
             driverResponse.TokensData.Token = responseHelp.TokensData.Token;
             driverResponse.IsAuthenticated = true;
             driverResponse.TokensData.TokenExpiryDate = responseHelp.TokensData.TokenExpiryDate;

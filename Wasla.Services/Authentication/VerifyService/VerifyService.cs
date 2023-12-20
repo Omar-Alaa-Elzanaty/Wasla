@@ -6,12 +6,10 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using Twilio;
 using Twilio.Rest.Api.V2010.Account;
-using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
 using Wasla.Model.Models;
 using Wasla.Services.Exceptions;
-using Wasla.Services.MediaSerivces;
 using Wasla.Services.ShareService.AuthVerifyShareService;
 using Wasla.Services.ShareService.EmailServices;
 

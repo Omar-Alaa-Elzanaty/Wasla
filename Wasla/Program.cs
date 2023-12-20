@@ -13,10 +13,10 @@ using Wasla.DataAccess;
 using Wasla.DataAccess.AutoMapping;
 using Wasla.Model.Helpers;
 using Wasla.Model.Models;
-using Wasla.Services.ApplicationStatic;
 using Wasla.Services.Exceptions.FilterException;
-using Wasla.Services.Initizalize;
-using Wasla.Services.MultLanguageService.JsonLocalizer;
+using Wasla.Services.StartServices.Initizalize;
+using Wasla.Services.StartServices.ApplicationStatic;
+using Wasla.Services.HlepServices.MultLanguageService.JsonLocalizer;
 
 namespace Wasla
 {
