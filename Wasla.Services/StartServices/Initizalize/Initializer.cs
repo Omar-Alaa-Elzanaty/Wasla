@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Wasla.DataAccess;
 using Wasla.Model.Helpers.Statics;
 
-namespace Wasla.Services.Initizalize
+namespace Wasla.Services.StartServices.Initizalize
 {
     public class Initializer : IInitializer
     {
@@ -28,14 +28,14 @@ namespace Wasla.Services.Initizalize
                     _context.Database.Migrate();
                 }
 
-				if (!_roleManager.RoleExistsAsync(Roles.Role_Admin).GetAwaiter().GetResult())
-				{
-					_roleManager.CreateAsync(new IdentityRole(Roles.Role_Admin)).GetAwaiter().GetResult();
-					_roleManager.CreateAsync(new IdentityRole(Roles.Role_Driver)).GetAwaiter().GetResult();
-					_roleManager.CreateAsync(new IdentityRole(Roles.Role_Passenger)).GetAwaiter().GetResult();
+                if (!_roleManager.RoleExistsAsync(Roles.Role_Admin).GetAwaiter().GetResult())
+                {
+                    _roleManager.CreateAsync(new IdentityRole(Roles.Role_Admin)).GetAwaiter().GetResult();
+                    _roleManager.CreateAsync(new IdentityRole(Roles.Role_Driver)).GetAwaiter().GetResult();
+                    _roleManager.CreateAsync(new IdentityRole(Roles.Role_Passenger)).GetAwaiter().GetResult();
 
-				}
-			}
+                }
+            }
             catch
             {
                 throw;

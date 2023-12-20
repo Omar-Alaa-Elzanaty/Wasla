@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
+using Wasla.Model.Models;
 using Wasla.Services.Authentication.AuthHelperService.FactorService.IFactory;
 
 namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
@@ -24,19 +25,21 @@ namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
         public async Task<DataAuthResponse> AuthRespnseFactory(AuthResponseFactoryHelp responseHelp)
         {
             var employee = await _db.Organizations.FirstOrDefaultAsync(u => u.Id == responseHelp.userId);
-            var organizationResponse = new OrgEmployeeResponseDto();
-            organizationResponse.ConnectionData.Email = employee.Email;
-            organizationResponse.UserName = employee.UserName;
-            organizationResponse.ConnectionData.phone = employee.PhoneNumber;
-            organizationResponse.TokensData.Token = responseHelp.TokensData.Token;
-            organizationResponse.IsAuthenticated = true;
-            organizationResponse.TokensData.TokenExpiryDate = responseHelp.TokensData.TokenExpiryDate;
-            organizationResponse.Role = responseHelp.role;
-            organizationResponse.TokensData.RefreshToken = responseHelp.TokensData.RefreshToken;
-            organizationResponse.TokensData.RefTokenExpiryDate = responseHelp.TokensData.RefTokenExpiryDate;
+            var employeeResponse = new OrgEmployeeResponseDto();
+            employeeResponse.ConnectionData.Email = employee.Email;
+            employeeResponse.UserName = employee.UserName;
+            employeeResponse.ConnectionData.phone = employee.PhoneNumber;
+            employeeResponse.ConnectionData.EmailConfirmed = employee.EmailConfirmed;
+            employeeResponse.ConnectionData.PhoneConfirmed = employee.PhoneNumberConfirmed;
+            employeeResponse.TokensData.Token = responseHelp.TokensData.Token;
+            employeeResponse.IsAuthenticated = true;
+            employeeResponse.TokensData.TokenExpiryDate = responseHelp.TokensData.TokenExpiryDate;
+            employeeResponse.Role = responseHelp.role;
+            employeeResponse.TokensData.RefreshToken = responseHelp.TokensData.RefreshToken;
+            employeeResponse.TokensData.RefTokenExpiryDate = responseHelp.TokensData.RefTokenExpiryDate;
             var role = await _roleManager.FindByNameAsync(responseHelp.role);
-            organizationResponse.OrgPermissions = _roleManager.GetClaimsAsync(role).Result.Select(c => c.Value).ToList();
-            return organizationResponse;
+            employeeResponse.OrgPermissions = _roleManager.GetClaimsAsync(role).Result.Select(c => c.Value).ToList();
+            return employeeResponse;
         }
     }
 }

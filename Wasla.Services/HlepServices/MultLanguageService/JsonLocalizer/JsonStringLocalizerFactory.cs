@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Wasla.Services.MultLanguageService.JsonLocalizer
+namespace Wasla.Services.HlepServices.MultLanguageService.JsonLocalizer
 {
     public class JsonStringLocalizerFactory : IStringLocalizerFactory
     {

@@ -2,6 +2,7 @@
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
+using Wasla.Model.Models;
 using Wasla.Services.Authentication.AuthHelperService.FactorService.IFactory;
 
 namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
@@ -20,6 +21,8 @@ namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
             passengerResponse.ConnectionData.Email = passenger.Email;
             passengerResponse.UserName = passenger.UserName;
             passengerResponse.ConnectionData.phone = passenger.PhoneNumber;
+            passengerResponse.ConnectionData.EmailConfirmed = passenger.EmailConfirmed;
+            passengerResponse.ConnectionData.PhoneConfirmed = passenger.PhoneNumberConfirmed;
             passengerResponse.TokensData.Token = responseHelp.TokensData.Token;
             passengerResponse.IsAuthenticated = true;
             passengerResponse.TokensData.TokenExpiryDate = responseHelp.TokensData.TokenExpiryDate;

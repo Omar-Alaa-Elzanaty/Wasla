@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
+using Wasla.Model.Models;
 using Wasla.Services.Authentication.AuthHelperService.FactorService.IFactory;
 
 namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
@@ -28,6 +29,8 @@ namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
             organizationResponse.ConnectionData.Email = organization.Email;
             organizationResponse.UserName = organization.UserName;
             organizationResponse.ConnectionData.phone = organization.PhoneNumber;
+            organizationResponse.ConnectionData.EmailConfirmed = organization.EmailConfirmed;
+            organizationResponse.ConnectionData.PhoneConfirmed = organization.PhoneNumberConfirmed;
             organizationResponse.TokensData.Token = responseHelp.TokensData.Token;
             organizationResponse.IsAuthenticated = true;
             organizationResponse.TokensData.TokenExpiryDate = responseHelp.TokensData.TokenExpiryDate;

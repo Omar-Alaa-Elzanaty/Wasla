@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Wasla.Services.Initizalize
+namespace Wasla.Services.StartServices.Initizalize
 {
-	public interface IInitializer
-	{
-		Task Initialize();
-	}
+    public interface IInitializer
+    {
+        Task Initialize();
+    }
 }

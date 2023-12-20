@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Wasla.Model.Helpers
 {
-    public class TokensData
+    public class AuthData
     {
         public string Token { get; set; }
         public DateTime TokenExpiryDate { get; set; }
