@@ -11,14 +11,14 @@ namespace Wasla.Model.Helpers
         public DataAuthResponse()
         {
             ConnectionData = new ContactData();
-            TokensData = new TokensData();
+            TokensData = new AuthData();
         }
 
         public bool IsAuthenticated { get; set; }
         public ContactData ConnectionData { get; set; }
         public string UserName { get; set; }
         public string Role { get; set; }
-        public TokensData TokensData { get; set; }
+        public AuthData TokensData { get; set; }
       
     }
 }

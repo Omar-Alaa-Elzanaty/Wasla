@@ -10,10 +10,10 @@ namespace Wasla.Model.Helpers
     {
         public AuthResponseFactoryHelp()
         {
-            TokensData = new TokensData();
+            TokensData = new AuthData();
         }
 
-        public TokensData TokensData { get; set; }
+        public AuthData TokensData { get; set; }
         public string userId { get; set; }
         public string role { get; set; }
     }
