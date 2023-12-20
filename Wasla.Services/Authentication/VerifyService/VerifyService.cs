@@ -214,7 +214,7 @@ namespace Wasla.Services.Authentication.VerifyService
         private async Task<string> GenerateOtp()
         {
             var random = new Random();
-            var otp = random.Next(100000, 999999).ToString();
+            var otp = random.Next(1000, 9999).ToString();
             return otp;
         }
         private bool CheckOtp(string reciveOtp)
