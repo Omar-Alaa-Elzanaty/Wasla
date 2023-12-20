@@ -79,6 +79,8 @@
   "RemovedSuccessfully": "تم الحذف بنجاح",
   "StationExist": "هذه المنطقه موحوجه بالفعل",
   "StationNotFound": "المنطقه ليس موجوده",
+  "PhoneEditSuccess": "تم تعديل الهاتف بنجاح",
+  "EmailEditSuccess": "تم تعدييل الايميل بنجاح",
   "Removed": "تم الحذف",
   "Used": "مستخدم",
   "NotUsed": "متاح",
