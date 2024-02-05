@@ -11,6 +11,6 @@ namespace Wasla.Model.Models
         public string LicenseImageUrl { get; set; }
         public string LicenseNum { get; set; }
         public string? NationalId { get; set; }
-        public virtual ICollection<DriverRate> Rates { get; set; }
+        public virtual ICollection<PublicDriverRate> Rates { get; set; }
     }
 }

@@ -51,5 +51,6 @@ namespace Wasla.DataAccess
 		public virtual DbSet<TripTimeTable> TripTimeTables { get; set;}
 		public virtual DbSet<Line> Lines { get; set; }
 		public virtual DbSet<PublicDriver> PublicDrivers { get; set; }
+		public virtual DbSet<PublicDriverRate> PublicDriversRates { get; set; }
 	}
 }

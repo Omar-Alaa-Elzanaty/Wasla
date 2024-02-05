@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Wasla.Model.Models
 {
-	public class Driver:PublicDriver
+	public class Driver:User
 	{
         public Driver()
         {
@@ -14,10 +14,11 @@ namespace Wasla.Model.Models
 			Rates = new List<DriverRate>();
         }
         public string LicenseImageUrl { get; set; }
-		public string LicenseNum { get; set; }
-		public string? OrganizationId { get; set; }
+        public string LicenseNum { get; set; }
+        public string? NationalId { get; set; }
+        public string? OrganizationId { get; set; }
 		public virtual Organization? Orgainzation { get; set; }
-		public string? NationalId { get; set; }
 		public virtual ICollection<TripTimeTable> Trips { get; set; }
-	}
+        public virtual ICollection<DriverRate> Rates { get; set; }
+    }
 }
