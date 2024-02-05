@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Wasla.Model.Helpers.Enums;
 
 namespace Wasla.Model.Models
 {
@@ -13,7 +14,14 @@ namespace Wasla.Model.Models
 		public DateTime StartDate { get; set; }
 		public DateTime EndDate { get; set; }
 		public string ImageUrl { get; set; }
+		public AdsStatus Status { get; set; }
 		public string organizationId { get; set; }
 		public virtual ICollection<Vehicle> Busses { get; set; }
-	}
+		public string CustomerId { get; set; }
+		public virtual Customer Customer { get; set; }
+
+        public Advertisment()
+        {
+        }
+    }
 }

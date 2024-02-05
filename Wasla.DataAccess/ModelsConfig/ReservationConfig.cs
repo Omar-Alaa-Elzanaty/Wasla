@@ -17,11 +17,6 @@ namespace Wasla.DataAccess.ModelsConfig
 			//	.WithMany(c=>c.Reservations)
 			//	.HasForeignKey(i=>i.Customer).OnDelete(DeleteBehavior.NoAction);
 
-			builder.HasOne(r => r.Trip)
-				.WithMany(c => c.Reservations)
-				.HasForeignKey(r=>r.TripId)
-				.OnDelete(DeleteBehavior.NoAction);
-
 		}
 	}
 }

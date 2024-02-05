@@ -36,7 +36,7 @@ namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
             driverResponse.PhotoUrl = driver.PhotoUrl;
             driverResponse.LicenseNum = driver.LicenseNum;
             driverResponse.Orgainzation = driver.Orgainzation;
-            driverResponse.Trips = driver.Trips;
+            //driverResponse.Trips = driver.Trips;
             driverResponse.Rates = driver.Rates;
             if(driver.Orgainzation != null)
             {

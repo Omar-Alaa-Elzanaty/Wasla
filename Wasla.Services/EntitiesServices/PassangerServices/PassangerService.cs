@@ -35,18 +35,18 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 throw new KeyNotFoundException(_localization["ObjectNotFound"].Value);
             }
 
-            var reciveredSets = trip.RecervedSets.Select(s => s.setNum).ToHashSet();
+            //var reciveredSets = trip.RecervedSets.Select(s => s.setNum).ToHashSet();
 
             var sets = new List<SetStatusDto>();
 
-            for (int setNum = 1; setNum <= trip.Capacity; setNum++)
-            {
-                sets.Add(new()
-                {
-                    SetNum = setNum,
-                    ISAvailable = !reciveredSets.Contains(setNum)
-                });
-            }
+            //for (int setNum = 1; setNum <= trip.Capacity; setNum++)
+            //{
+            //    sets.Add(new()
+            //    {
+            //        SetNum = setNum,
+            //        ISAvailable = !reciveredSets.Contains(setNum)
+            //    });
+            //}
 
             _response.Data = sets;
 
