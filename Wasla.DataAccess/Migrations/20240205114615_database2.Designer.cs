@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wasla.DataAccess;
 
@@ -11,9 +12,11 @@ using Wasla.DataAccess;
 namespace Wasla.DataAccess.Migrations
 {
     [DbContext(typeof(WaslaDb))]
-    partial class WaslaDbModelSnapshot : ModelSnapshot
+    [Migration("20240205114615_database2")]
+    partial class database2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -478,24 +481,6 @@ namespace Wasla.DataAccess.Migrations
                     b.ToTable("Packages");
                 });
 
-            modelBuilder.Entity("Wasla.Model.Models.PublicDriverRate", b =>
-                {
-                    b.Property<string>("DriverId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("CustomerId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<byte>("Rate")
-                        .HasColumnType("tinyint");
-
-                    b.HasKey("DriverId", "CustomerId");
-
-                    b.HasIndex("CustomerId");
-
-                    b.ToTable("PublicDriversRates");
-                });
-
             modelBuilder.Entity("Wasla.Model.Models.Reservation", b =>
                 {
                     b.Property<int>("Id")
@@ -801,29 +786,6 @@ namespace Wasla.DataAccess.Migrations
                     b.ToTable("Customer", "Account");
                 });
 
-            modelBuilder.Entity("Wasla.Model.Models.Driver", b =>
-                {
-                    b.HasBaseType("Wasla.Model.Models.User");
-
-                    b.Property<string>("LicenseImageUrl")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("LicenseNum")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("NationalId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("OrganizationId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasIndex("OrganizationId");
-
-                    b.ToTable("Drivers", "Account");
-                });
-
             modelBuilder.Entity("Wasla.Model.Models.Employee", b =>
                 {
                     b.HasBaseType("Wasla.Model.Models.User");
@@ -856,6 +818,18 @@ namespace Wasla.DataAccess.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.ToTable("PublicDrivers", "Account");
+                });
+
+            modelBuilder.Entity("Wasla.Model.Models.Driver", b =>
+                {
+                    b.HasBaseType("Wasla.Model.Models.PublicDriver");
+
+                    b.Property<string>("OrganizationId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasIndex("OrganizationId");
+
+                    b.ToTable("Drivers", "Account");
                 });
 
             modelBuilder.Entity("AdvertismentVehicle", b =>
@@ -1032,25 +1006,6 @@ namespace Wasla.DataAccess.Migrations
                     b.Navigation("Trip");
                 });
 
-            modelBuilder.Entity("Wasla.Model.Models.PublicDriverRate", b =>
-                {
-                    b.HasOne("Wasla.Model.Models.Customer", "Customer")
-                        .WithMany()
-                        .HasForeignKey("CustomerId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Wasla.Model.Models.PublicDriver", "Driver")
-                        .WithMany("Rates")
-                        .HasForeignKey("DriverId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Customer");
-
-                    b.Navigation("Driver");
-                });
-
             modelBuilder.Entity("Wasla.Model.Models.Reservation", b =>
                 {
                     b.HasOne("Wasla.Model.Models.Customer", "Customer")
@@ -1200,21 +1155,6 @@ namespace Wasla.DataAccess.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Wasla.Model.Models.Driver", b =>
-                {
-                    b.HasOne("Wasla.Model.Models.User", null)
-                        .WithOne()
-                        .HasForeignKey("Wasla.Model.Models.Driver", "Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Wasla.Model.Models.Organization", "Orgainzation")
-                        .WithMany("Drivers")
-                        .HasForeignKey("OrganizationId");
-
-                    b.Navigation("Orgainzation");
-                });
-
             modelBuilder.Entity("Wasla.Model.Models.Employee", b =>
                 {
                     b.HasOne("Wasla.Model.Models.User", null)
@@ -1239,6 +1179,21 @@ namespace Wasla.DataAccess.Migrations
                         .HasForeignKey("Wasla.Model.Models.PublicDriver", "Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Wasla.Model.Models.Driver", b =>
+                {
+                    b.HasOne("Wasla.Model.Models.PublicDriver", null)
+                        .WithOne()
+                        .HasForeignKey("Wasla.Model.Models.Driver", "Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Wasla.Model.Models.Organization", "Orgainzation")
+                        .WithMany("Drivers")
+                        .HasForeignKey("OrganizationId");
+
+                    b.Navigation("Orgainzation");
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.Trip", b =>
@@ -1293,11 +1248,6 @@ namespace Wasla.DataAccess.Migrations
                     b.Navigation("Rates");
 
                     b.Navigation("Trips");
-                });
-
-            modelBuilder.Entity("Wasla.Model.Models.PublicDriver", b =>
-                {
-                    b.Navigation("Rates");
                 });
 #pragma warning restore 612, 618
         }

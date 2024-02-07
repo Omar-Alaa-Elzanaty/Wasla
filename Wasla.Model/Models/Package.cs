@@ -19,6 +19,6 @@ namespace Wasla.Model.Models
 		public string? ReciverName { get; set; }
 		public string? ReciverPhoneNumber { get; set; }
 		public int? TripId { get; set; }
-		public virtual Trip? Trip { get; set; }
+		public virtual TripTimeTable? Trip { get; set; }
 	}
 }

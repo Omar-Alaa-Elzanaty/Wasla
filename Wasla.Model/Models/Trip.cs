@@ -14,49 +14,16 @@ namespace Wasla.Model.Models
 	public class Trip
 	{
 		public int Id { get; set; }
-		public string DriverId { get; set; }
-		//public virtual Driver Driver { get; set; }
-		public virtual Driver Driver { get; set; }
-
 		public string OrganizationId { get; set; }
 		public virtual Organization Organization { get; set; }
 		public float Price { get; set; }
-		public int VehicleId { get; set; }
-		public virtual Vehicle Vehicle { get; set; }
 		public TimeSpan Duration { get; set; }
 		public int Points { get; set; }
-		public string From { get; set; }
-		public string To { get; set; }
-		public int Capacity { get; set; }
-		public float AvailablePackageSpace { get; set; }
-		public virtual List<Seat> RecervedSets { get; set; }
-		public virtual ICollection<Reservation> Reservations { get; set; }
-		public virtual ICollection<Package> Packages { get; set; }
+		public bool IsPublic { get; set; }
+		public float AdsPrice { get; set; }
+		public virtual List<TripTimeTable> TimesTable { get; set; }
 		public Trip()
 		{
-			RecervedSets = new List<Seat>();
-			Reservations = new List<Reservation>();
-			Packages = new List<Package>();
 		}
-		public Trip(DateTime launchingTime, DateTime arrivingTime)
-		{
-			if (launchingTime > arrivingTime)
-			{
-				var temprory = launchingTime;
-				launchingTime = arrivingTime;
-				arrivingTime = temprory;
-			}
-			this.Duration = arrivingTime.Subtract(launchingTime);
-
-			if (this.Vehicle is not null)
-			{
-				AvailablePackageSpace = this.Vehicle.PackageCapcity;
-			}
-		}
-	}
-	public class Seat
-	{
-		public int setNum { get; set; }
-		public int TripId { get; set; }
 	}
 }

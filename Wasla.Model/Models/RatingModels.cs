@@ -30,4 +30,12 @@ namespace Wasla.Model.Models
 		public virtual Customer Customer { get; set; }
 		public Rate Rate { get; set; }
 	}
+	public class PublicDriverRate
+	{
+		public string DriverId { get; set; }
+		public virtual PublicDriver Driver { get; set; }
+		public string CustomerId { get; set; }
+		public virtual Customer Customer { get; set; }
+		public Rate Rate { get; set; }
+	}
 }

@@ -10,7 +10,7 @@ namespace Wasla.Model.Models
 	{
 		public Organization() {
 			TripList = new List<Trip>();
-			Stations=new List<Station>();
+			Stations = new List<Station>();
 			Drivers=new List<Driver>();
 			Employees=new List<Employee>();
 			Vehicles=new List<Vehicle>();
