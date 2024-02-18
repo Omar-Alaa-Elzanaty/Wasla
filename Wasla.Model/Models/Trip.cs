@@ -21,9 +21,12 @@ namespace Wasla.Model.Models
 		public int Points { get; set; }
 		public bool IsPublic { get; set; }
 		public float AdsPrice { get; set; }
-		public virtual List<TripTimeTable> TimesTable { get; set; }
+		public int LineId { get; set; }
+		public virtual Line Line { get; set; }
+		public virtual IEnumerable<TripTimeTable> TimesTable { get; set; }
 		public Trip()
 		{
+
 		}
 	}
 }

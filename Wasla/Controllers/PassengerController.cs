@@ -34,5 +34,15 @@ namespace Wasla.Api.Controllers
 		{
 			return Ok(await _passangerService.OrganizationRateRemoveAsync(orgainzationId, customerId));
 		}
+		[HttpPost("Advertisment/{customerId}")]
+		public async Task<IActionResult> AddAdvertisment([FromForm]PassangerAddAdsDto request,string customerId)
+		{
+			return Ok(await _passangerService.AddAdsAsync(customerId,request));
+		}
+		[HttpGet("LinesVehicles/{orgId}")]
+		public async Task<IActionResult>LinesVehiclesCount(string orgId)
+		{
+			return Ok(await _passangerService.LinesVehiclesCountAsync(orgId));
+		}
 	}
 }

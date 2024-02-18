@@ -17,6 +17,8 @@ namespace Wasla.DataAccess.ModelsConfig
 				.WithMany(i=>i.TripList)
 				.HasForeignKey(t=>t.OrganizationId)
 				.OnDelete(DeleteBehavior.Restrict);
+			builder.HasOne(x => x.Line)
+				.WithMany().HasForeignKey(x=>x.LineId).OnDelete(DeleteBehavior.NoAction);
 		}
 	}
 }
