@@ -88,5 +88,10 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _verifyService.EditPhoneAsync(refreshToken, phone));
         }
+        [HttpPost("otp")]
+        public async Task<IActionResult> SetOtp()
+        {
+            return Ok(await _verifyService.SetOtp());   
+        }
     }
 }

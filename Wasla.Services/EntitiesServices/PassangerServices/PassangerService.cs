@@ -1,4 +1,6 @@
-﻿using Microsoft.Extensions.Localization;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Localization;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
@@ -14,16 +16,17 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         private readonly BaseResponse _response;
         private readonly IMediaSerivce _mediaSerivce;
         private readonly IStringLocalizer<PassangerService> _localization;
-
+        private readonly IMapper _mapper;
         public PassangerService
             (WaslaDb context,
             IStringLocalizer<PassangerService> localization,
-            IMediaSerivce mediaSerivce)
+            IMediaSerivce mediaSerivce,IMapper mapper)
         {
             _context = context;
             _response = new();
             _localization = localization;
             _mediaSerivce = mediaSerivce;
+            _mapper = mapper;
         }
 
         public async Task<BaseResponse> SeatsRecordsAsync(int tripId)
@@ -156,5 +159,107 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
             return _response;
         }
+        public async Task<BaseResponse> GetLinesAsync(string orgId)
+        {
+            var lines = await _context.Lines.Where(t => t.Start.OrganizationId == orgId).ToListAsync();
+            var lineRes = _mapper.Map<List<LinePackagesdto>>(lines);
+            var lineDtos = new List<LinePackagesdto>();
+            var linRev = new LinePackagesdto();
+            foreach (var lineDto in lineRes)
+            {
+                lineDtos.Add(lineDto);
+
+                linRev.StartStation = lineDto.EndStation;
+                linRev.EndStation = lineDto.StartStation;
+                lineDtos.Add(linRev);
+
+            }
+            _response.Data = lineDtos;
+            return _response;
+        }
+        public async Task<BaseResponse> AddPackagesAsync(PackagesRequestDto model)
+        {
+            if (model.isPublic == false && model.TripId == 0)
+                throw new BadRequestException(_localization["EnterTripInfo"]);
+            if (model.isPublic == true && model.DriverId == null)
+                throw new BadRequestException(_localization["EnterDriverInfo"]);
+
+            /* if (await _context.Packages.AnyAsync(p => p.Name == model.Name && p.SenderId == model.SenderId&& (p.DriverId))
+             {
+                 throw new BadRequestException(_localization["PackagesExist"]);
+             }*/
+
+            Package package = _mapper.Map<Package>(model);
+
+            if (model.ImageFile is not null)
+            {
+                package.ImageUrl = await _mediaSerivce.AddAsync(model.ImageFile);
+            }
+            await _context.Packages.AddAsync(package);
+            _ = await _context.SaveChangesAsync();
+            //  _response.Data = package;
+            _response.Message = _localization["AddPAckagesSuccess"];
+            return _response;
+        }
+        public async Task<BaseResponse> UpdatePackagesAsync(PackagesRequestDto model, int packageId)
+        {
+            var package = await _context.Packages.FirstOrDefaultAsync(p => p.Id == packageId);
+
+            if (package is null)
+            {
+                throw new KeynotFoundException(_localization["ObjectNotFound"].Value);
+            }
+
+            package.TripId = model.TripId;
+            package.SenderId = model.SenderId;
+            package.Price = model.Price;
+            package.ReciverPhoneNumber = model.ReciverPhoneNumber;
+            package.Description = model.Description;
+            package.Name = model.Name;
+            package.ReciverName = model.ReciverName;
+            package.ReciverUserName = model.ReciverUserName;
+            package.Weight = model.Weight;
+
+
+            if (model.ImageFile is not null)
+            {
+                package.ImageUrl = await _mediaSerivce.UpdateAsync(package.ImageUrl, model.ImageFile);
+            }
+
+            var res = _context.Packages.Update(package);
+            _ = await _context.SaveChangesAsync();
+            _response.Data = res;
+            _response.Message = _localization["PackageUpdateSuccess"].Value;
+            return _response;
+        }
+        public async Task<BaseResponse> RemovePackageAsync(int packageId)
+        {
+            var package = await _context.Packages.FirstOrDefaultAsync(p => p.Id == packageId);
+
+            if (package is null)
+            {
+                throw new KeynotFoundException(_localization["ObjectNotFound"].Value);
+            }
+            _context.Packages.Remove(package);
+            _ = await _context.SaveChangesAsync();
+            _response.Message = _localization["RemovePackageSuccess"].Value;
+            return _response;
+        }
+        public async Task<BaseResponse> GetUserOrgPackagesAsync(string userName)
+        {
+            var packages = await _context.Packages.Where(p => p.SenderId == userName && p.TripId != 0).ToListAsync();
+            var res = _mapper.Map<OrgPackagesDto>(packages);
+            _response.Data = res;
+            return _response;
+        }
+        public async Task<BaseResponse> GetUserPublicPackagesAsync(string userName)
+        {
+            var packages = await _context.Packages.Where(p => p.SenderId == userName && p.DriverId != null).ToListAsync();
+            var res = _mapper.Map<PublicPackagesDto>(packages);
+            _response.Data = res;
+            return _response;
+        }
+
+
     }
 }

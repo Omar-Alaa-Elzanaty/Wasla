@@ -17,6 +17,7 @@ namespace Wasla.Services.Authentication.VerifyService
         Task<BaseResponse> ChangePasswordAsync(string token, ChangePasswordDto changePassword);
         Task<BaseResponse> EditPhoneAsync(string RefreshTpken, string newPhone);
         Task<BaseResponse> EditEmailAsync(string RefreshTpken, string newEmail);
+        Task<string> SetOtp();
 
     }
 }

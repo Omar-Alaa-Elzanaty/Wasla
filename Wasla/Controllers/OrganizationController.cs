@@ -148,11 +148,11 @@ namespace Wasla.Api.Controllers
 
 			return Ok(await _orgService.AddStationAsync(model, orgId));
 		}
-		[HttpPut("station/{orgid}")]
-		public async Task<IActionResult> UpdateStation([FromRoute] string orgid, [FromBody] StationDto model)
+		[HttpPut("station/{stationId}/{orgid}")]
+		public async Task<IActionResult> UpdateStation([FromRoute] int stationId,[FromRoute] string orgid,[FromBody] StationDto model) //circle
 		{
 
-			return Ok(await _orgService.UpdateStationAsync(model, orgid));
+			return Ok(await _orgService.UpdateStationAsync(model, orgid,stationId));
 		}
 		[HttpGet("stations/{orgId}")]
 		public async Task<IActionResult> GetStations([FromRoute] string orgId)
@@ -169,14 +169,43 @@ namespace Wasla.Api.Controllers
 		{
 		   return Ok(await _orgService.DeleteStationAsync(id));
 		}
-		[HttpPost("trip/add/{orgId}")]
+        [HttpPost("line/add")]
+        public async Task<IActionResult> AddLine([FromBody] LineRequestDto model)
+        {
+
+            return Ok(await _orgService.AddLineAsync(model));
+        }
+        [HttpPut("line/{lineId}")]
+        public async Task<IActionResult> UpdateLine([FromRoute] int lineId, [FromBody] LineRequestDto model) //circle
+        {
+
+            return Ok(await _orgService.UpdateLineAsync(model,lineId));
+        }
+        [HttpGet("lines/{orgId}")]
+        public async Task<IActionResult> GetLines([FromRoute] string orgId)
+        {
+            return Ok(await _orgService.GetLinessAsync(orgId));
+        }
+        
+        [HttpGet("line/{id}")]
+        public async Task<IActionResult> GetLine([FromRoute] int id)
+        {
+            return Ok(await _orgService.GetLineAsync(id));
+        }
+        [HttpDelete("Line/{id}")]
+        public async Task<IActionResult> DeleteLine([FromRoute] int id)
+        {
+            return Ok(await _orgService.DeleteLineAsync(id));
+        }
+        [HttpPost("trip/add/{orgId}")]
 		public async Task<IActionResult> AddTrip([FromRoute] string orgId, [FromBody] AddTripDto model)
 		{
 		   return Ok(await _orgService.AddTripAsync(model, orgId));
 		}
+       
 
-		[HttpPut("trip/{id}")]
-		public async Task<IActionResult> UpdateTrip([FromRoute] int id, [FromBody] UpdateTripDto model)
+        [HttpPut("trip/{id}")]
+		public async Task<IActionResult> UpdateTrip([FromRoute] int id, [FromBody] UpdateTripDto model) //circle
 		{
 		   return Ok(await _orgService.UpdateTripAsync(model, id));
 		}
@@ -190,11 +219,37 @@ namespace Wasla.Api.Controllers
 		{
 			return Ok(await _orgService.GetTripAsync(id));
 		}
-		[HttpGet("trip/driver/{orgId}/{id}")]
+        [HttpPost("tripTime/add")]
+        public async Task<IActionResult> AddTripTime([FromBody] AddTripTimeDto model)
+        {
+            return Ok(await _orgService.AddTripTimeAsync(model));
+        }
+        [HttpPut("tripTime/{id}")]
+        public async Task<IActionResult> UpdateTripTime([FromRoute] int id, [FromBody] UpdateTripTimeDto model) //circle
+        {
+            return Ok(await _orgService.UpdateTripTimeAsync(model, id));
+        }
+        [HttpGet("tripsTime/{orgId}")]
+	  public async Task<IActionResult> GetTripsTime([FromRoute] string orgId)  //c
+        {
+            return Ok(await _orgService.GetTripsTimeAsync(orgId));
+        }
+        [HttpGet("tripTime/{id}")]
+        public async Task<IActionResult> GetTripTime([FromRoute] int id) //c
+        {
+            return Ok(await _orgService.GetTripTimeAsync(id));
+        }
+        [HttpDelete("tripTime/{id}")]
+        public async Task<IActionResult> DeleteTripTime([FromRoute] int id)
+        {
+            return Ok(await _orgService.DeleteTripTimeAsync(id));
+        }
+
+        [HttpGet("trip/driver/{orgId}/{driverId}")]
 		//[OrgPermissionAuthorize("OrgPermissions.TestPermissions.Create.1")]
-		public async Task<IActionResult> GetTripForDriver([FromRoute] string orgId, [FromRoute] string id)
+		public async Task<IActionResult> GetTripForDriver([FromRoute] string orgId, [FromRoute] string driverId)
 		{
-			return Ok(await _orgService.GetTripsForDriverAsync(orgId, id));
+			return Ok(await _orgService.GetTripsForDriverAsync(orgId, driverId));
 		}
 
 		[HttpGet("trip/user/{orgId}/{name}")]
@@ -214,11 +269,32 @@ namespace Wasla.Api.Controllers
 		{
 			return Ok(await _orgService.DeleteTripAsync(id));
 		}
-
 		[HttpGet("getOrgsByName")]
 		public async Task<IActionResult> GetOrganizationaWithName(string name)
 		{
 		   return Ok(await _orgService.GetOriganizationsWithName(name));
 		}
-	}
+      
+        [HttpGet("Packages/{tripId}")]
+        public async Task<IActionResult> GetPackagesAsync([FromRoute] int tripId)  //c
+        {
+            return Ok(await _orgService.GetPackagesTripAsync(tripId));
+        }
+        [HttpGet("Package/{id}")]
+        public async Task<IActionResult> GetPackageAsync([FromRoute] int id) //c
+        {
+            return Ok(await _orgService.GetPackageAsync(id));
+        }
+        [HttpGet("Packages/request/{orgId}")]
+        public async Task<IActionResult> GetPublicPackagesRequestAsync([FromRoute] string orgId)
+        {
+            return Ok(await _orgService.GetPackagesRequestAsync(orgId));
+        }
+        [HttpPut("Package/{packageId}/{status}")]
+        public async Task<IActionResult> ReviewPackagesRequest(int packageId, int status)
+        {
+            return Ok(await _orgService.ReviewPackagesRequest(packageId, status));
+        }
+
+    }
 }

@@ -15,6 +15,8 @@ namespace Wasla.Model.Models
         public virtual Vehicle Vehicle { get; set; }
         public virtual int TripId {  get; set; }
         public virtual Trip Trip { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime ArriveTime { get; set; }
         public bool IsStart { get; set; }
         public virtual List<Seat> RecervedSeats { get; set; }
         public virtual ICollection<Reservation> Reservations { get; set; }

@@ -34,5 +34,35 @@ namespace Wasla.Api.Controllers
 		{
 			return Ok(await _passangerService.OrganizationRateRemoveAsync(orgainzationId, customerId));
 		}
-	}
+        [HttpGet("lines/{orgId}")]
+        public async Task<IActionResult> GetLines([FromRoute] string orgId)
+        {
+            return Ok(await _passangerService.GetLinesAsync(orgId));
+        }
+        [HttpPost("Package/add")]
+        public async Task<IActionResult> AddPackage([FromForm] PackagesRequestDto model)
+        {
+            return Ok(await _passangerService.AddPackagesAsync(model));
+        }
+        [HttpPut("package/{id}")]
+        public async Task<IActionResult> UpdatePackage([FromRoute] int id, [FromForm] PackagesRequestDto model)
+        {
+            return Ok(await _passangerService.UpdatePackagesAsync(model, id));
+        }
+        [HttpDelete("package/{id}")]
+        public async Task<IActionResult> DeletePackage([FromRoute] int id)
+        {
+            return Ok(await _passangerService.RemovePackageAsync(id));
+        }
+        [HttpGet("Packages/{userName}")]
+        public async Task<IActionResult> GetUserPublicPackagesAsync([FromRoute] string userName) 
+        {
+            return Ok(await _passangerService.GetUserPublicPackagesAsync(userName));
+        }
+        [HttpGet("Packages/organization/{userName}")]
+        public async Task<IActionResult> GetUserOrgPackagesAsync([FromRoute] string userName) 
+        {
+            return Ok(await _passangerService.GetUserOrgPackagesAsync(userName));
+        }
+    }
 }

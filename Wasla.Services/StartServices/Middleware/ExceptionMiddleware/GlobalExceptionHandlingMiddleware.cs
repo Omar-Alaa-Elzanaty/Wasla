@@ -5,6 +5,7 @@ using System.Text.Json;
 using Wasla.Model.Helpers;
 using Wasla.Services.Exceptions;
 
+
 namespace Wasla.Services.StartServices.Middleware.ExceptionMiddleware
 {
     public class GlobalExceptionHandlingMiddleware

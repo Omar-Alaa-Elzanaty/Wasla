@@ -13,6 +13,7 @@ using Wasla.Services.HlepServices.MediaSerivces;
 using Wasla.Services.HlepServices.MultLanguageService.JsonLocalizer;
 using Wasla.Services.EntitiesServices.OrganizationSerivces;
 using Wasla.Services.EntitiesServices.PassangerServices;
+using Wasla.Services.EntitiesServices.PublicDriverServices;
 
 namespace Wasla.Services.StartServices.ApplicationStatic
 {
@@ -32,6 +33,7 @@ namespace Wasla.Services.StartServices.ApplicationStatic
             services.AddScoped<IMailServices, MailServices>();
             services.AddScoped<IOrganizationService, OrganizationSerivce>();
             services.AddScoped<IPassangerService, PassangerService>();
+            services.AddScoped<IDriverServices, DriverServices>();
             services.AddScoped<IVerifyService, VerifyService>();
             services.AddScoped<IAuthVerifyService, AuthVerifyService>();
 

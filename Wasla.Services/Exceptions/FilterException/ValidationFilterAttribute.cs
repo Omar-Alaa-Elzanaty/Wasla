@@ -6,9 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Net;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Wasla.Model.Helpers;
-using Microsoft.Extensions.Localization;
 
 namespace Wasla.Services.Exceptions.FilterException
 {

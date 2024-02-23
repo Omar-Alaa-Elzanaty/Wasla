@@ -9,12 +9,16 @@ using Wasla.Model.Models;
 
 namespace Wasla.DataAccess.ModelsConfig
 {
-    internal class publicDriverConfig : IEntityTypeConfiguration<PublicDriverRate>
+    internal class publicDriverConfig : IEntityTypeConfiguration<PublicDriver>
     {
-        public void Configure(EntityTypeBuilder<PublicDriverRate> builder)
+        public void Configure(EntityTypeBuilder<PublicDriver> builder)
         {
-            builder.HasKey(dr => new { dr.DriverId, dr.CustomerId });
-            builder.HasOne(dr => dr.Driver).WithMany(d => d.Rates).HasForeignKey(dr => dr.DriverId).OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(x => x.StartStation)
+                .WithMany()
+                .HasForeignKey(x => x.StartId).OnDelete(DeleteBehavior.Restrict);
+            builder.HasOne(x => x.EndStation)
+                  .WithMany()
+                  .HasForeignKey(x => x.EndId).OnDelete(DeleteBehavior.Restrict); 
         }
     }
 }
