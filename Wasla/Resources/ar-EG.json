@@ -53,6 +53,7 @@
   "ReachToLimit": "لقد وصلت للحد الاقصى",
   "ReservationFail": "فشل الحجز",
   "phoneOremailRequired": "قم بادخال رقم الهاتف او الايميل",
+  "AdsExist": "ربما الاعلان موجود مسبقا ",
   //success
 
   "PhoneNumberValid": "رقم الهاتف صالح للاستخدام",
@@ -87,5 +88,6 @@
   "SuccessProcess": "عملية ناجحة",
   "AddRate": "تم اضافة تقييم",
   "UpdateRate": "تم تعديل التقييم",
-  "RemoveRate": "تم حذف التقييم"
+  "RemoveRate": "تم حذف التقييم",
+  "UnderConfirm": "طلبك قيد المراجعة"
 }

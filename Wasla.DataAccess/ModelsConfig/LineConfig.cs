@@ -17,7 +17,6 @@ namespace Wasla.DataAccess.ModelsConfig
             builder.HasOne(x=>x.Start)
                    .WithMany()
                    .HasForeignKey(x=>x.StartId).OnDelete(DeleteBehavior.Restrict);
-
         }
     }
 }

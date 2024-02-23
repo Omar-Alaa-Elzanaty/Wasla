@@ -53,6 +53,7 @@
   "RepeatedData": "There are reapeted data",
   "ReachToLimit": "You reach to limit",
   "ReservationFail": "Reservation Failed",
+  "AdsExist": "Ads may be exist",
   //success
   "PhoneNumberValid": "Phone number is valid",
   "EmailValid": "Email valid to use",
@@ -94,5 +95,6 @@
   "SuccessProcess": "Success process",
   "AddRate": "A new rate added",
   "UpdateRate": "Rate has been updated",
-  "RemoveRate": "Rate removed"
+  "RemoveRate": "Rate removed",
+  "UnderConfirm": "Your request is under confirm"
 }
