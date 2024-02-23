@@ -59,6 +59,7 @@
   "endIdRequired": "نقطه النهايه مطلوبه",
   "PackagesExist": "هذه الشحنه موجوده بالفعل",
 
+  "AdsExist": "ربما الاعلان موجود مسبقا ",
   //success
 
   "PhoneNumberValid": "رقم الهاتف صالح للاستخدام",
@@ -108,5 +109,6 @@
   "SuccessProcess": "عملية ناجحة",
   "AddRate": "تم اضافة تقييم",
   "UpdateRate": "تم تعديل التقييم",
-  "RemoveRate": "تم حذف التقييم"
+  "RemoveRate": "تم حذف التقييم",
+  "UnderConfirm": "طلبك قيد المراجعة"
 }

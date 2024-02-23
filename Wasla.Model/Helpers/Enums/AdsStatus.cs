@@ -8,7 +8,8 @@ namespace Wasla.Model.Helpers.Enums
 {
     public enum AdsStatus
     {
-        Waiting,
+        Canceled,
+        UnderConfirm,
         Approved
     }
 }

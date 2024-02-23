@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Wasla.Model.Helpers.Enums;
 using Wasla.Model.Models;
 
 namespace Wasla.Model.Dtos
@@ -21,10 +22,7 @@ namespace Wasla.Model.Dtos
         public string? ReciverPhoneNumber { get; set; }
         public int? TripId { get; set; }
         public string? DriverId { get; set; }
-
         public bool isPublic { get; set; } = false;
-
-        public int Status { get; set; }
 
 
     }

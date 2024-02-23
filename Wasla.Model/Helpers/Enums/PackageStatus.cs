@@ -8,8 +8,9 @@ namespace Wasla.Model.Helpers.Enums
 {
     public enum PackageStatus
     {
-        Waiting=0,
+        Canceled=0,
         Approved=1,
-        Refeused=2
+        UnderConfirm =2
+        
     }
 }

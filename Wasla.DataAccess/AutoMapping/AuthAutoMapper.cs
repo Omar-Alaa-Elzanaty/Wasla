@@ -34,6 +34,7 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<Organization, ResponseOrgSearch>().ReverseMap();
 
             CreateMap<OrgDriverDto,Driver>().ReverseMap();
+            CreateMap<PassangerAddAdsDto, Advertisment>().ReverseMap();
 
             //Line
             CreateMap<Line, LineRequestDto>().ReverseMap();/*.ForMember(dest => dest.StartId, opt => opt.MapFrom(src => src.Start.StationId))

@@ -56,8 +56,5 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             _response.Data = res;
             return _response;
         }
-
-
-
     }
 }

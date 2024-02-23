@@ -53,9 +53,13 @@
   "RepeatedData": "There are reapeted data",
   "ReachToLimit": "You reach to limit",
   "ReservationFail": "Reservation Failed",
+<<<<<<< HEAD
   "EnterTripInfo": "enter trip information",
   "EnterDriverInfo": "enter the driver information",
   "PackagesExist": "Package is already Exit",
+=======
+  "AdsExist": "Ads may be exist",
+>>>>>>> origin/develop
   //success
   "PhoneNumberValid": "Phone number is valid",
   "EmailValid": "Email valid to use",
@@ -113,5 +117,6 @@
   "SuccessProcess": "Success process",
   "AddRate": "A new rate added",
   "UpdateRate": "Rate has been updated",
-  "RemoveRate": "Rate removed"
+  "RemoveRate": "Rate removed",
+  "UnderConfirm": "Your request is under confirm"
 }

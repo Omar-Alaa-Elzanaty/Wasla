@@ -4,6 +4,7 @@ using Microsoft.Extensions.Localization;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
+using Wasla.Model.Helpers.Enums;
 using Wasla.Model.Models;
 using Wasla.Services.Exceptions;
 using Wasla.Services.HlepServices.MediaSerivces;
@@ -177,6 +178,48 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             _response.Data = lineDtos;
             return _response;
         }
+
+        public async Task<BaseResponse> AddAdsAsync(string customerId,PassangerAddAdsDto adsRequest)
+        {
+            var availableToAdd = await _context.Advertisments
+                        .AnyAsync(x => x.CustomerId == customerId
+                        && x.organizationId == adsRequest.organizationId
+                        && x.Name == adsRequest.Name);
+
+            if (!availableToAdd)
+            {
+                _response.Status = System.Net.HttpStatusCode.BadRequest;
+                _response.IsSuccess = false;
+                _response.Message = _localization["AdsExist"].Value;
+                return _response;
+            }
+
+            var newAds = _mapper.Map<Advertisment>(adsRequest);
+            newAds.Status = AdsStatus.UnderConfirm;
+            newAds.ImageUrl = await _mediaSerivce.AddAsync(adsRequest.Image);
+            newAds.CustomerId = customerId;
+
+            await _context.AddAsync(newAds);
+            _ = await _context.SaveChangesAsync();
+
+            _response.Message = _localization["UnderConfirm"].Value;
+            return _response;
+        }
+        public async Task<BaseResponse>LinesVehiclesCountAsync(string orgId)
+        {
+            var trips = _context.Trips
+                .Where(x => x.OrganizationId == orgId)
+                .Select(x => new LinesVehiclesCountDto
+                {
+                    LineId = x.LineId,
+                    Strat = x.Line.Start.Name,
+                    End = x.Line.End.Name,
+                    VehiclesCount = x.TimesTable.Select(x=>x.VehicleId).Distinct().Count()
+                });
+
+            _response.Data = await trips.ToListAsync();
+            return _response;
+        }
         public async Task<BaseResponse> AddPackagesAsync(PackagesRequestDto model)
         {
             if (model.isPublic == false && model.TripId == 0)
@@ -190,6 +233,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
              }*/
 
             Package package = _mapper.Map<Package>(model);
+            package.Status = (int)PackageStatus.UnderConfirm;
 
             if (model.ImageFile is not null)
             {
