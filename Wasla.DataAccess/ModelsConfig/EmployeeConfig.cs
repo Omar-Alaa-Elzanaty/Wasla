@@ -17,6 +17,7 @@ namespace Wasla.DataAccess.ModelsConfig
 				.WithMany(o => o.Employees)
 				.HasForeignKey(e => e.OrgId)
 				.OnDelete(deleteBehavior:DeleteBehavior.NoAction);
+
 		}
 	}
 }

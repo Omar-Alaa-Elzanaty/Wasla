@@ -16,13 +16,13 @@ namespace Wasla.Model.Models
 		public int Id { get; set; }
 		public string OrganizationId { get; set; }
 		public virtual Organization Organization { get; set; }
-		public float Price { get; set; }
+        public int LineId { get; set; }
+        public virtual Line Line { get; set; }
+        public float Price { get; set; }
 		public TimeSpan Duration { get; set; }
 		public int Points { get; set; }
 		public bool IsPublic { get; set; }
 		public float AdsPrice { get; set; }
-		public int LineId { get; set; }
-		public virtual Line Line { get; set; }
 		public virtual IEnumerable<TripTimeTable> TimesTable { get; set; }
 		public Trip()
 		{

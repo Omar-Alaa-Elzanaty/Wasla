@@ -14,19 +14,12 @@ namespace Wasla.Api.Controllers
 
 	public class AuthController : ControllerBase
 	{
-		private readonly IMapper _mapper;
 		private readonly IAuthService _authservice;
 		private readonly BaseResponse _response;
-		private readonly IAdminService _adminservice;
-		private readonly WaslaDb _context;
-
-		public AuthController(IMapper mapper, IAuthService authService, IAdminService adminservice, WaslaDb context)
+		public AuthController(IAuthService authService)
 		{
-			_mapper = mapper;
 			_authservice = authService;
 			_response = new();
-			_adminservice = adminservice;
-			_context = context;
 		}
 		[HttpPost("passenger/register")]
         public async Task<IActionResult> PassengerRegister([FromBody] PassengerRegisterDto adv)
@@ -34,9 +27,15 @@ namespace Wasla.Api.Controllers
             var result = await _authservice.PassengerRegisterAsync(adv);
             return Ok(result);
         }
+        [HttpPost("driver/register")]
+        public async Task<IActionResult> DriverRegister([FromForm] DriverRegisterDto adv)
+        {
+            var result = await _authservice.DriverRegisterAsync(adv);
+            return Ok(result);
+        }
         //https://localhost:44366/api/Auth/SendMessage?phone=%2B201118499698
-       
-      
+
+
         [HttpPost("refreshToken/{refreshToken}")]
         [Authorize]
         public async Task<IActionResult> RefreshToken([FromRoute] string refreshToken)
@@ -79,13 +78,6 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _authservice.OrgnaizationRegisterAsync(request));
         }
-        [HttpGet("organization/account/confirm/{id}")]
-        public async Task<IActionResult> ConfrimOrganizationAccount(int id)
-        {
-            return Ok(await _adminservice.ConfirmOrgnaizationRequestAsync(id));
-        }
-      
 
-      
     }
 }

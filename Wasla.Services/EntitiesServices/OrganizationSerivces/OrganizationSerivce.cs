@@ -164,8 +164,8 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                 PhoneNumber = model.PhoneNumber,
                 UserName = model.UserName
             };
-            newDriver.LicenseImageUrl = await _mediaSerivce.AddAsync(model.LicenseImageFile);
-            newDriver.PhotoUrl = await _mediaSerivce.AddAsync(model.ImageFile);
+            newDriver.LicenseImageUrl =await _mediaSerivce.AddAsync(model.LicenseImageFile);
+            newDriver.PhotoUrl =await _mediaSerivce.AddAsync(model.ImageFile);
 
             using (var trans = await _context.Database.BeginTransactionAsync())
             {
@@ -408,6 +408,8 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             return _response;
         }
         #endregion
+
+        #region Station
         public async Task<BaseResponse> AddStationAsync(StationDto stationDto, string orgId)
         {
             if (await _context.Stations.AnyAsync(v => v.Name == stationDto.Name && v.OrganizationId == orgId))
@@ -420,25 +422,32 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
 
             await _context.Stations.AddAsync(station);
             _ = await _context.SaveChangesAsync();
-            _response.Data = station;
+            _response.Message = _localization["addStationSuccess"].Value;
             return _response;
         }
-        public async Task<BaseResponse> UpdateStationAsync(StationDto stationDto, string orgId)
+        public async Task<BaseResponse> UpdateStationAsync(StationDto stationDto, string orgId,int stationId)
         {
-            var station = await _context.Stations.FirstOrDefaultAsync(v => v.Name == stationDto.Name && v.OrganizationId == orgId);
+            var station = await _context.Stations.FirstOrDefaultAsync(v => v.StationId == stationId && v.OrganizationId == orgId);
 
             if (station is null)
                 throw new NotFoundException(_localization["StationNotFound"].Value);
 
+         
+            if(station.Name!=stationDto.Name)
+            {
+                if (await _context.Stations.AnyAsync(v => v.Name == stationDto.Name && v.OrganizationId == orgId))
+                {
+                    throw new BadRequestException(_localization["StationExist"].Value);
+                }
+            }
+            station.Name = stationDto.Name;
             station.OrganizationId = orgId;
             station.Latitude = stationDto.Latitude;
             station.Langtitude = stationDto.Langtitude;
-            station.Name = stationDto.Name;
-
             var result = _context.Stations.Update(station);
             await _context.SaveChangesAsync();
 
-            _response.Data = result;
+            _response.Message = _localization["updateStationSuccess"].Value;
 
             return _response;
         }
@@ -457,6 +466,8 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                 throw new NotFoundException(_localization["StationNotFound"].Value);
             var tripRes = _mapper.Map<StationDto>(station);
             _response.Data = tripRes;
+            _response.Message = _localization["updateStationSuccess"].Value;
+
             return _response;
         }
 
@@ -467,19 +478,88 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                 throw new NotFoundException(_localization["stationNotFound"].Value);
             _context.Stations.Remove(station);
             await _context.SaveChangesAsync();
-            _response.Data = station;
+            _response.Message = _localization["deleteStationSuccess"].Value;
             return _response;
         }
+
+        #endregion
+        #region Line
+        public async Task<BaseResponse> AddLineAsync(LineRequestDto lineDto)
+        {
+            if (await _context.Lines.AnyAsync(v => v.StartId == lineDto.StartId && v.EndId==lineDto.EndId))
+            {
+                throw new BadRequestException(_localization["LineExist"].Value);
+            }
+
+            var line = _mapper.Map<Line>(lineDto);
+            await _context.Lines.AddAsync(line);
+            _ = await _context.SaveChangesAsync();
+            _response.Message = _localization["lineAddSuccess"].Value;
+            return _response;
+        }
+        public async Task<BaseResponse> UpdateLineAsync(LineRequestDto lineDto,int lineId)
+        {
+            var line = await _context.Lines.FirstOrDefaultAsync(v => v.Id == lineId);
+
+            if (line is null)
+                throw new NotFoundException(_localization["LineNotFound"].Value);
+            if (line.StartId != lineDto.StartId && line.EndId != lineDto.EndId)
+            {
+                if (await _context.Lines.AnyAsync(v => v.StartId == lineDto.StartId && v.EndId == lineDto.EndId))
+                {
+                    throw new BadRequestException(_localization["LineExist"].Value);
+                }
+            }
+            line.StartId = lineDto.StartId;
+            line.EndId = lineDto.EndId;
+            var result = _context.Lines.Update(line);
+            await _context.SaveChangesAsync();
+            //_response.Data = result;
+            _response.Message = _localization["LineUpdateSuccess"];
+            return _response;
+        }
+        public async Task<BaseResponse> GetLinessAsync(string orgId)
+        {
+            var lines = await _context.Lines.Where(t => t.Start.OrganizationId == orgId).ToListAsync();
+            var tripRes = _mapper.Map<List<LineDto>>(lines);
+            _response.Data = tripRes;
+            return _response;
+        }
+       
+        public async Task<BaseResponse> GetLineAsync(int id)
+        {
+            var line = await _context.Lines.FirstOrDefaultAsync(v => v.Id == id);
+              if (line is null)
+                throw new NotFoundException(_localization["LineNotFound"].Value);
+            var tripRes = _mapper.Map<LineDto>(line);
+           _response.Data = tripRes;
+            return _response;
+        }
+
+        public async Task<BaseResponse> DeleteLineAsync(int id)
+        {
+            var line = await _context.Lines.FirstOrDefaultAsync(t => t.Id == id);
+            if (line == null)
+                throw new NotFoundException(_localization["LineNotFound"].Value);
+            _context.Lines.Remove(line);
+            await _context.SaveChangesAsync();
+            _response.Message = _localization["linedeleteSuccess"].Value;
+            return _response;
+        }
+        #endregion
+        #region trip
         public async Task<BaseResponse> AddTripAsync(AddTripDto model, string orgId)
         {
+            var tripExist= await _context.Trips.AnyAsync(t=>t.LineId==model.LineId&&t.OrganizationId==orgId);
+            if (tripExist)
+                throw new BadRequestException(_localization["TripAlreadyExist"].Value);
             var trip = _mapper.Map<Trip>(model);
+           trip.Duration =TimeSpan.FromMinutes(model.Duration);
             trip.OrganizationId = orgId;
 
             await _context.Trips.AddAsync(trip);
             _ = await _context.SaveChangesAsync();
-
-            _response.Data = trip;
-
+            _response.Message = _localization["addTripSuccess"].Value;
             return _response;
         }
         public async Task<BaseResponse> UpdateTripAsync(UpdateTripDto model, int id)
@@ -487,22 +567,15 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             var tripCheck = await _context.Trips.FirstOrDefaultAsync(v => v.Id == id);
             if (tripCheck is null)
                 throw new NotFoundException(_localization["tripNotFound"].Value);
-            //if (tripCheck.Driver != null)
-            //{
-            //    tripCheck.AvailablePackageSpace = tripCheck.Vehicle.PackageCapcity;
-            //}
-            //tripCheck.OrganizationId = model.orgId;
-            //tripCheck.From = model.From;
-            //tripCheck.To = model.To;
-            //tripCheck.DriverId = model.DriverId;
-            //tripCheck.Price = model.Price;
-            //tripCheck.VehicleId = model.VehicleId;
-            //tripCheck.Duration = model.arrivingTime > model.launchingTime ? model.arrivingTime - model.launchingTime : model.launchingTime - model.arrivingTime;
-
+            tripCheck.AdsPrice = model.AdsPrice;
+            tripCheck.IsPublic = model.IsPublic;
+            tripCheck.Points = model.Points;
+            tripCheck.LineId = model.LineId;
+            tripCheck.Price = model.Price;
+            tripCheck.Duration =TimeSpan.FromMinutes(model.Duration);
             var result = _context.Trips.Update(tripCheck);
             await _context.SaveChangesAsync();
-
-            _response.Data = result;
+            _response.Message = _localization["updateTripSuccess"].Value;
             return _response;
         }
         public async Task<BaseResponse> GetTripsAsync(string orgId)
@@ -510,22 +583,16 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             var trips = await _context.Trips.Where(t => t.OrganizationId == orgId).ToListAsync();
             var tripRes = _mapper.Map<List<TripDto>>(trips);
             _response.Data = tripRes;
+            _response.Message = _localization["getTripSuccess"].Value;
             return _response;
         }
         public async Task<BaseResponse> GetTripAsync(int id)
         {
             var trip = await _context.Trips.Where(t => t.Id == id).FirstOrDefaultAsync();
             var tripRes = _mapper.Map<TripDto>(trip);
-
             _response.Data = tripRes;
-            return _response;
-        }
+            _response.Message = _localization["getTripSuccess"].Value;
 
-        public async Task<BaseResponse> GetTripsForDriverAsync(string orgId, string driverId)
-        {
-            //var trips = await _context.Trips.Where(t => t.OrganizationId == orgId && t.DriverId == driverId).Include(t => t.Vehicle).ToListAsync();
-            //var tripRes = _mapper.Map<List<TripForDriverDto>>(trips);
-            //_response.Data = tripRes;
             return _response;
         }
         public async Task<BaseResponse> DeleteTripAsync(int id)
@@ -535,27 +602,156 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                 throw new NotFoundException(_localization["tripNotFound"].Value);
             _context.Trips.Remove(trip);
             await _context.SaveChangesAsync();
+            _response.Message = _localization["deleteTripSuccess"].Value;
+            return _response;
+        }
+        #endregion 
+        public async Task<BaseResponse> AddTripTimeAsync(AddTripTimeDto model)
+        {
+            var tripExist = await _context.TripTimeTables.AnyAsync(t => t.TripId == model.TripId &&
+            t.StartTime == model.StartTime&&t.VehicleId==t.VehicleId&&t.DriverId==model.DriverId);
+            if (tripExist)
+                throw new BadRequestException(_localization["TripAlreadyExist"].Value);
+            var trip = _mapper.Map<TripTimeTable>(model);
+            await _context.TripTimeTables.AddAsync(trip);
+            _ = await _context.SaveChangesAsync();
+            _response.Message = _localization["addTripSuccess"].Value;
+            return _response;
+        }
+        public async Task<BaseResponse> GetTripTimeAsync(int id)
+        {
+            var trip = await _context.TripTimeTables.Where(t => t.Id == id).FirstOrDefaultAsync();
+            var tripRes = _mapper.Map<TripTimeDto>(trip);
+          /*  tripRes.Points=trip.Trip.Points;
+            tripRes.Price=trip.Trip.Price;
+            tripRes.Line=trip.Trip.Line;
+            tripRes.Duration=trip.Trip.Duration;*/
+            _response.Data = tripRes;
+            return _response;
+        }
+        public async Task<BaseResponse> GetTripsTimeAsync(string orgId)
+        {
+            var trips = await _context.TripTimeTables.Where(t => t.Trip.OrganizationId == orgId).ToListAsync();
+            var tripRes = _mapper.Map<List<TripTimeDto>>(trips);
+            _response.Data = tripRes;
+            return _response;
+        }
+        public async Task<BaseResponse> UpdateTripTimeAsync(UpdateTripTimeDto model, int id)
+        {
+            var tripCheck = await _context.TripTimeTables.FirstOrDefaultAsync(v => v.Id == id);
+            if (tripCheck is null)
+                throw new NotFoundException(_localization["tripNotFound"].Value);
+            var tripExist = await _context.TripTimeTables.AnyAsync(t => t.TripId == model.TripId &&
+                        t.StartTime == model.StartTime && t.VehicleId == t.VehicleId && t.DriverId == model.DriverId&&t.Id!=id);
+            if (tripExist)
+                throw new BadRequestException(_localization["TripAlreadyExist"].Value);
+            tripCheck.TripId = model.TripId;
+            tripCheck.StartTime=model.StartTime;
+            tripCheck.ArriveTime = model.ArriveTime;
+            tripCheck.IsStart = model.IsStart;
+            tripCheck.VehicleId = model.VehicleId;
+            tripCheck.AvailablePackageSpace = model.AvailablePackageSpace;
+            var result = _context.TripTimeTables.Update(tripCheck);
+            await _context.SaveChangesAsync();
+            _response.Message = _localization["updateTripSuccess"].Value;
+            return _response;
+        }
+        public async Task<BaseResponse> DeleteTripTimeAsync(int id)
+        {
+            var trip = await _context.TripTimeTables.FirstOrDefaultAsync(t => t.Id == id);
+            if (trip == null)
+                throw new NotFoundException(_localization["TripNotFound"].Value);
+            _context.TripTimeTables.Remove(trip);
+            await _context.SaveChangesAsync();
             _response.Data = trip;
             return _response;
         }
-        public async Task<BaseResponse> GetTripsForUserAsync(string orgId, string name)
+        public async Task<BaseResponse> GetTripsForDriverAsync(string orgId, string driverId)
         {
-            //var trips = await _context.Trips.Where(t => t.OrganizationId == orgId && (t.From.StartsWith(name) || t.To.StartsWith(name))).ToListAsync();
-            //var tripRes = _mapper.Map<List<TripForUserDto>>(trips);
-            //_response.Data = tripRes;
+            var trips = await _context.TripTimeTables.Where(t => t.Trip.OrganizationId == orgId && t.DriverId == driverId).ToListAsync();
+            TripForDriverDto tripDriver= new TripForDriverDto();
+            var tripRes = _mapper.Map<List<TripForDriverDto>>(trips);
+
+            _response.Data = tripRes;
             return _response;
         }
+       
+         public async Task<BaseResponse> GetTripsForUserAsync(string orgId, string lineName)
+         {
+             var trips = await _context.TripTimeTables.Where(t => t.Trip.OrganizationId == orgId && (t.Trip.Line.Start.Name.StartsWith(lineName) || t.Trip.Line.End.Name.StartsWith(lineName))).ToListAsync();
+             var tripRes = _mapper.Map<List<TripForUserDto>>(trips);
+             _response.Data = tripRes;
+             return _response;
+         }
         public async Task<BaseResponse> GetTripsForUserWithToAndFromAsync(string orgId, string from, string to)
         {
-            //var trips = await _context.Trips.Where(t => t.OrganizationId == orgId && (t.From == from || t.To == to)).ToListAsync();
-            //var tripRes = _mapper.Map<List<TripForUserDto>>(trips);
-            //_response.Data = tripRes;
+            var trips = await _context.TripTimeTables.Where(t => t.Trip.OrganizationId == orgId && (t.Trip.Line.Start.Name == from || t.Trip.Line.End.Name == to)).ToListAsync();
+            var tripRes = _mapper.Map<List<TripForUserDto>>(trips);
+            _response.Data = tripRes;
+            return _response;
+        }
+        public async Task<BaseResponse> GetTripsByLineIdAsync(string orgId,int lineId)
+        {
+            var trips = await _context.TripTimeTables.Where(t => t.Trip.OrganizationId == orgId && (t.Trip.Line.Id==lineId)).ToListAsync();
+            var tripRes = _mapper.Map<List<TripForUserDto>>(trips);
+            _response.Data = tripRes;
             return _response;
         }
         public async Task<BaseResponse> GetOriganizationsWithName(string name)
         {
             var organizations = await _context.Organizations.Select(s => s.Name.StartsWith(name)).ToListAsync();
             _response.Data = _mapper.Map<ResponseOrgSearch>(organizations);
+            return _response;
+        }
+
+      
+        public async Task<BaseResponse> GetPackagesTripAsync(int tripId)
+        {
+            var package =await _context.Packages.Where(p => p.TripId == tripId).ToListAsync();
+            var resault = _mapper.Map<List<OrgPackagesDto>>(package);
+            _response.Data = resault;
+            _response.Message = _localization["getPackageSuccess"].Value;
+            return _response;
+        }
+        public async Task<BaseResponse> GetPackageAsync(int packageId)
+        {
+            var package = await _context.Packages.FirstOrDefaultAsync(p => p.Id == packageId);
+            if (package is null)
+            {
+                throw new KeynotFoundException(_localization["ObjectNotFound"].Value);
+            }
+            if (package.DriverId!=null)
+            {
+                _response.Data = _mapper.Map<PublicPackagesDto>(package);
+            }
+            else
+            {
+                _response.Data = _mapper.Map<OrgPackagesDto>(package);
+            }
+            _response.Message = _localization["getPackageSuccess"].Value;
+          return _response;
+        }
+       
+        public async Task<BaseResponse> GetPackagesRequestAsync(string orgId)
+        {
+           
+            var packages = await _context.Packages.Where(p => p.TripId!=null&&p.Trip.Trip.OrganizationId==orgId&&p.Status==0).ToListAsync();
+            var res = _mapper.Map<OrgPackagesDto>(packages);
+            _response.Data = res;
+            return _response;
+        }
+
+        public async Task<BaseResponse> ReviewPackagesRequest(int packageId,int status)
+        {
+            var package = await _context.Packages.FirstOrDefaultAsync(p => p.Id == packageId);
+
+            if (package is null)
+            {
+                throw new KeynotFoundException(_localization["ObjectNotFound"].Value);
+            }
+              package.Status = status;
+            await _context.SaveChangesAsync();
+            _response.Message = _localization["PackageReviewedSuccess"].Value;
             return _response;
         }
     }

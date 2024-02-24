@@ -132,12 +132,12 @@ namespace Wasla.Services.Authentication.AuthServices
 			await _authVerifyService.CheckPhoneNumber(model.PhoneNumber);
 			await _authVerifyService.CheckEmail(model.Email);
 
-			if (await _dbContext.Drivers.AnyAsync(u => u.LicenseNum == model.LicenseNum))
+			if (await _dbContext.PublicDrivers.AnyAsync(u => u.LicenseNum == model.LicenseNum))
 			{
 				throw new BadRequestException(_localization["LicenseExist"]);
 			}
 
-			var user = _mapper.Map<Driver>(model);
+			var user = _mapper.Map<PublicDriver>(model);
 			user.LicenseImageUrl = await _mediaServices.AddAsync(model.LicenseImageFile);
 			user.PhotoUrl = await _mediaServices.AddAsync(model.ProfileImageFile);
 			var role = Roles.Role_Driver;
@@ -413,7 +413,6 @@ namespace Wasla.Services.Authentication.AuthServices
 			using var generator = new RNGCryptoServiceProvider();
 
 			generator.GetBytes(randomNumber);
-
 			return new RefreshToken
 			{
 				RefToken = Convert.ToBase64String(randomNumber),
@@ -421,6 +420,5 @@ namespace Wasla.Services.Authentication.AuthServices
 				CreatedOn = DateTime.UtcNow
 			};
 		}
-		
-	}
+    }
 }

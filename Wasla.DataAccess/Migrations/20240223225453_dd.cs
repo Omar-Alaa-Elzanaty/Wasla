@@ -5,22 +5,14 @@
 namespace Wasla.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class Addtrip : Migration
+    public partial class dd : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
-            migrationBuilder.AddColumn<int>(
-                name: "LineId",
-                table: "Trips",
-                type: "int",
-                nullable: false,
-                defaultValue: 0);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Trips_LineId",
-                table: "Trips",
-                column: "LineId");
+            migrationBuilder.DropForeignKey(
+                name: "FK_Trips_Lines_LineId",
+                table: "Trips");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Trips_Lines_LineId",
@@ -37,13 +29,13 @@ namespace Wasla.DataAccess.Migrations
                 name: "FK_Trips_Lines_LineId",
                 table: "Trips");
 
-            migrationBuilder.DropIndex(
-                name: "IX_Trips_LineId",
-                table: "Trips");
-
-            migrationBuilder.DropColumn(
-                name: "LineId",
-                table: "Trips");
+            migrationBuilder.AddForeignKey(
+                name: "FK_Trips_Lines_LineId",
+                table: "Trips",
+                column: "LineId",
+                principalTable: "Lines",
+                principalColumn: "Id",
+                onDelete: ReferentialAction.Restrict);
         }
     }
 }

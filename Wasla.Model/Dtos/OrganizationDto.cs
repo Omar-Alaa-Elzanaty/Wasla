@@ -6,11 +6,10 @@ using System.Threading.Tasks;
 
 namespace Wasla.Model.Dtos
 {
-    public class StationDto
+    public class OrganizationDto
     {
-       // public int StationId { get; set; }
+        public string Id { get; set; }
         public string Name { get; set; }
-        public string Langtitude { get; set; }
-        public string Latitude { get; set; }
+        public string Address { get; set; }
     }
 }

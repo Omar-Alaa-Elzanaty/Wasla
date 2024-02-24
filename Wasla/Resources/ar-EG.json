@@ -52,7 +52,13 @@
   "RepeatedData": "يوجد تكرار فى اليانات",
   "ReachToLimit": "لقد وصلت للحد الاقصى",
   "ReservationFail": "فشل الحجز",
+  "EnterTripInfo": "قم بادخال معلومات الرحله",
+  "Enter]قهرثقInfo": "قم بادخال معلومات السائق",
   "phoneOremailRequired": "قم بادخال رقم الهاتف او الايميل",
+  "startIdRequired": "نقطه البدايه مطلوبه",
+  "endIdRequired": "نقطه النهايه مطلوبه",
+  "PackagesExist": "هذه الشحنه موجوده بالفعل",
+
   "AdsExist": "ربما الاعلان موجود مسبقا ",
   //success
 
@@ -82,6 +88,21 @@
   "StationNotFound": "المنطقه ليس موجوده",
   "PhoneEditSuccess": "تم تعديل الهاتف بنجاح",
   "EmailEditSuccess": "تم تعدييل الايميل بنجاح",
+  "updateStationSuccess": "تم تعديل المحطه بنجاح",
+  "addStationSuccess": "تم اضافه المحطه بنجاح",
+  "getStationSuccess": "تم جلب المحطه بنجاح",
+  "deleteStationSuccess": "تم حذف المحطه بنجا",
+  "LineUpdateSuccess": "تم تعديل خط السير بنجاح",
+  "addLineSuccess": "تم اضافه خط السير بنجاح",
+  "getLineSuccess": "تم جلب خط السير بنجاح",
+  "deleteLineSuccess": "تم حذف خط السير بنجا",
+  "addTripSuccess": "تم اضافه رحله بنجاح",
+  "updateTripSuccess": "تم تعديل الرحله بنجاح",
+  "getTripSuccess": "تم احضار الرحله بنجاح",
+  "deleteTripSuccess": "تم حذف الرحله بنجاح",
+  "AddPAckagesSuccess": "تم انشاء طلب ارسال الطلب  بنجاح الرجاء, الانتظار للتاكيد الطلب",
+
+
   "Removed": "تم الحذف",
   "Used": "مستخدم",
   "NotUsed": "متاح",

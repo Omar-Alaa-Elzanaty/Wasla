@@ -181,7 +181,12 @@ namespace Wasla.Services.Authentication.VerifyService
             _response.Message = _localization["PhoneEditSuccess"].Value;
             return _response;
         }
-     
+     public async Task<string> SetOtp()
+        {
+            string otp = await GenerateOtp();
+            SetOtpInCookie(otp);
+            return otp;
+        }
         private void SetOtpInCookie(string otp)
         {
             var cookieOptions = new CookieOptions

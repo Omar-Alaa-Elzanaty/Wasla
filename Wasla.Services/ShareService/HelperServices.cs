@@ -14,7 +14,7 @@ namespace Wasla.Services.ShareService
             string errors = string.Empty;
             foreach (var error in result.Errors)
             {
-                errors += error + ", ";
+              errors += error + ",";
             }
             return errors;
         }

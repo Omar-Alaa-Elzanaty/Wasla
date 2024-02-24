@@ -18,4 +18,8 @@
     <ProjectReference Include="..\Wasla.DataAccess\Wasla.DataAccess.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="EntitiesServices\PublicDriverService\" />
+  </ItemGroup>
+
 </Project>

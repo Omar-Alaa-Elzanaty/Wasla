@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using System.Security.Claims;
 using Wasla.DataAccess;
+using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
 using Wasla.Model.Helpers.Statics;
 using Wasla.Model.Models;
+using Wasla.Services.Authentication.AuthHelperService.FactorService.Factory;
 using Wasla.Services.Exceptions;
 using Wasla.Services.HlepServices.MediaSerivces;
 using Wasla.Services.ShareService;
@@ -124,6 +126,86 @@ namespace Wasla.Services.Authentication.AdminServices
             }
 
             _context.OrganizationsRegisters.Remove(request);
+            return _response;
+        }
+
+        public async Task<BaseResponse> GetAllOrgsAsync()
+        {
+            var orgs= await _context.Organizations.ToListAsync();
+            var orgsRes = _mapper.Map<List<OrganizationDto>>(orgs);
+            _response.Data = orgsRes;
+            return _response;
+        }
+
+        #region Station
+        public async Task<BaseResponse> AddStationAsync(StationDto stationDto)
+        {
+            if (await _context.PublicStations.AnyAsync(v => v.Name == stationDto.Name))
+            {
+                throw new BadRequestException(_localization["StationExist"].Value);
+            }
+
+            var station = _mapper.Map<PublicStation>(stationDto);
+            await _context.PublicStations.AddAsync(station);
+            _ = await _context.SaveChangesAsync();
+            _response.Message = _localization["addStationSuccess"].Value;
+            // _response.Data = station;
+            return _response;
+        }
+        public async Task<BaseResponse> UpdateStationAsync(StationDto stationDto, int stationId)
+        {
+            var station = await _context.PublicStations.FirstOrDefaultAsync(v => v.StationId == stationId);
+
+            if (station is null)
+                throw new NotFoundException(_localization["StationNotFound"].Value);
+
+
+            if (station.Name != stationDto.Name&&( await _context.Stations.AnyAsync(v => v.Name == stationDto.Name)))
+            {
+              throw new BadRequestException(_localization["StationExist"].Value);
+            }
+            station.Name = stationDto.Name;
+            station.Latitude = stationDto.Latitude;
+            station.Langtitude = stationDto.Langtitude;
+            var result = _context.PublicStations.Update(station);
+            await _context.SaveChangesAsync();
+            _response.Message = _localization["updateStationSuccess"].Value;
+
+            return _response;
+        }
+        public async Task<BaseResponse> GetStationsAsync()
+        {
+            var stations = await _context.PublicStations.ToListAsync();
+            var tripRes = _mapper.Map<List<StationDto>>(stations);
+            _response.Data = tripRes;
+            return _response;
+        }
+
+        public async Task<BaseResponse> GetStationAsync(int id)
+        {
+            var station = await _context.PublicStations.FirstOrDefaultAsync(v => v.StationId == id);
+            if (station is null)
+                throw new NotFoundException(_localization["StationNotFound"].Value);
+            var tripRes = _mapper.Map<StationDto>(station);
+            _response.Data = tripRes;
+            return _response;
+        }
+
+        public async Task<BaseResponse> DeleteStationAsync(int id)
+        {
+            var station = await _context.PublicStations.FirstOrDefaultAsync(t => t.StationId == id);
+            if (station == null)
+                throw new NotFoundException(_localization["stationNotFound"].Value);
+            _context.PublicStations.Remove(station);
+            await _context.SaveChangesAsync();
+            _response.Message = _localization["deleteStationSuccess"].Value;
+            return _response;
+        }
+        #endregion
+        public async Task<BaseResponse> GetActiveDrivers(string startStation, string endStation)
+        {
+            var drivers=await _context.PublicDrivers.Where(d=>d.StartStation.Name== startStation&&d.EndStation.Name==endStation&&d.isActive==true).ToListAsync();
+            _response.Data = drivers;
             return _response;
         }
     }
