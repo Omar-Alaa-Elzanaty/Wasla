@@ -14,5 +14,6 @@ namespace Wasla.Model.Dtos
         public string To { get; set; }
         public int AvailableSets { get; set; }
         public float AvailablePackageSpace { get; set; }
+        public string orgName { get; set; }
     }
 }

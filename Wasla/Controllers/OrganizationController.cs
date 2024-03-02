@@ -253,18 +253,24 @@ namespace Wasla.Api.Controllers
 		}
 
 		[HttpGet("trip/user/{orgId}/{name}")]
-		public async Task<IActionResult> GetTripForUser([FromRoute] string orgId, [FromQuery] string name)
+		public async Task<IActionResult> GetTripForUser([FromRoute] string orgId, [FromRoute] string name)
 		{
 			return Ok(await _orgService.GetTripsForUserAsync(orgId, name));
 		}
 
 		[HttpGet("trip/user/{orgId}/{from}/{to}")]
-		public async Task<IActionResult> GetTripForUserWithFromTo([FromRoute] string orgId, [FromQuery] string from, [FromQuery] string to)
+		public async Task<IActionResult> GetTripForUserWithFromTo([FromRoute] string orgId, [FromRoute] string from, [FromRoute] string to)
 		{
 			return Ok(await _orgService.GetTripsForUserWithToAndFromAsync(orgId, from, to));
 		}
 
-		[HttpDelete("trip/{id}")]
+        [HttpGet("trips/user/{tripId}/{date}")]
+        public async Task<IActionResult> GetTripstimeByDate([FromRoute] int tripId, [FromRoute] string date)
+        {
+            return Ok(await _orgService.GetTripsTimeByTripIdAndDate(tripId, date));
+        }
+
+        [HttpDelete("trip/{id}")]
 		public async Task<IActionResult> DeleteTrip([FromRoute] int id)
 		{
 			return Ok(await _orgService.DeleteTripAsync(id));

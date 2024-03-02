@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.IdentityModel.Tokens;
 using System.Data;
+using System.Globalization;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
@@ -40,7 +42,6 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             _userManager = userManager;
             _roleManager = roleManager;
         }
-
         public async Task<BaseResponse> DisplayVehicles(string orgId)
         {
             _response.Data = await _context.Vehicles.Where(v => v.OrganizationId == orgId).Select(v => new
@@ -675,8 +676,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             _response.Data = tripRes;
             return _response;
         }
-       
-         public async Task<BaseResponse> GetTripsForUserAsync(string orgId, string lineName)
+        public async Task<BaseResponse> GetTripsForUserAsync(string orgId, string lineName)
          {
              var trips = await _context.TripTimeTables.Where(t => t.Trip.OrganizationId == orgId && (t.Trip.Line.Start.Name.StartsWith(lineName) || t.Trip.Line.End.Name.StartsWith(lineName))).ToListAsync();
              var tripRes = _mapper.Map<List<TripForUserDto>>(trips);
@@ -697,14 +697,19 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             _response.Data = tripRes;
             return _response;
         }
+        public async Task<BaseResponse> GetTripsByLineIdInPublicAsync(int lineId)
+        {
+            var trips = await _context.TripTimeTables.Where(t =>t.Trip.Line.Id == lineId).ToListAsync();
+            var tripRes = _mapper.Map<List<TripForUserDto>>(trips);
+            _response.Data = tripRes;
+            return _response;
+        }
         public async Task<BaseResponse> GetOriganizationsWithName(string name)
         {
             var organizations = await _context.Organizations.Select(s => s.Name.StartsWith(name)).ToListAsync();
             _response.Data = _mapper.Map<ResponseOrgSearch>(organizations);
             return _response;
         }
-
-      
         public async Task<BaseResponse> GetPackagesTripAsync(int tripId)
         {
             var package =await _context.Packages.Where(p => p.TripId == tripId).ToListAsync();
@@ -731,7 +736,6 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             _response.Message = _localization["getPackageSuccess"].Value;
           return _response;
         }
-       
         public async Task<BaseResponse> GetPackagesRequestAsync(string orgId)
         {
            
@@ -740,7 +744,6 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             _response.Data = res;
             return _response;
         }
-
         public async Task<BaseResponse> ReviewPackagesRequest(int packageId,int status)
         {
             var package = await _context.Packages.FirstOrDefaultAsync(p => p.Id == packageId);
@@ -753,6 +756,17 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             await _context.SaveChangesAsync();
             _response.Message = _localization["PackageReviewedSuccess"].Value;
             return _response;
+        }
+        public async Task<BaseResponse> GetTripsTimeByTripIdAndDate(int tripId, string date)
+        {
+           
+            if (DateTime.TryParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var searchDate))
+            {
+                var trips = await _context.TripTimeTables.Where(t => t.TripId == tripId &&t.StartTime.Date==searchDate ).ToListAsync();
+                var tripRes = _mapper.Map<List<TripForUserDto>>(trips);
+                _response.Data = tripRes;
+            }
+          return _response;
         }
     }
 }

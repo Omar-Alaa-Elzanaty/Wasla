@@ -13,7 +13,14 @@ namespace Wasla.Model.Helpers
         public HttpStatusCode Status { get; set; }=HttpStatusCode.OK;
 		public bool IsSuccess { get; set; } = true;
 		public string? Message { get; set; }
-		// public List<string>? ErrorMessags { get; set; }
 		public object? Data { get; set; }
+        public static BaseResponse GetErrorException(HttpStatusCode status, string message)
+        {
+            var response = new BaseResponse();
+            response.IsSuccess = false;
+            response.Status = status;
+            response.Message = message;
+            return response;
+        }
     }
 }

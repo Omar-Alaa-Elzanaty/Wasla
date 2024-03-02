@@ -32,25 +32,25 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
         public async Task<BaseResponse> SeatsRecordsAsync(int tripId)
         {
-            var trip = await _context.Trips.FindAsync(tripId);
+            var trip = await _context.TripTimeTables.FindAsync(tripId);
 
             if (trip is null)
             {
                 throw new KeyNotFoundException(_localization["ObjectNotFound"].Value);
             }
 
-            //var reciveredSets = trip.RecervedSets.Select(s => s.setNum).ToHashSet();
+            var reciveredSets = trip.RecervedSeats.Select(s => s.setNum).ToHashSet();
 
             var sets = new List<SetStatusDto>();
 
-            //for (int setNum = 1; setNum <= trip.Capacity; setNum++)
-            //{
-            //    sets.Add(new()
-            //    {
-            //        SetNum = setNum,
-            //        ISAvailable = !reciveredSets.Contains(setNum)
-            //    });
-            //}
+            for (int setNum = 1; setNum <= trip.Vehicle.Capcity; setNum++)
+            {
+                sets.Add(new()
+                {
+                    SetNum = setNum,
+                    ISAvailable = !reciveredSets.Contains(setNum)
+                });
+            }
 
             _response.Data = sets;
 
@@ -88,7 +88,6 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                     {
                         throw new KeynotFoundException(_localization["ReservationFail"].Value);
                     }
-
                     customer.points += completeReserve.Count * trip.Points;
 
                     await _context.SaveChangesAsync();
@@ -105,7 +104,6 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                     throw;
                 }
             }
-
             _response.Message = _localization["SuccessProcess"].Value;
             _response.Data = completeReserve.Select(t => new
             {
@@ -117,6 +115,25 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             });
 
             return _response;
+        }
+        public async Task<BaseResponse> PassengerCancelReversionAsyn(int reverseId)
+        {
+           var reverse=await _context.Reservations.FirstOrDefaultAsync(r=>r.Id==reverseId);
+            if (reverse == null)
+                throw new NotFoundException("ReversenotFound");
+            var seat = await _context.Seats.FirstOrDefaultAsync(s => s.setNum == reverse.SetNum);
+            using (var trans = await _context.Database.BeginTransactionAsync())
+            {
+               _context.Seats.Remove(seat);
+               _context.Reservations.Remove(reverse);
+               await _context.SaveChangesAsync();
+              await trans.CommitAsync();
+               
+            }
+            
+            _response.Message = _localization["Cancel"].Value;
+            return _response;
+
         }
         public async Task<BaseResponse> OrganizationRateAsync(OrganizationRate model)
         {
@@ -304,6 +321,6 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             return _response;
         }
 
-
+        
     }
 }
