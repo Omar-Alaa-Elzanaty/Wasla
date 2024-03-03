@@ -8,8 +8,10 @@ using Twilio;
 using Twilio.Rest.Api.V2010.Account;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
+using Wasla.Model.Helpers.Statics;
 using Wasla.Model.Models;
 using Wasla.Services.Exceptions;
+using Wasla.Services.Exceptions.ErrorExceptionService;
 using Wasla.Services.ShareService.AuthVerifyShareService;
 using Wasla.Services.ShareService.EmailServices;
 
@@ -66,7 +68,8 @@ namespace Wasla.Services.Authentication.VerifyService
         {
             if (input.IsNullOrEmpty())
             {
-                throw new BadRequestException(_localization["userNameRequired"].Value);
+               return  BaseResponse.GetErrorException(HttpStatusErrorCode.BadRequest, (_localization["userNameRequired"].Value));
+             //   throw new BadRequestException(_localization["userNameRequired"].Value);
             }
 
             bool isNotFound = !await _userManager.Users.AnyAsync(a => a.UserName != null && a.UserName.StartsWith(input));
@@ -148,6 +151,7 @@ namespace Wasla.Services.Authentication.VerifyService
             bool checkotp = CheckOtp(confirmEmailDto.RecOtp);
             if (!checkotp)
             {
+               //await _errorException.GetError(400, _localization["ConfirmEmailError"].Value);
                 throw new BadRequestException(_localization["ConfirmEmailError"].Value);
             }
             user.EmailConfirmed = true;

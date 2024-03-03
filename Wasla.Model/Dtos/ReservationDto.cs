@@ -3,7 +3,7 @@
 	public class SeatInfo
 	{
 		public int SeatNum { get; set; }
-		public string QrCodeFile { get; set; }//Iformfile
+		public string? QrCodeFile { get; set; }//Iformfile
 	}
 	public class ReservationDto
 	{

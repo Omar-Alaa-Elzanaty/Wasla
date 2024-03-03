@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Wasla.Model.Helpers.Statics
 {
-    public class Roles
+    public  class Roles
     {
         public const string Role_Admin = "Admin";
         public const string Role_Driver = "Driver";

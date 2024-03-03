@@ -34,8 +34,8 @@ namespace Wasla.Api.Controllers
             return Ok(messag);
         }
 
-        [HttpGet("check/userName/{userName}")]
-        public async Task<IActionResult> CheckUserName([FromRoute]string userName)
+        [HttpGet("check/userName")]///{userName}
+        public async Task<IActionResult> CheckUserName([FromQuery]string? userName)
         {
             return Ok(await _verifyService.CheckUserNameSimilarity(userName));
         }

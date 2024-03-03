@@ -75,6 +75,12 @@ namespace Wasla.Api.Controllers
 		{
 			return Ok(await _passangerService.LinesVehiclesCountAsync(orgId));
 		}
-	}
+		[HttpDelete("CancelReverse/{reverseId}")]
+		public async Task<IActionResult> PassengerCancelReversionAsyn(int reverseId)
+		{
+            return Ok(await _passangerService.PassengerCancelReversionAsyn(reverseId));
+        }
+
+    }
 	
 }

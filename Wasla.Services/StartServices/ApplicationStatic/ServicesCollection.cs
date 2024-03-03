@@ -14,6 +14,7 @@ using Wasla.Services.HlepServices.MultLanguageService.JsonLocalizer;
 using Wasla.Services.EntitiesServices.OrganizationSerivces;
 using Wasla.Services.EntitiesServices.PassangerServices;
 using Wasla.Services.EntitiesServices.PublicDriverServices;
+using Wasla.Services.Exceptions.ErrorExceptionService;
 
 namespace Wasla.Services.StartServices.ApplicationStatic
 {
@@ -36,7 +37,6 @@ namespace Wasla.Services.StartServices.ApplicationStatic
             services.AddScoped<IDriverServices, DriverServices>();
             services.AddScoped<IVerifyService, VerifyService>();
             services.AddScoped<IAuthVerifyService, AuthVerifyService>();
-
         }
     }
 }

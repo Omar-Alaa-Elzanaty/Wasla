@@ -7,6 +7,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
     public interface IPassangerService
     {
         Task<BaseResponse> ReservationAsync(ReservationDto order);
+        Task<BaseResponse> PassengerCancelReversionAsyn(int reverseId);
         Task<BaseResponse> SeatsRecordsAsync(int tripId);
         Task<BaseResponse> OrganizationRateAsync(OrganizationRate model);
         Task<BaseResponse> OrganizationRateRemoveAsync(string organizationId, string customerId);
