@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wasla.DataAccess;
 
@@ -11,9 +12,11 @@ using Wasla.DataAccess;
 namespace Wasla.DataAccess.Migrations
 {
     [DbContext(typeof(WaslaDb))]
-    partial class WaslaDbModelSnapshot : ModelSnapshot
+    [Migration("20240303181528_Reseveration2")]
+    partial class Reseveration2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -538,16 +541,9 @@ namespace Wasla.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<string>("CompnayName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<string>("CustomerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("EndTime")
-                        .HasColumnType("datetime2");
 
                     b.Property<string>("PassengerName")
                         .IsRequired()
@@ -563,10 +559,7 @@ namespace Wasla.DataAccess.Migrations
                     b.Property<int>("SetNum")
                         .HasColumnType("int");
 
-                    b.Property<DateTime>("StartTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int?>("TriptimeTableId")
+                    b.Property<int>("TriptimeTableId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -583,13 +576,13 @@ namespace Wasla.DataAccess.Migrations
                     b.Property<int>("setNum")
                         .HasColumnType("int");
 
-                    b.Property<int>("TripTmeTableId")
+                    b.Property<int>("TripId")
                         .HasColumnType("int");
 
                     b.Property<int?>("TripTimeTableId")
                         .HasColumnType("int");
 
-                    b.HasKey("setNum", "TripTmeTableId");
+                    b.HasKey("setNum", "TripId");
 
                     b.HasIndex("TripTimeTableId");
 
@@ -1132,7 +1125,8 @@ namespace Wasla.DataAccess.Migrations
                     b.HasOne("Wasla.Model.Models.TripTimeTable", "TripTimeTable")
                         .WithMany("Reservations")
                         .HasForeignKey("TriptimeTableId")
-                        .OnDelete(DeleteBehavior.NoAction);
+                        .OnDelete(DeleteBehavior.NoAction)
+                        .IsRequired();
 
                     b.Navigation("Customer");
 

@@ -1,6 +1,11 @@
-﻿using AutoMapper;
+﻿using System.Linq;
+using AutoMapper;
+using AutoMapper.Internal;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Asn1.Cms;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
@@ -21,7 +26,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         public PassangerService
             (WaslaDb context,
             IStringLocalizer<PassangerService> localization,
-            IMediaSerivce mediaSerivce,IMapper mapper)
+            IMediaSerivce mediaSerivce, IMapper mapper)
         {
             _context = context;
             _response = new();
@@ -60,35 +65,39 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         public async Task<BaseResponse> ReservationAsync(ReservationDto order)
         {
             List<Reservation> completeReserve = new List<Reservation>();
-
+            //TODO: need to make reservation to every name in reservation dto seatInfo
+            var tripTimeTable = await _context.TripTimeTables.FindAsync(order.TripId);
             using (var trans = await _context.Database.BeginTransactionAsync())
             {
                 try
                 {
                     foreach (var set in order.seats)
                     {
-                        _context.Seats.Add(new Seat() { setNum = set.SeatNum, TripId = order.TripId });
+                        _context.Seats.Add(new Seat() { setNum = set.SeatNum, TripTmeTableId = order.TripId });
                         _context.SaveChanges();
                         completeReserve.Add(new Reservation()
                         {
                             SetNum = set.SeatNum,
                             CustomerId = order.CustomerId,
                             ReservationDate = DateTime.Now,
-                            TripId = order.TripId,
-                            QrCodeUrl = " "//await _mediaSerivce.AddAsync(set.QrCodeFile)
+                            TriptimeTableId = order.TripId,
+                            QrCodeUrl = "Qr Code file Uri",//await _mediaSerivce.AddAsync(set.QrCodeFile)
+                            CompnayName=tripTimeTable!.Trip.Organization.Name,
+                            StartTime=tripTimeTable.StartTime,
+                            EndTime=tripTimeTable.ArriveTime
                         });
 
                     }
                     await _context.Reservations.AddRangeAsync(completeReserve);
 
                     var customer = await _context.Customers.FindAsync(order.CustomerId);
-                    var trip = await _context.Trips.FindAsync(order.TripId);
+                    var trip = await _context.TripTimeTables.FindAsync(order.TripId);
 
                     if (customer is null || trip is null)
                     {
                         throw new KeynotFoundException(_localization["ReservationFail"].Value);
                     }
-                    customer.points += completeReserve.Count * trip.Points;
+                    customer.points += completeReserve.Count * trip.Trip.Points;
 
                     await _context.SaveChangesAsync();
                     await trans.CommitAsync();
@@ -109,7 +118,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             {
                 t.Id,
                 t.SetNum,
-                t.TripId,
+                t.TriptimeTableId,
                 t.QrCodeUrl,
                 t.ReservationDate
             });
@@ -118,19 +127,19 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         }
         public async Task<BaseResponse> PassengerCancelReversionAsyn(int reverseId)
         {
-           var reverse=await _context.Reservations.FirstOrDefaultAsync(r=>r.Id==reverseId);
+            var reverse = await _context.Reservations.FirstOrDefaultAsync(r => r.Id == reverseId);
             if (reverse == null)
                 throw new NotFoundException("ReversenotFound");
             var seat = await _context.Seats.FirstOrDefaultAsync(s => s.setNum == reverse.SetNum);
             using (var trans = await _context.Database.BeginTransactionAsync())
             {
-               _context.Seats.Remove(seat);
-               _context.Reservations.Remove(reverse);
-               await _context.SaveChangesAsync();
-              await trans.CommitAsync();
-               
+                _context.Seats.Remove(seat);
+                _context.Reservations.Remove(reverse);
+                await _context.SaveChangesAsync();
+                await trans.CommitAsync();
+
             }
-            
+
             _response.Message = _localization["Cancel"].Value;
             return _response;
 
@@ -196,7 +205,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             return _response;
         }
 
-        public async Task<BaseResponse> AddAdsAsync(string customerId,PassangerAddAdsDto adsRequest)
+        public async Task<BaseResponse> AddAdsAsync(string customerId, PassangerAddAdsDto adsRequest)
         {
             var availableToAdd = await _context.Advertisments
                         .AnyAsync(x => x.CustomerId == customerId
@@ -222,7 +231,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             _response.Message = _localization["UnderConfirm"].Value;
             return _response;
         }
-        public async Task<BaseResponse>LinesVehiclesCountAsync(string orgId)
+        public async Task<BaseResponse> LinesVehiclesCountAsync(string orgId)
         {
             var trips = _context.Trips
                 .Where(x => x.OrganizationId == orgId)
@@ -231,7 +240,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                     LineId = x.LineId,
                     Strat = x.Line.Start.Name,
                     End = x.Line.End.Name,
-                    VehiclesCount = x.TimesTable.Select(x=>x.VehicleId).Distinct().Count()
+                    VehiclesCount = x.TimesTable.Select(x => x.VehicleId).Distinct().Count()
                 });
 
             _response.Data = await trips.ToListAsync();
@@ -320,7 +329,119 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             _response.Data = res;
             return _response;
         }
+        public async Task<BaseResponse> GetProfile(string userId)
+        {
+            var user = await _context.Customers.FindAsync(userId);
 
-        
+            if (user is null)
+            {
+                return BaseResponse.GetErrorException(System.Net.HttpStatusCode.NotFound, _localization["UserNameNotFound"].Value);
+            }
+
+            var customer = _mapper.Map<DisplayCustomerProfileDto>(user);
+
+            customer.Followers.TryAdd(_context.UserFollows.Where(x => x.CustomerId == user.Id)
+                .Select(x => new Follow()
+                {
+                    Id = x.FollowerId,
+                    Name = x.Follower.FirstName + ' ' + x.Follower.LastName
+                }));
+
+            customer.Following.TryAdd(
+                _context.UserFollows.Where(x => x.FollowerId == user.Id)
+                .Select(x => new Follow()
+                {
+                    Id = x.CustomerId,
+                    Name = x.Customer.FirstName + " " + x.Customer.LastName
+                }));
+
+            _response.Data = customer;
+            return _response;
+        }
+        public async Task<BaseResponse> GetInComingReservations(string userId)
+        {
+            var user = await _context.Customers.FindAsync(userId);
+
+            if (user is null)
+            {
+                return BaseResponse.GetErrorException(System.Net.HttpStatusCode.NotFound, _localization["UserNameNotFound"].Value);
+            }
+
+            return await GetReservationOnMatchDate(x => x.ReservationDate > DateTime.Now, user);
+        }
+        public async Task<BaseResponse> GetEndedReservations(string userId)
+        {
+            var user = await _context.Customers.FindAsync(userId);
+
+            if (user is null)
+            {
+                return BaseResponse.GetErrorException(System.Net.HttpStatusCode.NotFound, _localization["UserNameNotFound"].Value);
+            }
+
+            return await GetReservationOnMatchDate(x => x.ReservationDate <= DateTime.Now, user);
+        }
+        public async Task<BaseResponse>GetTripSuggestion(string userId)
+        {
+            var last3Trips = await _context.Reservations.Where(x => x.TriptimeTableId != null&&x.TripTimeTable != null 
+                                                               && x.TripTimeTable.StartTime >= DateTime.Now)
+                                                   .DistinctBy(x=>x.TriptimeTableId).Select(x=>x.TripTimeTable).Take(3).ToListAsync();
+            if (last3Trips.Count<3)
+            {
+                var first3AvailableTrips =await _context.TripTimeTables.Where(x => x.StartTime >= DateTime.Now)
+                    .Take(3)
+                    .Select(x => new SuggestionTripsDto()
+                    {
+                        ComapnyName = x.Trip.Organization.Name,
+                        CompanyRating = x.Trip.Organization.Rates.Average(t => t.Rate),
+                        From = x.IsStart == true ? x.Trip.Line.Start.Name : x.Trip.Line.End.Name,
+                        To = x.IsStart == true ? x.Trip.Line.Start.Name : x.Trip.Line.End.Name,
+                        ArrivalTime = x.ArriveTime,
+                        StartTime = x.StartTime,
+                        Id = x.Id,
+                        price = x.Trip.Price
+                    }).ToListAsync();
+
+                _response.Data = first3AvailableTrips;
+                return _response;
+            }
+
+            var suggestionsTrips = last3Trips.Select(x => new SuggestionTripsDto()
+            {
+                ComapnyName = x!.Trip.Organization.Name,
+                CompanyRating = x.Trip.Organization.Rates.Average(t => t.Rate),
+                From = x.IsStart == true ? x.Trip.Line.Start.Name : x.Trip.Line.End.Name,
+                To = x.IsStart == true ? x.Trip.Line.Start.Name : x.Trip.Line.End.Name,
+                ArrivalTime = x.ArriveTime,
+                StartTime = x.StartTime,
+                Id = x.Id,
+                price = x.Trip.Price
+            }).ToList();
+
+            _response.Data = suggestionsTrips;
+
+            return _response;
+        }
+        private async Task<BaseResponse> GetReservationOnMatchDate(Func<Reservation,bool> match,Customer customer)
+        {
+            var inComingTrips = customer.Reservations.Where(match)
+                .Where(x => x.TriptimeTableId != null)
+            .Select(x => new CustomerTicket()
+            {
+                StartStation = x.TripTimeTable.Trip.Line.Start.Name,
+                EndStation = x.TripTimeTable.Trip.Line.End.Name,
+                EndTime = x.TripTimeTable.ArriveTime,
+                StartTime = x.TripTimeTable.StartTime,
+                PassengerName = x.PassengerName,
+                Price = x.TripTimeTable.Trip.Price,
+                SeatNumber = x.SetNum,
+                TripTimeTableId = (int)x.TriptimeTableId!
+            }).ToList();
+
+            await Task.CompletedTask;
+
+            _response.Data = inComingTrips;
+            return _response;
+        }
+
     }
 }

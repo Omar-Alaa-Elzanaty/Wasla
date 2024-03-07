@@ -14,6 +14,7 @@ using Wasla.Services.Exceptions;
 
 namespace Wasla.Services.HlepServices.MediaSerivces
 {
+    //TODO: Need to Upgrade
     public class MediaService : IMediaSerivce
     {
         private readonly IWebHostEnvironment _host;
@@ -63,6 +64,12 @@ namespace Wasla.Services.HlepServices.MediaSerivces
             {
                 throw new BadRequestException(_localization["UploadMediaFail"].Value);
             }
+
+            if(!Directory.Exists(MediaFolderPath))
+            {
+                Directory.CreateDirectory(MediaFolderPath);
+            }
+
             using (Stream fileStreams = new FileStream(Path.Combine(MediaFolderPath, file + Extension), FileMode.Create))
             {
                 media.CopyTo(fileStreams);

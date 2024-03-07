@@ -19,6 +19,7 @@ namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
             var passenger =await _db.Customers.FirstOrDefaultAsync(u => u.Id == responseHelp.userId);
             var passengerResponse = new PassengerResponseDto();
             passengerResponse.ConnectionData.Email = passenger.Email;
+            passengerResponse.UserId = responseHelp.userId;
             passengerResponse.UserName = passenger.UserName;
             passengerResponse.ConnectionData.phone = passenger.PhoneNumber;
             passengerResponse.ConnectionData.EmailConfirmed = passenger.EmailConfirmed;
