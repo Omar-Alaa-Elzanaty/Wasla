@@ -4,10 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Wasla.Services.Initizalize
+namespace Wasla.Model.Dtos
 {
-	public interface IInitializer
+	public class SetStatusDto
 	{
-		Task Initialize();
+		public int SetNum { get; set; }
+		public bool ISAvailable { get; set; }
 	}
 }

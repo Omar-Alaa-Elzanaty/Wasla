@@ -24,14 +24,14 @@ fontsize=20
 
 
 // This text will be stored with each diagram;  use it for notes.</help_text>
-  <zoom_level>7</zoom_level>
+  <zoom_level>12</zoom_level>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>868</x>
-      <y>182</y>
-      <w>119</w>
-      <h>28</h>
+      <x>1380</x>
+      <y>204</y>
+      <w>228</w>
+      <h>48</h>
     </coordinates>
     <panel_attributes>Account</panel_attributes>
     <additional_attributes/>
@@ -39,10 +39,10 @@ fontsize=20
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>616</x>
-      <y>399</y>
-      <w>154</w>
-      <h>77</h>
+      <x>948</x>
+      <y>576</y>
+      <w>264</w>
+      <h>132</h>
     </coordinates>
     <panel_attributes>Customer
 -
@@ -52,25 +52,25 @@ fontsize=20
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>784</x>
-      <y>399</y>
-      <w>189</w>
-      <h>84</h>
+      <x>1284</x>
+      <y>816</y>
+      <w>324</w>
+      <h>144</h>
     </coordinates>
     <panel_attributes>Driver
 -
-+License: int
 +OrgainzaionId: string
++Trip:List TripTimeTable
 </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1008</x>
-      <y>399</y>
-      <w>161</w>
-      <h>147</h>
+      <x>1632</x>
+      <y>576</y>
+      <w>276</w>
+      <h>252</h>
     </coordinates>
     <panel_attributes>Organization
 -
@@ -86,50 +86,52 @@ fontsize=20
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>784</x>
-      <y>574</y>
-      <w>210</w>
-      <h>210</h>
+      <x>1356</x>
+      <y>972</y>
+      <w>360</w>
+      <h>324</h>
     </coordinates>
-    <panel_attributes>Trip
+    <panel_attributes>TripTimeTable
 -
 +Id: int
 +DriverId: string
-+OrganizationId: string
-+Price: float
 +VehicleId: int
-+Duration: TimeSpan
-+From: string
-+To: string
-+AvailableSets: int
++StartTime: Time
++IsStart: bool
 +AvailablePackageSpace: float
-+IsPublic: bool
--</panel_attributes>
++TripId: int
++ReservdSeats:ListSeats
++Packages:List Packages</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1197</x>
-      <y>476</y>
-      <w>161</w>
-      <h>98</h>
+      <x>612</x>
+      <y>1344</y>
+      <w>252</w>
+      <h>276</h>
     </coordinates>
     <panel_attributes>Advertisment
 -
 +Id: int
-+StaetDate: DataTime
++name: string
++photoUrl: string
++StartDate: DataTime
 +EndDate: DateTime
--</panel_attributes>
++OrgId: string
++Description : string
++status : int
++CustomerId: int</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>1176</x>
-      <y>595</y>
-      <w>210</w>
-      <h>189</h>
+      <x>1884</x>
+      <y>840</y>
+      <w>360</w>
+      <h>384</h>
     </coordinates>
     <panel_attributes>Package
 -
@@ -137,39 +139,42 @@ fontsize=20
 +Name: string
 +SenderId: string
 +ImageUrl: string
++Description: string
 +Price: Float
 +Weight: Float
 +ReciverUserName: string?
 +ReciverName: string?
 +ReciverPhoneNumber: string?
 +TripId: int?
--</panel_attributes>
++PublicDriverId?: string
++Status: int</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>476</x>
-      <y>714</y>
-      <w>210</w>
-      <h>126</h>
+      <x>756</x>
+      <y>1116</y>
+      <w>336</w>
+      <h>204</h>
     </coordinates>
     <panel_attributes>Reservation
 -
 +Id: int
 +ReservationDate: DateTime
 +customerId: string
++setNum:int
 +TripId: int
--</panel_attributes>
++QrCodeUrl: string</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>833</x>
-      <y>21</y>
-      <w>189</w>
-      <h>133</h>
+      <x>1320</x>
+      <y>0</y>
+      <w>324</w>
+      <h>156</h>
     </coordinates>
     <panel_attributes>Identity
 -
@@ -182,43 +187,10 @@ fontsize=20
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>980</x>
-      <y>189</y>
-      <w>98</w>
-      <h>224</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;120.0;10.0;120.0;300.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>903</x>
-      <y>357</y>
-      <w>21</w>
-      <h>56</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;60.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>707</x>
-      <y>308</y>
-      <w>154</w>
-      <h>105</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>200.0;10.0;10.0;10.0;10.0;130.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>924</x>
-      <y>147</y>
-      <w>21</w>
-      <h>49</h>
+      <x>1476</x>
+      <y>144</y>
+      <w>36</w>
+      <h>84</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;10.0;50.0</additional_attributes>
@@ -226,122 +198,115 @@ fontsize=20
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>987</x>
-      <y>637</y>
-      <w>203</w>
-      <h>35</h>
+      <x>1704</x>
+      <y>1068</y>
+      <w>204</w>
+      <h>60</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-
 </panel_attributes>
-    <additional_attributes>10.0;30.0;270.0;30.0</additional_attributes>
+    <additional_attributes>10.0;30.0;150.0;30.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>679</x>
-      <y>777</y>
-      <w>238</w>
-      <h>49</h>
+      <x>1008</x>
+      <y>1308</y>
+      <w>372</w>
+      <h>108</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-
 </panel_attributes>
-    <additional_attributes>320.0;10.0;320.0;50.0;10.0;50.0</additional_attributes>
+    <additional_attributes>290.0;70.0;10.0;70.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>987</x>
-      <y>560</y>
-      <w>224</w>
-      <h>63</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;70.0;120.0;70.0;120.0;10.0;300.0;10.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>658</x>
-      <y>567</y>
-      <w>140</w>
-      <h>35</h>
+      <x>1080</x>
+      <y>1020</y>
+      <w>300</w>
+      <h>60</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-
 </panel_attributes>
-    <additional_attributes>180.0;30.0;10.0;30.0</additional_attributes>
+    <additional_attributes>230.0;30.0;10.0;30.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>987</x>
-      <y>539</y>
-      <w>91</w>
-      <h>70</h>
+      <x>1776</x>
+      <y>816</y>
+      <w>132</w>
+      <h>468</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>110.0;10.0;110.0;80.0;10.0;80.0</additional_attributes>
+    <additional_attributes>10.0;10.0;10.0;370.0;90.0;370.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>441</x>
-      <y>427</y>
-      <w>189</w>
-      <h>350</h>
+      <x>648</x>
+      <y>624</y>
+      <w>324</w>
+      <h>588</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>250.0;10.0;10.0;10.0;10.0;480.0;50.0;480.0</additional_attributes>
+    <additional_attributes>250.0;10.0;10.0;10.0;10.0;470.0;90.0;470.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>658</x>
-      <y>476</y>
-      <w>203</w>
-      <h>63</h>
+      <x>1080</x>
+      <y>732</y>
+      <w>240</w>
+      <h>36</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>270.0;10.0;270.0;70.0;10.0;70.0</additional_attributes>
+    <additional_attributes>180.0;10.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>966</x>
-      <y>462</y>
-      <w>56</w>
-      <h>21</h>
+      <x>1596</x>
+      <y>816</y>
+      <w>144</w>
+      <h>120</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>60.0;10.0;10.0;10.0</additional_attributes>
+    <additional_attributes>100.0;10.0;100.0;80.0;10.0;80.0</additional_attributes>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>504</x>
-      <y>504</y>
-      <w>161</w>
-      <h>161</h>
+      <x>756</x>
+      <y>720</y>
+      <w>336</w>
+      <h>384</h>
     </coordinates>
     <panel_attributes>Vehicle
 -
-+Type: string
++Id: int
++Category: string
 +LicenseNumber: int
 +Licenseword: string
 +Capcity: int
++Brand: string
 +packageCapcity: float
-+OrganizationId: string
-+AdsId: int?
-+TripId: int?
--</panel_attributes>
++OrganizationId?: string
++PublicDriverId?:string
++imageUrl: string
++AdsId?: int
++AdsSidesNumber: int(1 to 4)
++TripId:List&lt;TripTimeTable&gt;</panel_attributes>
     <additional_attributes/>
   </element>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>301</x>
-      <y>525</y>
-      <w>126</w>
-      <h>112</h>
+      <x>396</x>
+      <y>792</y>
+      <w>228</w>
+      <h>192</h>
     </coordinates>
     <panel_attributes>VehicleRate
 -
@@ -354,10 +319,10 @@ fontsize=20
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>420</x>
-      <y>588</y>
-      <w>98</w>
-      <h>21</h>
+      <x>612</x>
+      <y>900</y>
+      <w>168</w>
+      <h>36</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>10.0;10.0;120.0;10.0</additional_attributes>
@@ -365,10 +330,10 @@ fontsize=20
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>357</x>
-      <y>413</y>
-      <w>273</w>
-      <h>126</h>
+      <x>504</x>
+      <y>600</y>
+      <w>468</w>
+      <h>216</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>370.0;10.0;10.0;10.0;10.0;160.0</additional_attributes>
@@ -376,10 +341,10 @@ fontsize=20
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>469</x>
-      <y>294</y>
-      <w>161</w>
-      <h>77</h>
+      <x>696</x>
+      <y>396</y>
+      <w>276</w>
+      <h>132</h>
     </coordinates>
     <panel_attributes>DriverRate
 -
@@ -391,21 +356,21 @@ fontsize=20
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>623</x>
-      <y>329</y>
-      <w>217</w>
-      <h>84</h>
+      <x>960</x>
+      <y>456</y>
+      <w>384</w>
+      <h>120</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>290.0;100.0;290.0;10.0;10.0;10.0</additional_attributes>
+    <additional_attributes>300.0;80.0;300.0;10.0;10.0;10.0</additional_attributes>
   </element>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>623</x>
-      <y>343</y>
-      <w>84</w>
-      <h>70</h>
+      <x>960</x>
+      <y>480</y>
+      <w>144</w>
+      <h>120</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>100.0;80.0;100.0;10.0;10.0;10.0</additional_attributes>
@@ -413,10 +378,10 @@ fontsize=20
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>287</x>
-      <y>294</y>
-      <w>154</w>
-      <h>77</h>
+      <x>384</x>
+      <y>396</y>
+      <w>264</w>
+      <h>132</h>
     </coordinates>
     <panel_attributes>UserFollow
 -
@@ -427,10 +392,10 @@ FollowerId: string </panel_attributes>
   <element>
     <id>Relation</id>
     <coordinates>
-      <x>364</x>
-      <y>364</y>
-      <w>266</w>
-      <h>56</h>
+      <x>516</x>
+      <y>516</y>
+      <w>456</w>
+      <h>96</h>
     </coordinates>
     <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
     <additional_attributes>360.0;60.0;10.0;60.0;10.0;10.0</additional_attributes>
@@ -438,15 +403,14 @@ FollowerId: string </panel_attributes>
   <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>847</x>
-      <y>231</y>
-      <w>154</w>
-      <h>133</h>
+      <x>1344</x>
+      <y>288</y>
+      <w>264</w>
+      <h>228</h>
     </coordinates>
     <panel_attributes>User
 -
 +FirstName: string
-+MiddleName: string
 +LastName: string
 +PhotoUrl: string
 +Gender: bool
@@ -455,34 +419,12 @@ FollowerId: string </panel_attributes>
     <additional_attributes/>
   </element>
   <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>924</x>
-      <y>203</y>
-      <w>21</w>
-      <h>42</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
-    <additional_attributes>10.0;10.0;10.0;40.0</additional_attributes>
-  </element>
-  <element>
-    <id>Relation</id>
-    <coordinates>
-      <x>658</x>
-      <y>532</y>
-      <w>364</w>
-      <h>21</h>
-    </coordinates>
-    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
-    <additional_attributes>500.0;10.0;10.0;10.0</additional_attributes>
-  </element>
-  <element>
     <id>UMLClass</id>
     <coordinates>
-      <x>63</x>
-      <y>315</y>
-      <w>168</w>
-      <h>203</h>
+      <x>0</x>
+      <y>432</y>
+      <w>288</w>
+      <h>312</h>
     </coordinates>
     <panel_attributes>CustomTripOrder
 -
@@ -496,7 +438,346 @@ FollowerId: string </panel_attributes>
 +Price: float
 +CreationDate: DateTime
 +VehcileId: int
--</panel_attributes>
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>0</x>
+      <y>756</y>
+      <w>288</w>
+      <h>252</h>
+    </coordinates>
+    <panel_attributes>OrganizationRequests
+-
++Id: int
++Name: string
++Email: string
++Password: string
++Address: string
++PhoneNumber: string
++Image: IformFile</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1584</x>
+      <y>504</y>
+      <w>36</w>
+      <h>336</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;260.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1092</x>
+      <y>372</y>
+      <w>276</w>
+      <h>228</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>210.0;10.0;10.0;10.0;10.0;170.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1464</x>
+      <y>240</y>
+      <w>36</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;40.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1596</x>
+      <y>216</y>
+      <w>192</w>
+      <h>384</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;140.0;10.0;140.0;300.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1956</x>
+      <y>396</y>
+      <w>288</w>
+      <h>168</h>
+    </coordinates>
+    <panel_attributes>Station
+-
++Name: string
++Langtitude: string
++Latitude: string
++OrganizationId: string</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1788</x>
+      <y>228</y>
+      <w>288</w>
+      <h>156</h>
+    </coordinates>
+    <panel_attributes>Employee
+-
++OrgId: string
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1596</x>
+      <y>324</y>
+      <w>216</w>
+      <h>36</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;160.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1788</x>
+      <y>372</y>
+      <w>60</w>
+      <h>228</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+m1=1
+m2=m</panel_attributes>
+    <additional_attributes>10.0;170.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>672</x>
+      <y>1032</y>
+      <w>108</w>
+      <h>336</h>
+    </coordinates>
+    <panel_attributes>lt=-
+m1=0..1
+m2=0..n</panel_attributes>
+    <additional_attributes>10.0;260.0;10.0;10.0;70.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1356</x>
+      <y>1380</y>
+      <w>348</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>Seat
+-
++setNum: int
++TripId: int</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1512</x>
+      <y>1284</y>
+      <w>36</w>
+      <h>120</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;80.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>936</x>
+      <y>240</y>
+      <w>264</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>OrgRate
+-
++OrgId:string
++CustomerId: string</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1032</x>
+      <y>336</y>
+      <w>36</w>
+      <h>264</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;200.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1188</x>
+      <y>252</y>
+      <w>552</w>
+      <h>348</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>440.0;270.0;440.0;240.0;60.0;240.0;60.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1296</x>
+      <y>552</y>
+      <w>288</w>
+      <h>252</h>
+    </coordinates>
+    <panel_attributes>public Driver
+-
++LicenseImageUrl: string
++LicenseNum: int
++NationalId: string
++IsActive: bool
++StartStationId:int
++StartStation: Station
++EndStationId: int
++EndStation:Station</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1440</x>
+      <y>504</y>
+      <w>36</w>
+      <h>72</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;40.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1884</x>
+      <y>1236</y>
+      <w>360</w>
+      <h>252</h>
+    </coordinates>
+    <panel_attributes>Trip
+-
++Id: int
++OrganizationId: string
++Price: float
++Duration: TimeSpan
++Line: Line
++IsPublic: bool
++AdsPrice
++points: int</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1704</x>
+      <y>1176</y>
+      <w>204</w>
+      <h>156</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>150.0;110.0;40.0;110.0;40.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>1944</x>
+      <y>600</y>
+      <w>300</w>
+      <h>108</h>
+    </coordinates>
+    <panel_attributes>Line
+-
++StartStation: Station
++EndStation: Station</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1836</x>
+      <y>456</y>
+      <w>144</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-
+</panel_attributes>
+    <additional_attributes>10.0;100.0;10.0;10.0;100.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>2232</x>
+      <y>444</y>
+      <w>96</w>
+      <h>252</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;60.0;10.0;60.0;190.0;10.0;190.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>1224</x>
+      <y>864</y>
+      <w>156</w>
+      <h>144</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>50.0;10.0;10.0;10.0;10.0;100.0;110.0;100.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>660</x>
+      <y>660</y>
+      <w>312</w>
+      <h>708</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>240.0;10.0;10.0;10.0;10.0;570.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>804</x>
+      <y>348</y>
+      <w>516</w>
+      <h>336</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-</panel_attributes>
+    <additional_attributes>410.0;260.0;360.0;260.0;360.0;10.0;10.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>492</x>
+      <y>216</y>
+      <w>324</w>
+      <h>156</h>
+    </coordinates>
+    <panel_attributes>PublicStation
+-
++Name: string
++Langtitude: string
++Latitude: string</panel_attributes>
     <additional_attributes/>
   </element>
 </diagram>

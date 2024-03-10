@@ -4,10 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Wasla.Model.Helpers;
 
 namespace Wasla.Model.Models
 {
-	public abstract class Account:IdentityUser
+	public  class Account:IdentityUser
 	{
-	}
+        public Account()
+        {
+            RefreshTokens = new List<RefreshToken>();
+        }
+		public List<RefreshToken> RefreshTokens { get; set; }
+    }
 }

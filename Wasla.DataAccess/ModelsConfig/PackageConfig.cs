@@ -16,6 +16,9 @@ namespace Wasla.DataAccess.ModelsConfig
 			builder.HasOne(i=>i.Trip)
 				.WithMany(t=>t.Packages)
 				.HasForeignKey(p=>p.TripId).OnDelete(DeleteBehavior.NoAction);
-		}
+            builder.HasOne(i => i.Driver)
+                .WithMany()
+                .HasForeignKey(p => p.DriverId).OnDelete(DeleteBehavior.NoAction);
+        }
 	}
 }

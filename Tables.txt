@@ -19,6 +19,10 @@ CustomTripOrder[UserId,OrganizationId,From,To,State,Seats,PackageWeight,Price,Cr
 OnDelete
 userFollow : NoAction -> FollowerId
 Reservation : NoAction ->CustomerId
-trip: NoAction -> organizationid, vehcileId
+trip: Restrict -> organizationid, vehcileId
 driverRate: NoAction -> driverId
 customTripOrder[ NO Action ]
+VehicleRate : NoAction VehicleId
+Employee:NoAction -> OrgId
+organizationRate:Restrict -> organizationId
+trip : NoAction->  LineId
