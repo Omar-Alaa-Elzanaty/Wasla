@@ -13,7 +13,9 @@ namespace Wasla.DataAccess.ModelsConfig
     {
         public void Configure(EntityTypeBuilder<Customer> builder)
         {
-             builder.ToTable("Customer","Account");
+             builder.ToTable("Customer","Account");  
+            // comment
+
         }
     }
 }
