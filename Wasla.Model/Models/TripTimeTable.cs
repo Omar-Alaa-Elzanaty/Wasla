@@ -27,6 +27,6 @@ namespace Wasla.Model.Models
     public class Seat
     {
         public int setNum { get; set; }
-        public int TripId { get; set; }
+        public int TripTmeTableId { get; set; }
     }
 }

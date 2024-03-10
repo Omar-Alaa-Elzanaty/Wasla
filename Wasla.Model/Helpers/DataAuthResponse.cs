@@ -16,6 +16,7 @@ namespace Wasla.Model.Helpers
 
         public bool IsAuthenticated { get; set; }
         public ContactData ConnectionData { get; set; }
+        public string UserId { get; set; }
         public string UserName { get; set; }
         public string Role { get; set; }
         public AuthData TokensData { get; set; }

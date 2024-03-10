@@ -48,7 +48,7 @@ namespace Wasla.DataAccess
 		public virtual DbSet<Employee> Employees { get; set; }
         public virtual DbSet<Station> Stations { get; set; }
         public virtual DbSet<PublicStation> PublicStations { get; set; }
-
+		public virtual DbSet<UserFollow> UserFollows { get; set; }
         public virtual DbSet<Seat> Seats { get; set; }
 		public virtual DbSet<TripTimeTable> TripTimeTables { get; set;}
 		public virtual DbSet<Line> Lines { get; set; }

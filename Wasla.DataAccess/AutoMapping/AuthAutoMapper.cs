@@ -8,6 +8,8 @@ namespace Wasla.DataAccess.AutoMapping
     {
         public AuthAutoMapper()
         {
+            //User
+
             CreateMap<Customer, PassengerRegisterDto>().ReverseMap();
             CreateMap<OrgRegisterRequestDto, OrganizationRegisterRequest>().ReverseMap();
             CreateMap<OrganizationRegisterRequest, Organization>().ReverseMap();
@@ -16,7 +18,9 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<Driver,DriverResponseDto>().ReverseMap();
             CreateMap<VehicleDto, Vehicle>().ReverseMap();
             CreateMap<EmployeeRegisterDto, Employee>();
-            //statio
+            CreateMap<Customer, DisplayCustomerProfileDto>()
+                .ForMember(dest=>dest.FullName,src=>src.MapFrom(src=>src.FirstName+' '+src.LastName));
+            //station
 
             CreateMap<Station,StationDto>().ReverseMap();
             CreateMap<PublicStation, StationDto>().ReverseMap();
