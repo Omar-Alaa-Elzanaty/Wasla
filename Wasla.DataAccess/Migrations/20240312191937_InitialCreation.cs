@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Wasla.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class init : Migration
+    public partial class InitialCreation : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -544,7 +544,7 @@ namespace Wasla.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UserFollow",
+                name: "UserFollows",
                 columns: table => new
                 {
                     CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -552,16 +552,16 @@ namespace Wasla.DataAccess.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserFollow", x => new { x.CustomerId, x.FollowerId });
+                    table.PrimaryKey("PK_UserFollows", x => new { x.CustomerId, x.FollowerId });
                     table.ForeignKey(
-                        name: "FK_UserFollow_Customer_CustomerId",
+                        name: "FK_UserFollows_Customer_CustomerId",
                         column: x => x.CustomerId,
                         principalSchema: "Account",
                         principalTable: "Customer",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_UserFollow_Customer_FollowerId",
+                        name: "FK_UserFollows_Customer_FollowerId",
                         column: x => x.FollowerId,
                         principalSchema: "Account",
                         principalTable: "Customer",
@@ -666,8 +666,7 @@ namespace Wasla.DataAccess.Migrations
                         name: "FK_Trips_Lines_LineId",
                         column: x => x.LineId,
                         principalTable: "Lines",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_Trips_Organizations_OrganizationId",
                         column: x => x.OrganizationId,
@@ -781,11 +780,14 @@ namespace Wasla.DataAccess.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     SetNum = table.Column<int>(type: "int", nullable: false),
+                    PassengerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     QrCodeUrl = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ReservationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CompnayName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TripId = table.Column<int>(type: "int", nullable: false),
-                    TripTimeTableId = table.Column<int>(type: "int", nullable: true)
+                    TriptimeTableId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -798,16 +800,10 @@ namespace Wasla.DataAccess.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Reservations_TripTimeTables_TripTimeTableId",
-                        column: x => x.TripTimeTableId,
+                        name: "FK_Reservations_TripTimeTables_TriptimeTableId",
+                        column: x => x.TriptimeTableId,
                         principalTable: "TripTimeTables",
                         principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Reservations_Trips_TripId",
-                        column: x => x.TripId,
-                        principalTable: "Trips",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -815,12 +811,12 @@ namespace Wasla.DataAccess.Migrations
                 columns: table => new
                 {
                     setNum = table.Column<int>(type: "int", nullable: false),
-                    TripId = table.Column<int>(type: "int", nullable: false),
+                    TripTmeTableId = table.Column<int>(type: "int", nullable: false),
                     TripTimeTableId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Seats", x => new { x.setNum, x.TripId });
+                    table.PrimaryKey("PK_Seats", x => new { x.setNum, x.TripTmeTableId });
                     table.ForeignKey(
                         name: "FK_Seats_TripTimeTables_TripTimeTableId",
                         column: x => x.TripTimeTableId,
@@ -924,14 +920,9 @@ namespace Wasla.DataAccess.Migrations
                 column: "CustomerId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Reservations_TripId",
+                name: "IX_Reservations_TriptimeTableId",
                 table: "Reservations",
-                column: "TripId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Reservations_TripTimeTableId",
-                table: "Reservations",
-                column: "TripTimeTableId");
+                column: "TriptimeTableId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RoleClaims_RoleId",
@@ -989,16 +980,9 @@ namespace Wasla.DataAccess.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_UserFollow_CustomerId",
-                table: "UserFollow",
-                column: "CustomerId",
-                unique: true);
-
-            migrationBuilder.CreateIndex(
-                name: "IX_UserFollow_FollowerId",
-                table: "UserFollow",
-                column: "FollowerId",
-                unique: true);
+                name: "IX_UserFollows_FollowerId",
+                table: "UserFollows",
+                column: "FollowerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserLogins_UserId",
@@ -1076,7 +1060,7 @@ namespace Wasla.DataAccess.Migrations
                 schema: "Account");
 
             migrationBuilder.DropTable(
-                name: "UserFollow");
+                name: "UserFollows");
 
             migrationBuilder.DropTable(
                 name: "UserLogins",

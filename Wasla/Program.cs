@@ -144,9 +144,11 @@ namespace Wasla
 				app.UseSwagger();
 				app.UseSwaggerUI();
 			}
+
+            DataSeed(app);
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
-            DataSeed(app);
             //
             var supportedCultures = new[] { "en-US", "ar-EG" };
             var localizationOptions = new RequestLocalizationOptions()
@@ -163,11 +165,11 @@ namespace Wasla
 			app.MapControllers();
             app.Run();
         }
-        static void  DataSeed(WebApplication app)
+        static async Task DataSeed(WebApplication app)
 		{
 			using var scope = app.Services.CreateScope();
 			var Initalizer = scope.ServiceProvider.GetRequiredService<IInitializer>();
-			Initalizer.Initialize().Wait();
+            await Initalizer.Initialize();
 		}
         
     }
