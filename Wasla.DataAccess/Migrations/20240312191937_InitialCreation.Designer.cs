@@ -12,8 +12,8 @@ using Wasla.DataAccess;
 namespace Wasla.DataAccess.Migrations
 {
     [DbContext(typeof(WaslaDb))]
-    [Migration("20240223225453_dd")]
-    partial class dd
+    [Migration("20240312191937_InitialCreation")]
+    partial class InitialCreation
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -541,9 +541,20 @@ namespace Wasla.DataAccess.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("CompnayName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("CustomerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("EndTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PassengerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("QrCodeUrl")
                         .IsRequired()
@@ -555,19 +566,17 @@ namespace Wasla.DataAccess.Migrations
                     b.Property<int>("SetNum")
                         .HasColumnType("int");
 
-                    b.Property<int>("TripId")
-                        .HasColumnType("int");
+                    b.Property<DateTime>("StartTime")
+                        .HasColumnType("datetime2");
 
-                    b.Property<int?>("TripTimeTableId")
+                    b.Property<int?>("TriptimeTableId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CustomerId");
 
-                    b.HasIndex("TripId");
-
-                    b.HasIndex("TripTimeTableId");
+                    b.HasIndex("TriptimeTableId");
 
                     b.ToTable("Reservations");
                 });
@@ -577,13 +586,13 @@ namespace Wasla.DataAccess.Migrations
                     b.Property<int>("setNum")
                         .HasColumnType("int");
 
-                    b.Property<int>("TripId")
+                    b.Property<int>("TripTmeTableId")
                         .HasColumnType("int");
 
                     b.Property<int?>("TripTimeTableId")
                         .HasColumnType("int");
 
-                    b.HasKey("setNum", "TripId");
+                    b.HasKey("setNum", "TripTmeTableId");
 
                     b.HasIndex("TripTimeTableId");
 
@@ -711,13 +720,9 @@ namespace Wasla.DataAccess.Migrations
 
                     b.HasKey("CustomerId", "FollowerId");
 
-                    b.HasIndex("CustomerId")
-                        .IsUnique();
+                    b.HasIndex("FollowerId");
 
-                    b.HasIndex("FollowerId")
-                        .IsUnique();
-
-                    b.ToTable("UserFollow");
+                    b.ToTable("UserFollows");
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.Vehicle", b =>
@@ -1127,19 +1132,14 @@ namespace Wasla.DataAccess.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Wasla.Model.Models.Trip", "Trip")
-                        .WithMany()
-                        .HasForeignKey("TripId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Wasla.Model.Models.TripTimeTable", null)
+                    b.HasOne("Wasla.Model.Models.TripTimeTable", "TripTimeTable")
                         .WithMany("Reservations")
-                        .HasForeignKey("TripTimeTableId");
+                        .HasForeignKey("TriptimeTableId")
+                        .OnDelete(DeleteBehavior.NoAction);
 
                     b.Navigation("Customer");
 
-                    b.Navigation("Trip");
+                    b.Navigation("TripTimeTable");
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.Seat", b =>
@@ -1207,14 +1207,14 @@ namespace Wasla.DataAccess.Migrations
             modelBuilder.Entity("Wasla.Model.Models.UserFollow", b =>
                 {
                     b.HasOne("Wasla.Model.Models.Customer", "Customer")
-                        .WithOne()
-                        .HasForeignKey("Wasla.Model.Models.UserFollow", "CustomerId")
+                        .WithMany()
+                        .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("Wasla.Model.Models.Customer", "Follower")
-                        .WithOne()
-                        .HasForeignKey("Wasla.Model.Models.UserFollow", "FollowerId")
+                        .WithMany()
+                        .HasForeignKey("FollowerId")
                         .OnDelete(DeleteBehavior.NoAction)
                         .IsRequired();
 

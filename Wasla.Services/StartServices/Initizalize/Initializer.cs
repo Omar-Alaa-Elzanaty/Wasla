@@ -23,17 +23,16 @@ namespace Wasla.Services.StartServices.Initizalize
         {
             try
             {
-                if (_context.Database.GetPendingMigrations().Any())
+                if (_context.Database.GetPendingMigrationsAsync().Result.Any())
                 {
                     _context.Database.Migrate();
                 }
 
-                if (!_roleManager.RoleExistsAsync(Roles.Role_Admin).GetAwaiter().GetResult())
+                if (!await _roleManager.RoleExistsAsync(Roles.Role_Admin))
                 {
-                    _roleManager.CreateAsync(new IdentityRole(Roles.Role_Admin)).GetAwaiter().GetResult();
-                    _roleManager.CreateAsync(new IdentityRole(Roles.Role_Driver)).GetAwaiter().GetResult();
-                    _roleManager.CreateAsync(new IdentityRole(Roles.Role_Passenger)).GetAwaiter().GetResult();
-
+                    await _roleManager.CreateAsync(new IdentityRole(Roles.Role_Admin));
+                    await _roleManager.CreateAsync(new IdentityRole(Roles.Role_Driver));
+                    await _roleManager.CreateAsync(new IdentityRole(Roles.Role_Passenger));
                 }
             }
             catch

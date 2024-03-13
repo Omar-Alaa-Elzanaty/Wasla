@@ -2,6 +2,7 @@
 {
 	public class SeatInfo
 	{
+		public string Name { get; set; }
 		public int SeatNum { get; set; }
 		public string? QrCodeFile { get; set; }//Iformfile
 	}
