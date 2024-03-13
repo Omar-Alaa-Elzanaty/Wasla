@@ -23,7 +23,7 @@ namespace Wasla.Services.StartServices.Initizalize
         {
             try
             {
-                if (_context.Database.GetPendingMigrations().Any())
+                if (_context.Database.GetPendingMigrationsAsync().Result.Any())
                 {
                     _context.Database.Migrate();
                 }
