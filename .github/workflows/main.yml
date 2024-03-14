@@ -1,0 +1,28 @@
+name: publish 🚀
+
+on:
+  workflow_dispatch:
+  push:
+     branches:
+     - main
+
+jobs:
+    publish:
+      runs-on: ubuntu-latest
+
+      steps:
+        - uses: actions/checout@v3
+
+        - name: setup .NET
+          uses: actions/setup-dotnet@v3
+          with:
+              dotnet-version: '8.0.x'
+
+        - name: Restore
+          run: dotnet restore ./Wasla.sln
+
+        - name: Build
+          run: dotnet build ./Wasla.sln --configuration Release --no-restore
+
+        - name: Publish
+          run: dotnet publish ./Wasla.sln --configuration Release --no-build 
