@@ -115,9 +115,9 @@ namespace Wasla.Services.Authentication.VerifyService
             return _response;
         }
 
-        public async Task<BaseResponse> ChangePasswordAsync(string token, ChangePasswordDto changePassword)
+        public async Task<BaseResponse> ChangePasswordAsync(ChangePasswordDto changePassword)
         {
-            var user = await _authVerifyService.getUserByToken(token);
+            var user = await _authVerifyService.getUserByToken(changePassword.Reftoken);
             if (!await _userManager.CheckPasswordAsync(user, changePassword.OldPassword))
             {
                 throw new BadRequestException(_localization["userOrpasswordNotCorrect"].Value);
@@ -166,21 +166,21 @@ namespace Wasla.Services.Authentication.VerifyService
             _response.Message = _localization["otpSame"].Value;
             return _response;
         }
-        public async Task<BaseResponse> EditEmailAsync(string RefreshToken, string newEmail)
+        public async Task<BaseResponse> EditEmailAsync(EditEmailDto email)
         {
-             var user=await _authVerifyService.getUserByToken(RefreshToken);
-              await _authVerifyService.CheckEmail(newEmail);
-              user.Email=newEmail;
+             var user=await _authVerifyService.getUserByToken(email.Reftoken);
+              await _authVerifyService.CheckEmail(email.Email);
+              user.Email=email.Email;
             await _userManager.UpdateAsync(user);
             _response.Message = _localization["EmailEditSuccess"].Value;
             return _response;
         }
 
-        public async Task<BaseResponse> EditPhoneAsync(string RefreshToken, string newPhone)
+        public async Task<BaseResponse> EditPhoneAsync(EditPhoneDto phone)
         {
-            var user = await _authVerifyService.getUserByToken(RefreshToken);
-            await _authVerifyService.CheckPhoneNumber(newPhone);
-            user.PhoneNumber = newPhone;
+            var user = await _authVerifyService.getUserByToken(phone.Reftoken);
+            await _authVerifyService.CheckPhoneNumber(phone.Phone);
+            user.PhoneNumber = phone.Phone;
             await _userManager.UpdateAsync(user);
             _response.Message = _localization["PhoneEditSuccess"].Value;
             return _response;

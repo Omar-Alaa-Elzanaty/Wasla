@@ -61,10 +61,10 @@ namespace Wasla.Api.Controllers
             return Ok(resualt);
         }
 
-        [HttpPost("change/password/{refreshToken}")]
-        public async Task<IActionResult> ChangePassword([FromRoute] string refreshToken, [FromBody] ChangePasswordDto changePassword)
+        [HttpPost("change/password")]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto changePassword)
         {
-            var resualt = await _verifyService.ChangePasswordAsync(refreshToken, changePassword);
+            var resualt = await _verifyService.ChangePasswordAsync( changePassword);
             return Ok(resualt);
         }
         [HttpGet("check/phone/{phoneNumber}")]
@@ -79,14 +79,14 @@ namespace Wasla.Api.Controllers
         }
 
         [HttpPut("edit/email/{refreshToken}/{email}")]
-        public async Task<IActionResult> EditEmail([FromRoute] string refreshToken, [FromRoute] string email)
+        public async Task<IActionResult> EditEmail(EditEmailDto email)
         {
-            return Ok(await _verifyService.EditEmailAsync(refreshToken, email));
+            return Ok(await _verifyService.EditEmailAsync(email));
         }
         [HttpPut("edit/phone/{refreshToken}/{phone}")]
-        public async Task<IActionResult> EditPhone([FromRoute] string refreshToken, [FromRoute] string phone)
+        public async Task<IActionResult> EditPhone(EditPhoneDto phone)
         {
-            return Ok(await _verifyService.EditPhoneAsync(refreshToken, phone));
+            return Ok(await _verifyService.EditPhoneAsync( phone));
         }
         [HttpPost("otp")]
         public async Task<IActionResult> SetOtp()

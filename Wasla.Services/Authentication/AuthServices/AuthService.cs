@@ -29,13 +29,11 @@ namespace Wasla.Services.Authentication.AuthServices
 		private readonly JWT _jwt;
 		private readonly IMapper _mapper;
 		private readonly IStringLocalizer<AuthService> _localization;
-		private readonly BaseResponse _response;
+		private  BaseResponse _response;
 		private readonly IBaseFactoryResponse _baseFactory;
 		private readonly WaslaDb _dbContext;
 		private readonly IMediaSerivce _mediaServices;
         private readonly IAuthVerifyService _authVerifyService;
-
-
         public AuthService
 			(
 			IBaseFactoryResponse baseFactory,
@@ -52,7 +50,7 @@ namespace Wasla.Services.Authentication.AuthServices
 			_jwt = jwt.Value;
 			_mapper = mapper;
 			_localization = localization;
-			_response = new();
+			_response = new BaseResponse();
 			_dbContext = dbContext;
             _authVerifyService = authVerifyService;
             _mediaServices = mediaSerivces;
