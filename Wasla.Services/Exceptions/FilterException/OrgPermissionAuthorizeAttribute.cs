@@ -1,8 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Wasla.Model.Helpers.Statics;
-using Microsoft.AspNetCore.Mvc.Filters;
-using Microsoft.AspNetCore.Mvc;
-using Wasla.Model.Helpers.Statics;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using System.Security.Claims;

@@ -53,13 +53,10 @@
   "RepeatedData": "There are reapeted data",
   "ReachToLimit": "You reach to limit",
   "ReservationFail": "Reservation Failed",
-<<<<<<< HEAD
   "EnterTripInfo": "enter trip information",
   "EnterDriverInfo": "enter the driver information",
   "PackagesExist": "Package is already Exit",
-=======
   "AdsExist": "Ads may be exist",
->>>>>>> origin/develop
   //success
   "PhoneNumberValid": "Phone number is valid",
   "EmailValid": "Email valid to use",

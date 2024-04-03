@@ -3,8 +3,6 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
-using Wasla.Model.Helpers;
-using Wasla.Services.Authentication.AdminServices;
 using Wasla.Services.Authentication.AuthServices;
 
 namespace Wasla.Api.Controllers
@@ -15,11 +13,9 @@ namespace Wasla.Api.Controllers
 	public class AuthController : ControllerBase
 	{
 		private readonly IAuthService _authservice;
-		private readonly BaseResponse _response;
 		public AuthController(IAuthService authService)
 		{
 			_authservice = authService;
-			_response = new();
 		}
 		[HttpPost("passenger/register")]
         public async Task<IActionResult> PassengerRegister([FromBody] PassengerRegisterDto adv)

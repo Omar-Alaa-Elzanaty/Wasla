@@ -14,9 +14,9 @@ namespace Wasla.Services.Authentication.VerifyService
         Task<BaseResponse> CompareOtpAsync(string reciveOtp);
         Task<BaseResponse> ConfirmPhoneAsync(ConfirmNumberDto confirmNumberDto);
         Task<BaseResponse> ConfirmEmailAsync(ConfirmEmailDto confirmEmailDto);
-        Task<BaseResponse> ChangePasswordAsync(string token, ChangePasswordDto changePassword);
-        Task<BaseResponse> EditPhoneAsync(string RefreshTpken, string newPhone);
-        Task<BaseResponse> EditEmailAsync(string RefreshTpken, string newEmail);
+        Task<BaseResponse> ChangePasswordAsync(ChangePasswordDto changePassword);
+        Task<BaseResponse> EditPhoneAsync(EditPhoneDto Phone);
+        Task<BaseResponse> EditEmailAsync(EditEmailDto Email);
         Task<string> SetOtp();
 
     }
