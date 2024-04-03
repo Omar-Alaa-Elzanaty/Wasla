@@ -78,12 +78,12 @@ namespace Wasla.Api.Controllers
             return Ok(await _verifyService.CheckEmailAsync(email));
         }
 
-        [HttpPut("edit/email/{refreshToken}/{email}")]
+        [HttpPut("edit/email")]
         public async Task<IActionResult> EditEmail(EditEmailDto email)
         {
             return Ok(await _verifyService.EditEmailAsync(email));
         }
-        [HttpPut("edit/phone/{refreshToken}/{phone}")]
+        [HttpPut("edit/phone")]
         public async Task<IActionResult> EditPhone(EditPhoneDto phone)
         {
             return Ok(await _verifyService.EditPhoneAsync( phone));
