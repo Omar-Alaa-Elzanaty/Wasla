@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Wasla.Model.Dtos;
 using Wasla.Model.Helpers.Enums;
 using Wasla.Model.Models;
 using Wasla.Services.EntitiesServices.PublicDriverServices;
@@ -31,7 +32,7 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _driverService.ReviewPackagesRequest(packageId,status));
         }
-        [HttpGet]
+        [HttpGet("getProfile")]
         public async Task<IActionResult> GetProfile(string userId)
         {
             return Ok(await _driverService.GetProfileAsync(userId));
@@ -41,10 +42,25 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _driverService.GetTripStatus(userId));
         }
-        [HttpPut("UpdateTripStatus")]
+        [HttpPut("updateTripStatus")]
         public async Task<IActionResult> UpdateTripStatus(int tripId,PublicTripSatus status)
         {
             return Ok(await _driverService.UpdateTripStatus(tripId, status));
+        }
+        [HttpPost("createPublicTrip")]
+        public async Task<IActionResult>CreatePublicTrip(CreatePublicDriverCommand command,string userId)
+        {
+            return Ok(await _driverService.CreatePublicTrip(userId, command));
+        }
+        [HttpGet("updateProfile")]
+        public async Task<IActionResult> UpdateProflie(UpdatePublicDriverProfileCommand command)
+        {
+            return Ok(await _driverService.UpdatePublicTrip(command));
+        }
+        [HttpGet("tripLine")]
+        public async Task<IActionResult>TripLine(int tripId)
+        {
+            return Ok(await _driverService.GetTripLine(tripId));
         }
     }
 }

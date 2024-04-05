@@ -103,7 +103,9 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<DriverRegisterDto, PublicDriver>().ReverseMap();
             CreateMap<PubliDriverProfileDto, PublicDriver>();
             CreateMap<PublicDriverProfileVehicleDto, Vehicle>();
-
+            CreateMap<CreatePublicDriverCommand, PublicDriver>();
+            CreateMap<UpdatePublicDriverProfileCommand,PublicDriver>();
+            CreateMap<UpdatePublicDriverProfileVehicleCommand, Vehicle>();
         }
     }
 }
