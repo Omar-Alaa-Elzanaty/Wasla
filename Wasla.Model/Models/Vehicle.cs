@@ -25,7 +25,10 @@ namespace Wasla.Model.Models
 		public float PackageCapcity { get; set; }
 		public int AdsSidesNumber { get; set; }
 		public string ImageUrl { get; set; }
+		public string? PublicDriverId { get; set; }
+		public virtual PublicDriver PublicDriver { get; set; }
 		public string? OrganizationId { get; set; }
+		public virtual Organization Organization { get; set; }
 		public virtual List<Advertisment> Advertisment { get; set; }
 		public virtual List<TripTimeTable> Trips { get; set; }
 		public virtual ICollection<VehicleRate> Rates { get; set; }

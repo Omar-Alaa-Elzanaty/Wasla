@@ -58,6 +58,7 @@
   "startIdRequired": "نقطه البدايه مطلوبه",
   "endIdRequired": "نقطه النهايه مطلوبه",
   "PackagesExist": "هذه الشحنه موجوده بالفعل",
+  "NoActiveTrip": ".لا توجد اى رحلة لك فى الوقت الحالى",
 
   "AdsExist": "ربما الاعلان موجود مسبقا ",
   //success
