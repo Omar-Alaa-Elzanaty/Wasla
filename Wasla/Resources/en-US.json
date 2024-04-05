@@ -56,6 +56,7 @@
   "EnterDriverInfo": "enter the driver information",
   "PackagesExist": "Package is already Exit",
   "AdsExist": "Ads may be exist",
+  "NoActiveTrip": "No trip available for now",
   //success
   "PhoneNumberValid": "Phone number is valid",
   "EmailValid": "Email valid to use",

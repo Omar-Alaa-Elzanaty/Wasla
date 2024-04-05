@@ -98,10 +98,11 @@ namespace Wasla.DataAccess.AutoMapping
 
             //****************************************
             //Public Driver
-            CreateMap<PublicDriver,DriverDto>().ForMember(dest => dest.StartStation, opt => opt.MapFrom(src => src.StartStation.Name)).
-                ForMember(dest => dest.EndStation, opt => opt.MapFrom(src => src.EndStation.Name));
+            //CreateMap<PublicDriver,DriverDto>().ForMember(dest => dest.StartStation, opt => opt.MapFrom(src => src.StartStation.Name)).
+            //    ForMember(dest => dest.EndStation, opt => opt.MapFrom(src => src.EndStation.Name));
             CreateMap<DriverRegisterDto, PublicDriver>().ReverseMap();
-
+            CreateMap<PubliDriverProfileDto, PublicDriver>();
+            CreateMap<PublicDriverProfileVehicleDto, Vehicle>();
 
         }
     }

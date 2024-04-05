@@ -54,5 +54,8 @@ namespace Wasla.DataAccess
 		public virtual DbSet<Line> Lines { get; set; }
 		public virtual DbSet<PublicDriver> PublicDrivers { get; set; }
 		public virtual DbSet<PublicDriverRate> PublicDriversRates { get; set; }
+		public virtual DbSet<PublicDriverTrip> PublicDriverTrips { get; set; }
+		public virtual DbSet<PublicDriverTripReservation> PublicDriverTripReservationRates { get; set; }
+		public virtual DbSet<PublicDriverTripRequest> PublicDriverTripRequests { get; set; }
 	}
 }
