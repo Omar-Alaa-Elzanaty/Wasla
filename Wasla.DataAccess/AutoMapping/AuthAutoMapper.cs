@@ -81,8 +81,8 @@ namespace Wasla.DataAccess.AutoMapping
             .ForMember(dest => dest.ArriveTime, opt => opt.MapFrom(src => src.Trip.ArriveTime))
             .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.Trip.Trip.Duration))
                         .ForMember(dest => dest.Line, opt => opt.MapFrom(src => src.Trip.Trip.Line));
-            CreateMap<Package, PublicPackagesDto>().ForMember(dest => dest.From, opt => opt.MapFrom(src => src.Driver.StartStation.Name))
-           .ForMember(dest => dest.To, opt => opt.MapFrom(src => src.Driver.EndStation.Name))
+            CreateMap<Package, PublicPackagesDto>()/*.ForMember(dest => dest.From, opt => opt.MapFrom(src => src.Driver.StartStation.Name))
+           .ForMember(dest => dest.To, opt => opt.MapFrom(src => src.Driver.EndStation.Name))*/
            .ForMember(dest => dest.DriverName, opt => opt.MapFrom(src => src.Driver.FirstName));
             CreateMap<Package, OrgPackagesDto>().ForMember(dest => dest.IsStart, opt => opt.MapFrom(src => src.Trip.IsStart))
            .ForMember(dest => dest.TripStartTime, opt => opt.MapFrom(src => src.Trip.StartTime))

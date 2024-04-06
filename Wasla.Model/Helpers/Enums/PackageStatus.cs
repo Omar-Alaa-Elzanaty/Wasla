@@ -10,7 +10,7 @@ namespace Wasla.Model.Helpers.Enums
     {
         Canceled=0,
         Approved=1,
-        UnderConfirm =2
+        UnderConfirm =2                             
         
     }
 }

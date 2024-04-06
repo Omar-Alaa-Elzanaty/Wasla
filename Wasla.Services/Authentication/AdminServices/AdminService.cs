@@ -204,8 +204,8 @@ namespace Wasla.Services.Authentication.AdminServices
         #endregion
         public async Task<BaseResponse> GetActiveDrivers(string startStation, string endStation)
         {
-            var drivers=await _context.PublicDrivers.Where(d=>d.StartStation.Name== startStation&&d.EndStation.Name==endStation&&d.isActive==true).ToListAsync();
-            _response.Data = drivers;
+           /* var drivers=await _context.PublicDrivers.Where(d=>d.StartStation.Name== startStation&&d.EndStation.Name==endStation&&d.isActive==true).ToListAsync();
+            _response.Data = drivers;*/
             return _response;
         }
     }
