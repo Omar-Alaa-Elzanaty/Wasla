@@ -8,6 +8,7 @@ namespace Wasla.Model.Helpers.Enums
 {
     public enum PublicTripSatus:byte
     {
+        None = 0,
         OnRoad,
         Waiting,
         Arrived

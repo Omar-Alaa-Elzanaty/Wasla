@@ -5,6 +5,7 @@ using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
 using Wasla.Model.Helpers.Enums;
+using Wasla.Model.Models;
 using Wasla.Services.EntitiesServices.OrganizationSerivces;
 using Wasla.Services.Exceptions;
 
@@ -88,16 +89,71 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
 
             return _response;
         }
-        public async Task<BaseResponse>UpdateTripStatus(int tripId,PublicTripSatus status)
+        public async Task<BaseResponse> UpdateTripStatus(int tripId, PublicTripSatus status)
         {
             var trip = await _context.PublicDriverTrips.FindAsync(tripId);
 
-            if(trip is null)
+            if (trip is null)
             {
                 return BaseResponse.GetErrorException(System.Net.HttpStatusCode.BadRequest, _localization["NoActiveTrip"].Value);
             }
 
             trip.Status = status;
+
+            return _response;
+        }
+        public async Task<BaseResponse> CreatePublicTrip(string userId, CreatePublicDriverCommand command)
+        {
+            var publicDriverTrip = _mapper.Map<PublicDriverTrip>(command);
+            publicDriverTrip.PublicDriverId = userId;
+            publicDriverTrip.IsActive = true;
+            publicDriverTrip.AcceptPackages = publicDriverTrip.AcceptRequests = true;
+            publicDriverTrip.Status = PublicTripSatus.None;
+
+            await _context.AddAsync(publicDriverTrip);
+            await _context.SaveChangesAsync();
+
+            _response.Data = publicDriverTrip.Id;
+            return _response;
+        }
+        public async Task<BaseResponse> UpdatePublicTrip(UpdatePublicDriverProfileCommand command)
+        {
+            var entity = await _context.PublicDrivers.FindAsync(command.Id);
+
+            if (entity is null)
+            {
+                return BaseResponse.GetErrorException(System.Net.HttpStatusCode.BadRequest, _localization["UserNotFound"].Value);
+            }
+
+            _mapper.Map(command, entity);
+
+            _context.PublicDrivers.Update(entity);
+            await _context.SaveChangesAsync();
+
+            _response.Message = _localization["SuccessProcess"].Value;
+            return _response;
+        }
+        public async Task<BaseResponse> GetTripLine(int tripId)
+        {
+            var trip = await _context.PublicDriverTrips.FindAsync(tripId);
+
+            if (trip is null)
+            {
+                return BaseResponse.GetErrorException(System.Net.HttpStatusCode.NotFound, _localization["NoActiveTrip"].Value);
+            }
+
+            var start = trip.StartStation;
+            var end = trip.EndStation;
+
+            _response.Data = new PublicTripLineQueryDto()
+            {
+                StartStation = start.Name,
+                StartLangtitude = start.Langtitude,
+                StartLatitude = start.Latitude,
+                EndStation = end.Name,
+                EndLangtitude = end.Langtitude,
+                EndLatitude = end.Latitude,
+            };
 
             return _response;
         }
