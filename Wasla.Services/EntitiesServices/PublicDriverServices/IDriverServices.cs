@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
 using Wasla.Model.Helpers.Enums;
 
@@ -16,6 +17,9 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
         Task<BaseResponse> GetProfileAsync(string userId);
         Task<BaseResponse> GetTripStatus(string userId);
         Task<BaseResponse> UpdateTripStatus(int tripId, PublicTripSatus status);
+        Task<BaseResponse> CreatePublicTrip(string userId, CreatePublicDriverCommand command);
+        Task<BaseResponse> UpdatePublicTrip(UpdatePublicDriverProfileCommand command);
+        Task<BaseResponse> GetTripLine(int tripId);
 
     }
 }
