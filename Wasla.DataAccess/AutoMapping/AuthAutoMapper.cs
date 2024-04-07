@@ -94,7 +94,9 @@ namespace Wasla.DataAccess.AutoMapping
                        ForMember(dest => dest.VehicleBrand, opt => opt.MapFrom(src => src.Trip.Vehicle.Brand)).
                        ForMember(dest => dest.VehicleCategory, opt => opt.MapFrom(src => src.Trip.Vehicle.Category));
             CreateMap<Package, DriverPackagesDto>().ReverseMap();
-
+            CreateMap<PublicDriverTrip, PublicTripDto>().ForMember(dest => dest.StartStation, opt => opt.MapFrom(src => src.StartStation.Name))
+                .ForMember(dest => dest.EndStation, opt => opt.MapFrom(src => src.EndStation.Name))
+               .ForMember(dest => dest.PublicDriverName, opt => opt.MapFrom(src => src.PublicDriver.FirstName));
 
             //****************************************
             //Public Driver

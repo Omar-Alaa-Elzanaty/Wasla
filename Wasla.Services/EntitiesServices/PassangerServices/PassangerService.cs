@@ -442,6 +442,5 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             _response.Data = inComingTrips;
             return _response;
         }
-
     }
 }
