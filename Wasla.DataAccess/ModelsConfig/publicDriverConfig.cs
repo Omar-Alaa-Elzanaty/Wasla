@@ -13,12 +13,12 @@ namespace Wasla.DataAccess.ModelsConfig
     {
         public void Configure(EntityTypeBuilder<PublicDriver> builder)
         {
-            builder.HasOne(x => x.StartStation)
+         /*   builder.HasOne(x => x.StartStation)
                 .WithMany()
                 .HasForeignKey(x => x.StartId).OnDelete(DeleteBehavior.Restrict);
             builder.HasOne(x => x.EndStation)
                   .WithMany()
-                  .HasForeignKey(x => x.EndId).OnDelete(DeleteBehavior.Restrict); 
+                  .HasForeignKey(x => x.EndId).OnDelete(DeleteBehavior.Restrict); */
         }
     }
 }

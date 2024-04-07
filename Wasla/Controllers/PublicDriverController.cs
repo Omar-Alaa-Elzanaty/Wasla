@@ -62,5 +62,30 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _driverService.GetTripLine(tripId));
         }
+        [HttpPut("update/trip/start{tripId}")]
+        public async Task<IActionResult> UpdatePublicTripStart(int tripId)
+        {
+            return Ok(await _driverService.UpdatePublicTripStart(tripId));
+        }
+        [HttpGet("trip/byDate/{date}")]
+        public async Task<IActionResult> GetPublicTripsByDate(string date)
+        {
+            return Ok(await _driverService.GetPublicTripsByDate(date));
+        }
+        [HttpPut("trip/reservation/ByOne/{tripId}")]
+        public async Task<IActionResult> UpdateTripReservationByOne(int tripId)
+        {
+            return Ok(await _driverService.UpdateTripReservationByOne(tripId));
+        }
+        [HttpGet("trip/status/{tripId}")]
+        public async Task<IActionResult> GetPublicTripState(int tripId)
+        {
+            return Ok(await _driverService.GetPublicTripState(tripId));
+        }
+        [HttpGet("trip/reservation/onRoad/{tripId}")]
+        public async Task<IActionResult> GetReservationOnRoad(int tripId )
+        {
+            return Ok(await _driverService.GetReservationOnRoad(tripId));
+        }
     }
 }

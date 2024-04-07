@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
 using Wasla.Model.Helpers.Enums;
@@ -20,6 +17,10 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
         Task<BaseResponse> CreatePublicTrip(string userId, CreatePublicDriverCommand command);
         Task<BaseResponse> UpdatePublicTrip(UpdatePublicDriverProfileCommand command);
         Task<BaseResponse> GetTripLine(int tripId);
-
+        Task<BaseResponse> UpdatePublicTripStart(int tripId);
+        Task<BaseResponse> GetPublicTripsByDate(string date);
+        Task<BaseResponse> UpdateTripReservationByOne(int tripId);
+        Task<BaseResponse> GetPublicTripState(int tripId);
+        Task<BaseResponse> GetReservationOnRoad(int tripId);
     }
 }
