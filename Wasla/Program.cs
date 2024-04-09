@@ -145,7 +145,7 @@ namespace Wasla
 				app.UseSwaggerUI();
 			}
 
-            DataSeed(app);
+            _ = DataSeed(app);
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

@@ -21,6 +21,10 @@ namespace Wasla.DataAccess.ModelsConfig
 				.WithOne(t=>t.Vehicle)
 				.HasForeignKey(t=>t.VehicleId)
 				.OnDelete(DeleteBehavior.Restrict);
+
+			builder.HasOne(x => x.PublicDriver)
+				.WithOne(x => x.Vehicle)
+				.HasForeignKey<Vehicle>(x => x.PublicDriverId);
 		}
 	}
 }

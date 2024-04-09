@@ -21,6 +21,7 @@ namespace Wasla.Model.Models
         public virtual Station EndStation { get; set; }
         public string PublicDriverId { get; set; }
         public virtual PublicDriver PublicDriver { get; set; }
+        public virtual List<PublicDriverTripRequest> Requests { get; set; }
         public int ReservedSeats { get; set; }
         public bool IsStart { get; set; }
         public bool IsActive { get; set; }
