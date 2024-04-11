@@ -20,20 +20,20 @@ namespace Wasla.Api.Controllers
 		{
 			return Ok(await _passangerService.SeatsRecordsAsync(tripId));
 		}
-		[HttpPost("{userId}/trip/reserve/{tripId}")]
+		[HttpPost("/trip/reserve")]
 		public async Task<IActionResult> ReserveTicket([FromBody] ReservationDto order)
 		{
 			return Ok(await _passangerService.ReservationAsync(order));
 		}
 		[HttpPost("organization/rate")]
-		public async Task<IActionResult> RateOrganize([FromBody] OrganizationRate model)
+		public async Task<IActionResult> RateOrganize([FromBody] OrganizationRateDto model)
 		{
 			return Ok(await _passangerService.OrganizationRateAsync(model));
 		}
 		[HttpDelete("organization/rate/remove")]
-		public async Task<IActionResult> RemoveOrganizationRate(string orgainzationId, string customerId)
+		public async Task<IActionResult> RemoveOrganizationRate(string orgainzationId)
 		{
-			return Ok(await _passangerService.OrganizationRateRemoveAsync(orgainzationId, customerId));
+			return Ok(await _passangerService.OrganizationRateRemoveAsync(orgainzationId));
 		}
 		[HttpGet("lines/{orgId}")]
 		public async Task<IActionResult> GetLines([FromRoute] string orgId)
@@ -55,21 +55,21 @@ namespace Wasla.Api.Controllers
 		{
 			return Ok(await _passangerService.RemovePackageAsync(id));
 		}
-		[HttpGet("packages/{userName}")]
-		public async Task<IActionResult> GetUserPublicPackagesAsync([FromRoute] string userName)
+		[HttpGet("packages")]
+		public async Task<IActionResult> GetUserPublicPackagesAsync()
 		{
-			return Ok(await _passangerService.GetUserPublicPackagesAsync(userName));
+			return Ok(await _passangerService.GetUserPublicPackagesAsync());
 		}
 		[HttpGet("packages/organization/{userName}")]
-		public async Task<IActionResult> GetUserOrgPackagesAsync([FromRoute] string userName)
+		public async Task<IActionResult> GetUserOrgPackagesAsync()
 		{
-			return Ok(await _passangerService.GetUserOrgPackagesAsync(userName));
+			return Ok(await _passangerService.GetUserOrgPackagesAsync());
 		}
 
 		[HttpPost("advertisment/{customerId}")]
-		public async Task<IActionResult> AddAdvertisment([FromForm] PassangerAddAdsDto request, string customerId)
+		public async Task<IActionResult> AddAdvertisment([FromForm] PassangerAddAdsDto request)
 		{
-			return Ok(await _passangerService.AddAdsAsync(customerId, request));
+			return Ok(await _passangerService.AddAdsAsync(request));
 		}
 		[HttpGet("linesVehicles/{orgId}")]
 		public async Task<IActionResult> LinesVehiclesCount(string orgId)
@@ -82,24 +82,24 @@ namespace Wasla.Api.Controllers
             return Ok(await _passangerService.PassengerCancelReversionAsyn(reverseId));
         }
 		[HttpGet("profile")]
-		public async Task<IActionResult> DisplayProfile(string userId)
+		public async Task<IActionResult> DisplayProfile()
 		{
-			return Ok(await _passangerService.GetProfile(userId));
+			return Ok(await _passangerService.GetProfile());
 		}
 		[HttpGet("incomingTrips")]
-		public async Task<IActionResult>GetIncomingTrips(string userId)
+		public async Task<IActionResult>GetIncomingTrips()
 		{
-			return Ok(await _passangerService.GetInComingReservations(userId));
+			return Ok(await _passangerService.GetInComingReservations());
 		}
 		[HttpGet("endedTrips")]
-		public async Task<IActionResult>GetEndedTrips(string userId)
+		public async Task<IActionResult>GetEndedTrips()
 		{
-			return Ok(await _passangerService.GetEndedReservations(userId));
+			return Ok(await _passangerService.GetEndedReservations());
 		}
 		[HttpGet("tripsSuggestions")]
-		public async Task<IActionResult>First3TripsSuggestion(string userId)
+		public async Task<IActionResult>First3TripsSuggestion()
 		{
-			return Ok(await _passangerService.GetTripSuggestion(userId));
+			return Ok(await _passangerService.GetTripSuggestion());
 		}
     }
 	
