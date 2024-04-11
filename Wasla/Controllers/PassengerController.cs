@@ -66,7 +66,7 @@ namespace Wasla.Api.Controllers
 			return Ok(await _passangerService.GetUserOrgPackagesAsync(userName));
 		}
 
-		[HttpPost("pdvertisment/{customerId}")]
+		[HttpPost("advertisment/{customerId}")]
 		public async Task<IActionResult> AddAdvertisment([FromForm] PassangerAddAdsDto request, string customerId)
 		{
 			return Ok(await _passangerService.AddAdsAsync(customerId, request));
