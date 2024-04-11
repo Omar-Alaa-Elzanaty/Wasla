@@ -73,7 +73,7 @@ namespace Wasla.Services.Authentication.AuthServices
 				throw new BadRequestException(_localization["phoneOremailRequired"].Value);
 			if (input.PhoneNumber is not null) await _authVerifyService.CheckPhoneNumber(input.PhoneNumber);
 			if (input.Email is not null) await _authVerifyService.CheckEmail(input.Email);
-			_ = await CheckUserName(input.UserName);
+		_ = await CheckUserName(input.UserName);
 
 			var user = _mapper.Map<Customer>(input);
 			var result = await _userManager.CreateAsync(user, input.Password);

@@ -13,9 +13,9 @@ namespace Wasla.DataAccess.ModelsConfig
     {
         public void Configure(EntityTypeBuilder<Account> builder)
         {
-            builder.HasQueryFilter(a => !string.IsNullOrEmpty(a.Email));
-            builder.HasQueryFilter(a => !string.IsNullOrEmpty(a.NormalizedEmail));
-            builder.HasQueryFilter(a => !string.IsNullOrEmpty(a.PhoneNumber));
+            builder.HasQueryFilter(a => string.IsNullOrEmpty(a.Email));
+            builder.HasQueryFilter(a => string.IsNullOrEmpty(a.NormalizedEmail));
+            builder.HasQueryFilter(a => string.IsNullOrEmpty(a.PhoneNumber));
         }
     }
 }
