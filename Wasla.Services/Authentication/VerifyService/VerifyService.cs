@@ -11,7 +11,6 @@ using Wasla.Model.Helpers;
 using Wasla.Model.Helpers.Statics;
 using Wasla.Model.Models;
 using Wasla.Services.Exceptions;
-using Wasla.Services.Exceptions.ErrorExceptionService;
 using Wasla.Services.ShareService.AuthVerifyShareService;
 using Wasla.Services.ShareService.EmailServices;
 
@@ -27,12 +26,12 @@ namespace Wasla.Services.Authentication.VerifyService
         private readonly IMailServices _mailService;
         private readonly IAuthVerifyService _authVerifyService;
         public VerifyService
-            (
+        (
             UserManager<Account> userManager, 
             IOptions<TwilioSetting> twilio,
             IStringLocalizer<VerifyService> localization,
             IAuthVerifyService authVerifyService
-            , IHttpContextAccessor httpContextAccessor)
+            , IHttpContextAccessor httpContextAccessor,IMailServices mailServices)
         {
             _userManager = userManager;
             _twilio = twilio.Value;
@@ -40,6 +39,7 @@ namespace Wasla.Services.Authentication.VerifyService
             _authVerifyService = authVerifyService;
             _response = new();
             _httpContextAccessor = httpContextAccessor;
+            _mailService = mailServices;
         }
         public async Task<BaseResponse> SendOtpMessageAsync(string userPhone)
         {
@@ -55,14 +55,21 @@ namespace Wasla.Services.Authentication.VerifyService
         {
             string otp = await GenerateOtp();
             SetOtpInCookie(otp);
-            await _mailService.SendEmailAsync(
-                             mailTo: userEmail,
-                             subject: "Your OTP",
-                             body: "Your OTP is: " + otp);
+            if (_mailService != null)
+            {
 
-            _response.Message = _localization["EmailSendSuccess"].Value;
-            _response.Data = otp;
-            return _response;
+                await _mailService.SendEmailAsync(
+                                mailTo: userEmail,
+                                subject: "Your OTP",
+                                body: "Your OTP is: " + otp);
+
+                _response.Message = _localization["EmailSendSuccess"].Value;
+                _response.Data = otp;
+            }
+            else
+                _response.Message = "mail Service is null";
+             return _response;
+            
         }
         public async Task<BaseResponse> CheckUserNameSimilarity(string input)
         {
