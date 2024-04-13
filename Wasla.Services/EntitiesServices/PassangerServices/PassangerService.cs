@@ -108,7 +108,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                     }
                     await _context.Reservations.AddRangeAsync(completeReserve);
 
-                    var customer = await _context.Customers.FindAsync(order.CustomerId);
+                    var customer = await _context.Customers.FindAsync(customerId);
                     var trip = await _context.TripTimeTables.FindAsync(order.TripId);
 
                     if (customer is null || trip is null)
