@@ -25,7 +25,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         private readonly IMediaSerivce _mediaSerivce;
         private readonly IStringLocalizer<PassangerService> _localization;
         private readonly IMapper _mapper;
-        private readonly HttpContextAccessor _httpContextAccessor;
+        private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<Account>_userManager;
         public PassangerService
             (
@@ -33,8 +33,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             IStringLocalizer<PassangerService> localization,
             IMediaSerivce mediaSerivce,
             IMapper mapper,
-            HttpContextAccessor httpContextAccessor,
-            UserManager<Account> userManager)
+            UserManager<Account> userManager,
+            IHttpContextAccessor httpContextAccessor)
         {
             _context = context;
             _response = new();
@@ -43,6 +43,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             _mapper = mapper;
             _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
+            _httpContextAccessor = httpContextAccessor;
         }
 
         public async Task<BaseResponse> SeatsRecordsAsync(int tripId)
