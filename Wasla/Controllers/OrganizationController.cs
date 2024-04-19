@@ -88,9 +88,9 @@ namespace Wasla.Api.Controllers
 			return Ok(await _orgService.VehicleAnalysisAsync(orgId??""));
 		}
 		[HttpPost("{orgId}/employee/add")]
-		public async Task<IActionResult> AddEmployee([FromForm]EmployeeRegisterDto model,string orgId)
+		public async Task<IActionResult> AddEmployee([FromForm] EmployeeRegisterDto model, string orgId)
 		{
-			return Ok(await _orgService.AddEmployeeAsync(model,orgId));
+			return Ok(await _orgService.AddEmployeeAsync(model, orgId));
 		}
 		[HttpDelete("employee/delete/{empId}")]
 		public async Task<IActionResult>DeleteEmployee(string empId)
@@ -129,19 +129,19 @@ namespace Wasla.Api.Controllers
 			return Ok(await _orgService.DeleteAdsAsync(adsId));
 		}
 		#endregion
-		[HttpPost("employee/add")]
-		public async Task<IActionResult> AddEmployee([FromForm] EmployeeRegisterDto model)
-		{
-			var userName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+		//[HttpPost("employee/add")]
+		//public async Task<IActionResult> AddEmployee([FromForm] EmployeeRegisterDto model)
+		//{
+		//	var userName = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
 
-			string? orgId = null;
-			if (userName is not null)
-			{
-				orgId = _userManager.FindByNameAsync(userName).Result?.Id;
-			}
+		//	string? orgId = null;
+		//	if (userName is not null)
+		//	{
+		//		orgId = _userManager.FindByNameAsync(userName).Result?.Id;
+		//	}
 
-			return Ok(await _orgService.AddEmployeeAsync(model, orgId));
-		}
+		//	return Ok(await _orgService.AddEmployeeAsync(model, orgId));
+		//}
 		[HttpPost("station/add/{orgId}")]
 		public async Task<IActionResult> AddStation([FromRoute] string orgId, [FromBody] StationDto model)
 		{
@@ -255,7 +255,7 @@ namespace Wasla.Api.Controllers
 		[HttpGet("trip/user/{orgId}/{name}")]
 		public async Task<IActionResult> GetTripForUser([FromRoute] string orgId, [FromRoute] string name)
 		{
-			return Ok(await _orgService.GetTripsForUserAsync(orgId, name));
+			return Ok(await _orgService.GetUsersForTripLineAsync(orgId, name));
 		}
 
 		[HttpGet("trip/user/{orgId}/{from}/{to}")]

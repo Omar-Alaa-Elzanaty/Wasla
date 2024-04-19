@@ -22,7 +22,12 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _adminService.GetAllOrgsAsync());
         }
-        [HttpGet("organization/account/confirm/{id}")]
+        [HttpGet("OrganizationRequests")]
+        public async Task<IActionResult> GetAllOrganizationRequest()
+        {
+            return Ok(await _adminService.DisplayOrganizationRequestAsync());
+        }
+        [HttpPost("organization/account/confirm/{id}")]
         public async Task<IActionResult> ConfrimOrganizationAccount(int id)
         {
             return Ok(await _adminService.ConfirmOrgnaizationRequestAsync(id));

@@ -43,7 +43,7 @@ namespace Wasla.Api.Controllers
             return Ok(await _driverService.GetTripStatus(userId));
         }
         [HttpPut("updateTripStatus")]
-        public async Task<IActionResult> UpdateTripStatus(int tripId,PublicTripSatus status)
+        public async Task<IActionResult> UpdateTripStatus(int tripId,TripStatus status)
         {
             return Ok(await _driverService.UpdateTripStatus(tripId, status));
         }

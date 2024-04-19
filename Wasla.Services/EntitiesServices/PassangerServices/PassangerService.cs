@@ -1,13 +1,9 @@
-﻿using System.Linq;
-using AutoMapper;
+﻿using AutoMapper;
 using AutoMapper.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-using Microsoft.IdentityModel.Tokens;
-using Org.BouncyCastle.Asn1.Cms;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
@@ -26,7 +22,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         private readonly IStringLocalizer<PassangerService> _localization;
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        private readonly UserManager<Account>_userManager;
+        private readonly UserManager<Account> _userManager;
         public PassangerService
             (
             WaslaDb context,
@@ -80,7 +76,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             //TODO: need to make reservation to every name in reservation dto seatInfo
             var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result.Id;
 
-            if(customerId is null)
+            if (customerId is null)
             {
                 throw new BadRequestException(_localization["Unauthorized"].Value);
             }
@@ -101,9 +97,9 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                             ReservationDate = DateTime.Now,
                             TriptimeTableId = order.TripId,
                             QrCodeUrl = "Qr Code file Uri",//await _mediaSerivce.AddAsync(set.QrCodeFile)
-                            CompnayName=tripTimeTable!.Trip.Organization.Name,
-                            StartTime=tripTimeTable.StartTime,
-                            EndTime=tripTimeTable.ArriveTime
+                            CompnayName = tripTimeTable!.Trip.Organization.Name,
+                            StartTime = tripTimeTable.StartTime,
+                            EndTime = tripTimeTable.ArriveTime
                         });
 
                     }
@@ -454,7 +450,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
             return await GetReservationOnMatchDate(x => x.ReservationDate <= DateTime.Now, user);
         }
-        public async Task<BaseResponse>GetTripSuggestion()
+        public async Task<BaseResponse> GetTripSuggestion()
         {
             var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result.Id;
 
@@ -463,12 +459,12 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 throw new BadRequestException(_localization["Unauthorized"].Value);
             }
 
-            var last3Trips = await _context.Reservations.Where(x => x.TriptimeTableId != null&&x.TripTimeTable != null 
-                                                               && x.TripTimeTable.StartTime >= DateTime.Now&&x.CustomerId==customerId)
-                                                   .DistinctBy(x=>x.TriptimeTableId).Select(x=>x.TripTimeTable).Take(3).ToListAsync();
-            if (last3Trips.Count<3)
+            var last3Trips = await _context.Reservations.Where(x => x.TriptimeTableId != null && x.TripTimeTable != null
+                                                               && x.TripTimeTable.StartTime >= DateTime.Now && x.CustomerId == customerId)
+                                                   .DistinctBy(x => x.TriptimeTableId).Select(x => x.TripTimeTable).Take(3).ToListAsync();
+            if (last3Trips.Count < 3)
             {
-                var first3AvailableTrips =await _context.TripTimeTables.Where(x => x.StartTime >= DateTime.Now)
+                var first3AvailableTrips = await _context.TripTimeTables.Where(x => x.StartTime >= DateTime.Now)
                     .Take(3)
                     .Select(x => new SuggestionTripsDto()
                     {
@@ -502,7 +498,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
             return _response;
         }
-        private async Task<BaseResponse> GetReservationOnMatchDate(Func<Reservation,bool> match,Customer customer)
+        private async Task<BaseResponse> GetReservationOnMatchDate(Func<Reservation, bool> match, Customer customer)
         {
             var inComingTrips = customer.Reservations.Where(match)
                 .Where(x => x.TriptimeTableId != null)
