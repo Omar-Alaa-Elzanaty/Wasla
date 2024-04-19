@@ -41,6 +41,7 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<PassangerAddAdsDto, Advertisment>().ReverseMap();
 
             CreateMap<OrganizationRateDto, OrganizationRate>();
+            CreateMap<OrganizationRegisterRequest, DisplayOrganizationRequest>();
 
             //Line
             CreateMap<Line, LineRequestDto>().ReverseMap();/*.ForMember(dest => dest.StartId, opt => opt.MapFrom(src => src.Start.StationId))
@@ -110,6 +111,7 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<CreatePublicDriverCommand, PublicDriver>();
             CreateMap<UpdatePublicDriverProfileCommand,PublicDriver>();
             CreateMap<UpdatePublicDriverProfileVehicleCommand, Vehicle>();
+            CreateMap<Vehicle, TripForDriverVehicleDto>();
         }
     }
 }

@@ -44,7 +44,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         Task<BaseResponse> GetTripAsync(int id);
         #endregion
         Task<BaseResponse> GetTripsForDriverAsync(string orgId, string driverId);
-        Task<BaseResponse> GetTripsForUserAsync(string orgId, string lineName);
+        Task<BaseResponse> GetUsersForTripLineAsync(string orgId, string lineName);
         Task<BaseResponse> GetTripsTimeByTripIdAndDate(int tripId,string date);
 
         Task<BaseResponse> GetTripsForUserWithToAndFromAsync(string orgId, string from, string to);

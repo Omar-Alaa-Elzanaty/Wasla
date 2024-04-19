@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Wasla.Model.Helpers.Enums
 {
-    public enum PublicTripSatus:byte
+    public enum TripStatus:byte
     {
         None = 0,
         OnRoad,

@@ -30,7 +30,12 @@ namespace Wasla.Services.HlepServices.MediaSerivces
             return true;
         }
         //TODO: 
-        bool IsImageExtension(string ext) => ext == ".PNG" || ext == ".jpg";
+        bool IsImageExtension(string ext) { 
+            
+            ext = ext.ToLower();
+
+            return ext == ".png" || ext == ".jpg" || ext == ".jfif"; 
+        }
         bool IsVideoExtension(string ext) => ext == "d" || ext == "dd";
 
         public MediaService(
@@ -44,6 +49,7 @@ namespace Wasla.Services.HlepServices.MediaSerivces
         }
         public async Task<string> AddAsync(IFormFile media)
         {
+            if (media is null) return null;
             string RootPath = _host.WebRootPath;
             string file = Guid.NewGuid().ToString();
             string Extension = Path.GetExtension(media.FileName);
