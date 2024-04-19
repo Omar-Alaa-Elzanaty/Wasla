@@ -12,7 +12,7 @@ namespace Wasla.Model.Models
         public int Id { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public PublicTripSatus Status { get; set; }
+        public TripSatus Status { get; set; }
         public bool AcceptRequests { get; set; }
         public bool AcceptPackages { get; set; }
         public int StartStationId { get; set;}

@@ -6,11 +6,13 @@ using System.Threading.Tasks;
 
 namespace Wasla.Model.Helpers.Enums
 {
-    public enum PublicTripSatus:byte
+    public enum TripSatus:byte
     {
         None = 0,
         OnRoad,
         Waiting,
-        Arrived
+        Arrived,
+        end,
+        TakeBreak
     }
 }

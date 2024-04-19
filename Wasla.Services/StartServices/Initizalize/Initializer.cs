@@ -31,7 +31,9 @@ namespace Wasla.Services.StartServices.Initizalize
                 if (!await _roleManager.RoleExistsAsync(Roles.Role_Admin))
                 {
                     await _roleManager.CreateAsync(new IdentityRole(Roles.Role_Admin));
-                    await _roleManager.CreateAsync(new IdentityRole(Roles.Role_Driver));
+                    await _roleManager.CreateAsync(new IdentityRole(Roles.Role_OrgDriver));
+                    await _roleManager.CreateAsync(new IdentityRole(Roles.Role_PublicDriver));
+
                     await _roleManager.CreateAsync(new IdentityRole(Roles.Role_Passenger));
                 }
             }

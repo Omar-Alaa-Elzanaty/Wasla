@@ -15,11 +15,7 @@ namespace Wasla.Model.Dtos
         [Required(ErrorMessage = "LicenseNumRequire")]
 
         public string LicenseNum { get; set; }
-        [Required(ErrorMessage ="startIdRequired")]
-        public int StartId { get; set; }
-        [Required(ErrorMessage = "endIdRequired")]
-
-        public int EndId { get; set; }
+      
 
     }
 }

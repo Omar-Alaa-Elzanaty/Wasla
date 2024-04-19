@@ -12,7 +12,7 @@ namespace Wasla.Model.Dtos
     {
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public PublicTripSatus Status { get; set; }
+        public TripSatus Status { get; set; }
         public int StartStationId { get; set; }
         public  string StartStation { get; set; }
         public  string EndStation { get; set; }

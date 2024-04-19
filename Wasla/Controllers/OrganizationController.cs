@@ -229,6 +229,11 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _orgService.UpdateTripTimeAsync(model, id));
         }
+        [HttpGet("tripsTime/driver/7days")]
+        public async Task<IActionResult> GetTripsForDriverForNext7DaysAsync(string orgId,string driverId,DateTime date)
+		{
+            return Ok(await _orgService.GetTripsForDriverForNext7DaysAsync(new TripForDriverRequestDto { OrgId=orgId,DriverId=driverId,CurrentDate=date}));
+        }
         [HttpGet("tripsTime/{orgId}")]
 	  public async Task<IActionResult> GetTripsTime([FromRoute] string orgId)  //c
         {

@@ -16,6 +16,7 @@ using Wasla.Model.Helpers;
 using Wasla.Model.Helpers.Statics;
 using Wasla.Model.Models;
 using Wasla.Services.Authentication.AuthHelperService.FactorService.IFactory;
+using Wasla.Services.Authentication.VerifyService;
 using Wasla.Services.Exceptions;
 using Wasla.Services.HlepServices.MediaSerivces;
 using Wasla.Services.ShareService.AuthVerifyShareService;
@@ -34,6 +35,7 @@ namespace Wasla.Services.Authentication.AuthServices
 		private readonly WaslaDb _dbContext;
 		private readonly IMediaSerivce _mediaServices;
         private readonly IAuthVerifyService _authVerifyService;
+		private readonly IVerifyService _verifyService;
         public AuthService
 			(
 			IBaseFactoryResponse baseFactory,
@@ -43,9 +45,10 @@ namespace Wasla.Services.Authentication.AuthServices
 			IMapper mapper,
 			IStringLocalizer<AuthService> localization,
 			IMediaSerivce mediaSerivces,
-			WaslaDb dbContext, IAuthVerifyService authVerifyService)
+			WaslaDb dbContext, IAuthVerifyService authVerifyService,IVerifyService verifyService)
 		{
 			_userManager = userManager;
+			_verifyService = verifyService;
 			_roleManager = roleManager;
 			_jwt = jwt.Value;
 			_mapper = mapper;
@@ -94,7 +97,7 @@ namespace Wasla.Services.Authentication.AuthServices
 		public async Task<BaseResponse> OrgnaizationRegisterAsync(OrgRegisterRequestDto request)
 		{
 			//TODO: remove comment
-			//_ = CheckOtp(request.Otp);
+			_ =_verifyService.CompareOtpAsync(request.Otp);
 
 			if (await _dbContext.OrganizationsRegisters.AnyAsync(o => o.Email == request.Email)
 				|| await _authVerifyService.CheckEmail(request.Email))
@@ -127,8 +130,13 @@ namespace Wasla.Services.Authentication.AuthServices
 
 		public async Task<BaseResponse> DriverRegisterAsync(DriverRegisterDto model)
 		{
-			await _authVerifyService.CheckPhoneNumber(model.PhoneNumber);
-			await _authVerifyService.CheckEmail(model.Email);
+            if (model.Email == null && model.PhoneNumber == null)
+                throw new BadRequestException(_localization["phoneOremailRequired"].Value);
+            if (model.PhoneNumber is not null) await _authVerifyService.CheckPhoneNumber(model.PhoneNumber);
+            if (model.Email is not null) await _authVerifyService.CheckEmail(model.Email);
+            _ = await CheckUserName(model.UserName);
+         //   await _authVerifyService.CheckPhoneNumber(model.PhoneNumber);
+		//	await _authVerifyService.CheckEmail(model.Email);
 
 			if (await _dbContext.PublicDrivers.AnyAsync(u => u.LicenseNum == model.LicenseNum))
 			{
@@ -138,7 +146,7 @@ namespace Wasla.Services.Authentication.AuthServices
 			var user = _mapper.Map<PublicDriver>(model);
 			user.LicenseImageUrl = await _mediaServices.AddAsync(model.LicenseImageFile);
 			user.PhotoUrl = await _mediaServices.AddAsync(model.ProfileImageFile);
-			var role = Roles.Role_Driver;
+			var role = Roles.Role_PublicDriver;
 
 			using (var transaction = await _dbContext.Database.BeginTransactionAsync())
 			{

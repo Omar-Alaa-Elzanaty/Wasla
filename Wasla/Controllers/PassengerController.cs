@@ -101,6 +101,26 @@ namespace Wasla.Api.Controllers
 		{
 			return Ok(await _passangerService.GetTripSuggestion(userId));
 		}
+		[HttpPost("createFollowRequest")]
+		public async Task<IActionResult> CreateFollowRequest(FollowDto followDto)
+		{
+			return Ok(await _passangerService.CreateFollowRequestAsync(followDto));
+		}
+        [HttpPost("ConfirmFollowRequest")]
+        public async Task<IActionResult> ConfirmFollowRequest(FollowDto followDto)
+        {
+            return Ok(await _passangerService.ConfirmFollowRequestAsync(followDto));
+        }
+        [HttpDelete("deleteFollowRequest")]
+        public async Task<IActionResult> DeleteFollowRequest(FollowDto followDto)
+        {
+            return Ok(await _passangerService.DeleteFollowRequestAsync(followDto));
+        }
+        [HttpDelete("deleteFollower")]
+        public async Task<IActionResult> DeleteFollower(FollowDto followDto)
+        {
+            return Ok(await _passangerService.DeleteFollowerAsync(followDto));
+        }
     }
 	
 }
