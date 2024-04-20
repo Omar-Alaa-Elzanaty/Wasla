@@ -111,6 +111,10 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<CreatePublicDriverCommand, PublicDriver>();
             CreateMap<UpdatePublicDriverProfileCommand,PublicDriver>();
             CreateMap<UpdatePublicDriverProfileVehicleCommand, Vehicle>();
+            CreateMap<FollowDto,UserFollow>().ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.SenderId));
+            CreateMap<FollowRequests, FollowDto>().ReverseMap();
+
+
             CreateMap<Vehicle, TripForDriverVehicleDto>();
         }
     }

@@ -102,7 +102,7 @@
   "getTripSuccess": "تم احضار الرحله بنجاح",
   "deleteTripSuccess": "تم حذف الرحله بنجاح",
   "AddPAckagesSuccess": "تم انشاء طلب ارسال الطلب  بنجاح الرجاء, الانتظار للتاكيد الطلب",
-
+  "createFollowRequestSuccess": "تم ارسال طلب متابعه بنجاح",
 
   "Removed": "تم الحذف",
   "Used": "مستخدم",

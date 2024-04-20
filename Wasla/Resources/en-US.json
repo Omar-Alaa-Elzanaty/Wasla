@@ -98,7 +98,7 @@
   "startIdRequired": "Start station Required",
   "enddRequired": "end station Required",
   "AddPAckagesSuccess": "Create Package Request success,Please Wait for Confirming",
-
+  "createFollowRequestSuccess": "create Follow Request Success",
   "culture": "Culture",
   "date": "Date",
   "currency": "Currency",

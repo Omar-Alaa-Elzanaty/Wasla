@@ -218,5 +218,7 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             _response.Data = reservations;
             return _response;
         }
+
+       
     }
 }

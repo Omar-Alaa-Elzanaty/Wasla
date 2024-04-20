@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿
 
 namespace Wasla.Model.Models
 {
@@ -20,5 +16,7 @@ namespace Wasla.Model.Models
 		public virtual Customer Customer { get; set; }
 		public int? TriptimeTableId { get; set; }
 		public virtual TripTimeTable? TripTimeTable { get; set; }
-	}
+		public bool OnRoad { get; set; } = false;
+		public bool IsRide { get; set; } = false;
+    }
 }

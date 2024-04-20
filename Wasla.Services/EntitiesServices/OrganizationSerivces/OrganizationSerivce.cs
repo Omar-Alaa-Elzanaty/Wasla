@@ -9,6 +9,7 @@ using System.Globalization;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
+using Wasla.Model.Helpers.Enums;
 using Wasla.Model.Helpers.Statics;
 using Wasla.Model.Models;
 using Wasla.Services.Exceptions;
@@ -177,7 +178,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                     {
                         throw new BadRequestException(HelperServices.CollectIdentityResultErrors(result));
                     }
-                    result = await _userManager.AddToRoleAsync(newDriver, Roles.Role_Driver);
+                    result = await _userManager.AddToRoleAsync(newDriver, Roles.Role_OrgDriver);
 
                     if (result is null || !result.Succeeded)
                     {
@@ -609,13 +610,13 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         #endregion 
         public async Task<BaseResponse> AddTripTimeAsync(AddTripTimeDto model)
         {
-            var tripExist = await _context.TripTimeTables.AnyAsync(t => t.TripId == model.TripId &&
-            t.StartTime == model.StartTime&&t.VehicleId==t.VehicleId&&t.DriverId==model.DriverId);
-            if (tripExist)
+             var tripExist = await _context.TripTimeTables.AnyAsync(t => t.TripId == model.TripId &&
+             t.StartTime == model.StartTime&&t.VehicleId==t.VehicleId&&t.DriverId==model.DriverId);
+             if (tripExist)
                 throw new BadRequestException(_localization["TripAlreadyExist"].Value);
-            var trip = _mapper.Map<TripTimeTable>(model);
-            await _context.TripTimeTables.AddAsync(trip);
-            _ = await _context.SaveChangesAsync();
+              var trip = _mapper.Map<TripTimeTable>(model);
+              await _context.TripTimeTables.AddAsync(trip);
+             await _context.SaveChangesAsync();
             _response.Message = _localization["addTripSuccess"].Value;
             return _response;
         }
@@ -657,6 +658,18 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             _response.Message = _localization["updateTripSuccess"].Value;
             return _response;
         }
+        public async Task<BaseResponse> TakeBreakAsync(int id)
+        {
+            var tripCheck = await _context.TripTimeTables.FirstOrDefaultAsync(v => v.Id == id);
+            if (tripCheck is null)
+                return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound,_localization["tripNotFound"].Value);
+          
+            tripCheck.Status = TripStatus.TakeBreak;
+            var result = _context.TripTimeTables.Update(tripCheck);
+            await _context.SaveChangesAsync();
+            _response.Message = _localization["updateTripSuccess"].Value;
+            return _response;
+        }
         public async Task<BaseResponse> DeleteTripTimeAsync(int id)
         {
             var trip = await _context.TripTimeTables.FirstOrDefaultAsync(t => t.Id == id);
@@ -676,7 +689,34 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             _response.Data = tripRes;
             return _response;
         }
-        public async Task<BaseResponse> GetUsersForTripLineAsync(string orgId, string lineName)
+        public async Task<BaseResponse> GetTripsForDriverForNext7DaysAsync(TripForDriverRequestDto tripRequest)
+        {
+            DateTime endDate = tripRequest.CurrentDate.AddDays(90);
+
+
+            var trips = await _context.TripTimeTables.
+                Where(t => t.Trip.OrganizationId == tripRequest.OrgId &&
+                t.DriverId == tripRequest.DriverId &&
+                t.StartTime >= tripRequest.CurrentDate && t.StartTime <= endDate &&
+                t.Status != TripStatus.Arrived && t.Status != TripStatus.end && t.Status != TripStatus.OnRoad).OrderBy(t => t.StartTime)
+                .Select(t => new TripForOrgDriverDays
+                {
+                    TripTimeTableId = t.Id,
+                    TripDate = t.StartTime.ToString("MM/dd/yyyy"),
+                    TripDay = t.StartTime.ToString("dddd"),
+                    TripStartTime = t.StartTime.ToString("h:mm tt"),
+                    StartStation = t.Trip.Line.Start.Name,
+                    EndStation=t.Trip.Line.End.Name
+
+                }).ToListAsync();
+          //  TripForDriverDto tripDriver = new TripForDriverDto();
+           // var tripRes = _mapper.Map<List<TripForDriverDto>>(trips);
+
+            _response.Data = trips;
+            return _response;
+        }
+      
+        public async Task<BaseResponse> GetTripsForUserAsync(string orgId, string lineName)
          {
              var trips = await _context.TripTimeTables.Where(t => t.Trip.OrganizationId == orgId && (t.Trip.Line.Start.Name.StartsWith(lineName) || t.Trip.Line.End.Name.StartsWith(lineName))).ToListAsync();
              var tripRes = _mapper.Map<List<TripForUserDto>>(trips);
@@ -768,5 +808,6 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             }
           return _response;
         }
+
     }
 }

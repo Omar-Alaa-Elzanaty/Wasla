@@ -2,15 +2,22 @@
 using AutoMapper.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Asn1.Cms;
+using Org.BouncyCastle.Ocsp;
+using Twilio.Rest.Accounts.V1.Credential;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
 using Wasla.Model.Helpers.Enums;
+using Wasla.Model.Helpers.Statics;
 using Wasla.Model.Models;
 using Wasla.Services.Exceptions;
 using Wasla.Services.HlepServices.MediaSerivces;
+using Wasla.Services.ShareService;
 
 namespace Wasla.Services.EntitiesServices.PassangerServices
 {
@@ -519,5 +526,71 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             _response.Data = inComingTrips;
             return _response;
         }
+
+        public async Task<BaseResponse> CreateFollowRequestAsync(FollowDto followDto)
+        {
+            var requestExist = _context.FollowRequests.Any(f => f.SenderId == followDto.SenderId && f.FollowerId == followDto.FollowerId);
+            if (requestExist)
+                return BaseResponse.GetErrorException(HttpStatusErrorCode.BadRequest, "this request already exist");
+            var req = _mapper.Map<FollowRequests>(followDto);
+             await _context.FollowRequests.AddAsync(req);
+              await _context.SaveChangesAsync();
+             _response.Message = _localization["createFollowRequestSuccess"].Value;
+             return _response;
+        }
+
+
+        public async Task<BaseResponse> ConfirmFollowRequestAsync(FollowDto followDto)
+        {
+            var requestExist = _context.FollowRequests.Any(f => f.SenderId == followDto.SenderId && f.FollowerId == followDto.FollowerId);
+            if (!requestExist)
+                return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, "this request not exist");
+            var follow = _mapper.Map<UserFollow>(followDto);
+            var req = _mapper.Map<FollowRequests>(followDto);
+            using (var trans = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+
+                    await _context.UserFollows.AddAsync(follow);
+                    _context.FollowRequests.Remove(req);
+                    await _context.SaveChangesAsync();
+                    _response.Message = _localization["createFollowSuccess"].Value;
+                    await trans.CommitAsync();
+                }
+                catch (Exception)
+                {
+                    await trans.RollbackAsync();
+                }
+            }
+            return _response;
+        }
+
+        public async Task<BaseResponse> DeleteFollowRequestAsync(FollowDto followDto)
+        {
+            var requestExist = _context.FollowRequests.Any(f => f.SenderId == followDto.SenderId && f.FollowerId == followDto.FollowerId);
+            if (!requestExist)
+                return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound,_localization[ "FollowRequestExist"].Value);
+            var request= _mapper.Map<FollowRequests>(followDto);
+
+            _context.FollowRequests.Remove(request);
+            await _context.SaveChangesAsync();
+            _response.Message = _localization["RemoveFollowRequestSuccess"].Value;
+            return _response;
+        }
+
+        public async Task<BaseResponse> DeleteFollowerAsync(FollowDto followDto)
+        {
+            var followExist = _context.UserFollows.Any(f => (f.CustomerId == followDto.SenderId && f.FollowerId == followDto.FollowerId)||(f.CustomerId == followDto.FollowerId && f.FollowerId == followDto.SenderId));
+            if (!followExist)
+                return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound,_localization["FollowNotFound"].Value);
+            var request = _mapper.Map<UserFollow>(followDto);
+            _context.UserFollows.Remove(request);
+            await _context.SaveChangesAsync();
+            _response.Message = _localization["RemoveFollowSuccess"].Value;
+            return _response;
+        }
+
+        
     }
 }

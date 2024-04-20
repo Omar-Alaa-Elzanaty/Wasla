@@ -7,11 +7,11 @@ using Wasla.Services.Authentication.AuthHelperService.FactorService.IFactory;
 
 namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
 {
-    public class DriverResponse:IAuthResponse
+    public class OrgDriverResponse : IAuthResponse
     {
         private readonly WaslaDb _db;
         private readonly RoleManager<IdentityRole> _roleManager;
-        public DriverResponse(WaslaDb db,RoleManager<IdentityRole> roleManager) 
+        public OrgDriverResponse(WaslaDb db,RoleManager<IdentityRole> roleManager) 
         {
             _db = db;
             _roleManager = roleManager;
@@ -35,11 +35,12 @@ namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
             driverResponse.LastName = driver.LastName;
             driverResponse.PhotoUrl = driver.PhotoUrl;
             driverResponse.LicenseNum = driver.LicenseNum;
-            driverResponse.Orgainzation = driver.Orgainzation;
             //driverResponse.Trips = driver.Trips;
-            driverResponse.Rates = driver.Rates;
             if(driver.Orgainzation != null)
             {
+                driverResponse.Rates = driver.Rates;
+                driverResponse.Orgainzation = driver.Orgainzation;
+
                 var role = await _roleManager.FindByNameAsync(responseHelp.role);
                 driverResponse.DriverPermissions = _roleManager.GetClaimsAsync(role).Result.Select(c => c.Value).ToList();
             }

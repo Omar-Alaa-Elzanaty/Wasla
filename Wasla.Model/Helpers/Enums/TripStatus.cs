@@ -11,6 +11,9 @@ namespace Wasla.Model.Helpers.Enums
         None = 0,
         OnRoad,
         Waiting,
-        Arrived
+        Arrived,
+        end,
+        TakeBreak
     }
 }
+

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wasla.DataAccess;
 
@@ -11,9 +12,11 @@ using Wasla.DataAccess;
 namespace Wasla.DataAccess.Migrations
 {
     [DbContext(typeof(WaslaDb))]
-    partial class WaslaDbModelSnapshot : ModelSnapshot
+    [Migration("20240419182827_upfollowr")]
+    partial class upfollowr
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -350,15 +353,25 @@ namespace Wasla.DataAccess.Migrations
 
             modelBuilder.Entity("Wasla.Model.Models.FollowRequests", b =>
                 {
-                    b.Property<string>("SenderId")
-                        .HasColumnType("nvarchar(450)");
+                    b.Property<int>("FollowId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FollowId"));
 
                     b.Property<string>("FollowerId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.HasKey("SenderId", "FollowerId");
+                    b.Property<string>("SenderId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("FollowId");
 
                     b.HasIndex("FollowerId");
+
+                    b.HasIndex("SenderId");
 
                     b.ToTable("FollowRequests");
                 });

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wasla.DataAccess;
 
@@ -11,9 +12,11 @@ using Wasla.DataAccess;
 namespace Wasla.DataAccess.Migrations
 {
     [DbContext(typeof(WaslaDb))]
-    partial class WaslaDbModelSnapshot : ModelSnapshot
+    [Migration("20240419160803_uptrip")]
+    partial class uptrip
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -346,21 +349,6 @@ namespace Wasla.DataAccess.Migrations
                         .IsUnique();
 
                     b.ToTable("DriverRates");
-                });
-
-            modelBuilder.Entity("Wasla.Model.Models.FollowRequests", b =>
-                {
-                    b.Property<string>("SenderId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("FollowerId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("SenderId", "FollowerId");
-
-                    b.HasIndex("FollowerId");
-
-                    b.ToTable("FollowRequests");
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.Line", b =>
@@ -1177,25 +1165,6 @@ namespace Wasla.DataAccess.Migrations
                     b.Navigation("Customer");
 
                     b.Navigation("Driver");
-                });
-
-            modelBuilder.Entity("Wasla.Model.Models.FollowRequests", b =>
-                {
-                    b.HasOne("Wasla.Model.Models.Customer", "Follower")
-                        .WithMany()
-                        .HasForeignKey("FollowerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("Wasla.Model.Models.Customer", "Sender")
-                        .WithMany()
-                        .HasForeignKey("SenderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Follower");
-
-                    b.Navigation("Sender");
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.Line", b =>
