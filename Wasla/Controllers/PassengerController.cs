@@ -81,31 +81,31 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _passangerService.PassengerCancelReversionAsyn(reverseId));
         }
-        [HttpGet("profile")]
-        public async Task<IActionResult> DisplayProfile()
-        {
-            return Ok(await _passangerService.GetProfile());
-        }
-        [HttpGet("incomingTrips")]
-        public async Task<IActionResult> GetIncomingTrips()
-        {
-            return Ok(await _passangerService.GetInComingReservations());
-        }
-        [HttpGet("endedTrips")]
-        public async Task<IActionResult> GetEndedTrips()
-        {
-            return Ok(await _passangerService.GetEndedReservations());
-        }
-        [HttpGet("tripsSuggestions")]
-        public async Task<IActionResult> First3TripsSuggestion()
-        {
-            return Ok(await _passangerService.GetTripSuggestion());
-        }
-        [HttpPost("createFollowRequest")]
-        public async Task<IActionResult> CreateFollowRequest(FollowDto followDto)
-        {
-            return Ok(await _passangerService.CreateFollowRequestAsync(followDto));
-        }
+		[HttpGet("profile")]
+		public async Task<IActionResult> DisplayProfile()
+		{
+			return Ok(await _passangerService.GetProfile());
+		}
+		[HttpGet("incomingTrips")]
+		public async Task<IActionResult>GetIncomingTrips()
+		{
+			return Ok(await _passangerService.GetInComingReservations());
+		}
+		[HttpGet("endedTrips")]
+		public async Task<IActionResult>GetEndedTrips()
+		{
+			return Ok(await _passangerService.GetEndedReservations());
+		}
+		[HttpGet("tripsSuggestions")]
+		public async Task<IActionResult>First3TripsSuggestion()
+		{
+			return Ok(await _passangerService.GetTripSuggestion());
+		}
+		[HttpPost("createFollowRequest")]
+		public async Task<IActionResult> CreateFollowRequest(FollowDto followDto)
+		{
+			return Ok(await _passangerService.CreateFollowRequestAsync(followDto));
+		}
         [HttpPost("ConfirmFollowRequest")]
         public async Task<IActionResult> ConfirmFollowRequest(FollowDto followDto)
         {

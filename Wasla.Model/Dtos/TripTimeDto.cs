@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Wasla.Model.Helpers.Enums;
 using Wasla.Model.Models;
 
 namespace Wasla.Model.Dtos
@@ -18,9 +19,11 @@ namespace Wasla.Model.Dtos
         public float Price { get; set; }
         public TimeSpan Duration { get; set; }
         public int Points { get; set; }
+        public TripStatus Status { get; set; }
+
         //
         //vehicle
-        
+
         public string Category { get; set; }
         public string Brand { get; set; }
         //

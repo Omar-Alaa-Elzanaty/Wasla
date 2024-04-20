@@ -584,6 +584,27 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             _response.Message = _localization["RemoveFollowSuccess"].Value;
             return _response;
         }
+        public async Task<BaseResponse> SearchUser(string request)
+        {
+            var users = await _context.Customers.Where(c => (c.UserName.StartsWith(request)) || (c.FirstName.StartsWith(request))).Select(c=>new UserSearchProfileDto
+            {
+                UserId = c.Id,
+                Name =c.FirstName,
+                UserImage=c.PhotoUrl,
+                UserName=c.UserName
+            }).ToListAsync();
+            
+            _response.Data = users;
+            return _response;
+        }
+        public async Task<BaseResponse> GetUserBySearch(string userId)
+        {
+            var user = await _context.Customers.FindAsync(userId);
+            var userDto = new UserSearchProfileDto {UserId =user.Id, Name = user.FirstName, UserImage = user.PhotoUrl, UserName = user.UserName };
+            _response.Data = userDto;
+            return _response;
+        }
+
         public async Task<BaseResponse> DeleteFollowersAsync(DeleteFromFollowersCommand command)
         {
             var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User);

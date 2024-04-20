@@ -45,7 +45,8 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         #endregion
         Task<BaseResponse> GetTripsForDriverAsync(string orgId, string driverId);
         Task<BaseResponse> GetTripsForDriverForNext7DaysAsync(TripForDriverRequestDto tripForDriverRequestDto);
-
+        Task<BaseResponse> GetNextTripForDriver(string orgId, string DriverId, DateTime currentDate);
+        Task<BaseResponse> GetTripsHistoryForDriverAsync(string orgId, string DriverId, DateTime currentDate);
         Task<BaseResponse> GetTripsForUserAsync(string orgId, string lineName);
         //Task<BaseResponse> GetUsersForTripLineAsync(string orgId, string lineName);
         Task<BaseResponse> GetTripsTimeByTripIdAndDate(int tripId,string date);
@@ -61,7 +62,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         Task<BaseResponse> GetTripsTimeAsync(string orgId);
         Task<BaseResponse> GetTripTimeAsync(int id);
         Task<BaseResponse> DeleteTripTimeAsync(int id);
-
+        Task<BaseResponse> IncreaseTripSeats(AddTripSeatDto tripSeat);
         #endregion
         #region pack
         
