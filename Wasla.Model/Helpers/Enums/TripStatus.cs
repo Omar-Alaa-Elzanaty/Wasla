@@ -8,7 +8,7 @@ namespace Wasla.Model.Helpers.Enums
 {
     public enum TripStatus:byte
     {
-        None = 0,
+        None=0,
         OnRoad,
         Waiting,
         Arrived,
