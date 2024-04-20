@@ -28,5 +28,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
         Task<BaseResponse>AddAdsAsync(PassangerAddAdsDto ads);
         Task<BaseResponse> LinesVehiclesCountAsync(string orgId);
+        Task<BaseResponse> SearchUser(string request);
+        Task<BaseResponse> GetUserBySearch(string userId);
     }
 }

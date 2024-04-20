@@ -234,6 +234,19 @@ namespace Wasla.Api.Controllers
 		{
             return Ok(await _orgService.GetTripsForDriverForNext7DaysAsync(new TripForDriverRequestDto { OrgId=orgId,DriverId=driverId,CurrentDate=date}));
         }
+
+        [HttpGet("nextTrip/driver")]
+        public async Task<IActionResult> GetNextTripForDriverAsync(string orgId, string driverId, DateTime date)
+        {
+            return Ok(await _orgService.GetNextTripForDriver(orgId, driverId, date ));
+        }
+
+        [HttpGet("history/trips/driver")]
+        public async Task<IActionResult> GetTripsHistoryForDriverAsync(string orgId, string driverId, DateTime date)
+        {
+            return Ok(await _orgService.GetTripsHistoryForDriverAsync(orgId, driverId, date));
+        }
+
         [HttpGet("tripsTime/{orgId}")]
 	  public async Task<IActionResult> GetTripsTime([FromRoute] string orgId)  //c
         {
@@ -302,11 +315,22 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _orgService.GetPackagesRequestAsync(orgId));
         }
+        [HttpPut("trip/takeBreak")]
+        public async Task<IActionResult> TaxkeBreak(int tripId)
+        {
+            return Ok(await _orgService.TakeBreakAsync(tripId));
+        }
         [HttpPut("Package/{packageId}/{status}")]
         public async Task<IActionResult> ReviewPackagesRequest(int packageId, int status)
         {
             return Ok(await _orgService.ReviewPackagesRequest(packageId, status));
         }
 
+		[HttpPost("add/seatNumber")]
+		public async Task<IActionResult> IncreaseTripSeats(AddTripSeatDto tripSeat)
+		{
+            return Ok(await _orgService.IncreaseTripSeats(tripSeat));
+
+        }
     }
 }

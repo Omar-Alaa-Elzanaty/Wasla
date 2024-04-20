@@ -101,7 +101,17 @@ namespace Wasla.Api.Controllers
 		{
 			return Ok(await _passangerService.GetTripSuggestion());
 		}
-		[HttpPost("createFollowRequest")]
+        [HttpGet("search/users/{search}")]
+        public async Task<IActionResult> SearchUser(string search)
+        {
+            return Ok(await _passangerService.SearchUser(search));
+        }
+        [HttpGet("search/user/{userId}")]
+        public async Task<IActionResult> GetUserBySearch(string userId)
+        {
+            return Ok(await _passangerService.GetUserBySearch(userId));
+        }
+        [HttpPost("createFollowRequest")]
 		public async Task<IActionResult> CreateFollowRequest(FollowDto followDto)
 		{
 			return Ok(await _passangerService.CreateFollowRequestAsync(followDto));

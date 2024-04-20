@@ -691,7 +691,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         }
         public async Task<BaseResponse> GetTripsForDriverForNext7DaysAsync(TripForDriverRequestDto tripRequest)
         {
-            DateTime endDate = tripRequest.CurrentDate.AddDays(90);
+            DateTime endDate = tripRequest.CurrentDate.AddDays(7);
 
 
             var trips = await _context.TripTimeTables.
@@ -715,7 +715,29 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             _response.Data = trips;
             return _response;
         }
-      
+
+        public async Task<BaseResponse> GetTripsHistoryForDriverAsync(string orgId, string DriverId, DateTime currentDate)
+        {
+
+            var trips = await _context.TripTimeTables.
+                Where(t => t.Trip.OrganizationId ==orgId &&
+                t.DriverId == DriverId &&
+                 t.StartTime < currentDate &&
+               ( t.Status == TripStatus.Arrived || t.Status ==TripStatus.end)).OrderBy(t => t.StartTime)
+                .Select(t => new TripForOrgDriverDays
+                {
+                    TripTimeTableId = t.Id,
+                    TripDate = t.StartTime.ToString("MM/dd/yyyy"),
+                    TripDay = t.StartTime.ToString("dddd"),
+                    TripStartTime = t.StartTime.ToString("h:mm tt"),
+                    StartStation = t.Trip.Line.Start.Name,
+                    EndStation = t.Trip.Line.End.Name
+
+                }).ToListAsync();
+            _response.Data = trips;
+            return _response;
+        }
+
         public async Task<BaseResponse> GetTripsForUserAsync(string orgId, string lineName)
          {
              var trips = await _context.TripTimeTables.Where(t => t.Trip.OrganizationId == orgId && (t.Trip.Line.Start.Name.StartsWith(lineName) || t.Trip.Line.End.Name.StartsWith(lineName))).ToListAsync();
@@ -809,5 +831,36 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
           return _response;
         }
 
+        public async Task<BaseResponse> GetNextTripForDriver(string orgId, string DriverId,DateTime currentDate)
+        {
+            var trip = await _context.TripTimeTables.
+                            Where(t => t.Trip.OrganizationId == orgId &&
+                            t.DriverId == DriverId &&
+                            t.StartTime >= currentDate &&
+                            t.Status != TripStatus.Arrived && t.Status != TripStatus.end).OrderBy(t => t.StartTime).FirstOrDefaultAsync();
+            if (trip != null)
+            {
+                var response = new TripForOrgDriverDays
+                {
+                    TripTimeTableId = trip.Id,
+                    TripDate = trip.StartTime.ToString("MM/dd/yyyy"),
+                    TripDay = trip.StartTime.ToString("dddd"),
+                    TripStartTime = trip.StartTime.ToString("h:mm tt"),
+                    StartStation = trip.Trip.Line.Start.Name,
+                    EndStation = trip.Trip.Line.End.Name
+                };
+                _response.Data = response;
+            }
+            else { _response.Message = _localization["NoTripForDriver"].Value; }
+            return _response;
+        }
+
+        public async Task<BaseResponse> IncreaseTripSeats(AddTripSeatDto tripSeat)
+        {
+            _context.Seats.Add(new Seat() { setNum =tripSeat.seatNumber, TripTmeTableId =tripSeat.tripId });
+            await _context.SaveChangesAsync();
+            return _response;
+            
+        }
     }
 }
