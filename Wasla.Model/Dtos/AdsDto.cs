@@ -10,6 +10,7 @@ namespace Wasla.Model.Dtos
 	public class AdsDto
 	{
 		public string Name { get; set; }
+		public string CustomerId { get; set; }
 		public DateTime StartDate { get; set; }
 		public DateTime EndDate { get; set; }
 		public IFormFile? ImageFile { get; set; }

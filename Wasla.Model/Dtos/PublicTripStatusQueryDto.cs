@@ -9,7 +9,7 @@ namespace Wasla.Model.Dtos
 {
     public class PublicTripStatusQueryDto
     {
-        public TripSatus Status { get; set; }
+        public TripStatus Status { get; set; }
         public int TotalTripSeats { get; set; }
         public int ReserverdSeats { get; set; }
     }

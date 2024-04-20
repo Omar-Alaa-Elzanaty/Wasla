@@ -128,6 +128,16 @@ namespace Wasla.Services.Authentication.AdminServices
             _context.OrganizationsRegisters.Remove(request);
             return _response;
         }
+        public async Task<BaseResponse> DisplayOrganizationRequestAsync()
+        {
+            var entities = await _context.OrganizationsRegisters.ToListAsync();
+
+            var requests = _mapper.Map<List<DisplayOrganizationRequest>>(entities);
+
+            _response.Data = entities;
+
+            return _response;
+        }
 
         public async Task<BaseResponse> GetAllOrgsAsync()
         {

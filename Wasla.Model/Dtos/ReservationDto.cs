@@ -8,7 +8,6 @@
 	}
 	public class ReservationDto
 	{
-		public string CustomerId { get; set; }
 		public int TripId { get; set; }
 		public List<SeatInfo> seats { get; set; }
 	}

@@ -90,7 +90,7 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
 
             return _response;
         }
-        public async Task<BaseResponse> UpdateTripStatus(int tripId, TripSatus status)
+        public async Task<BaseResponse> UpdateTripStatus(int tripId, TripStatus status)
         {
             var trip = await _context.PublicDriverTrips.FindAsync(tripId);
 
@@ -109,7 +109,7 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             publicDriverTrip.PublicDriverId = userId;
             publicDriverTrip.IsActive = true;
             publicDriverTrip.AcceptPackages = publicDriverTrip.AcceptRequests = true;
-            publicDriverTrip.Status = TripSatus.None;
+            publicDriverTrip.Status = TripStatus.None;
 
             await _context.AddAsync(publicDriverTrip);
             await _context.SaveChangesAsync();
@@ -165,7 +165,7 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             trip.IsActive = false;
             trip.IsStart = true;
             trip.AcceptPackages = false;
-            trip.Status = TripSatus.OnRoad;
+            trip.Status = TripStatus.OnRoad;
             _response.Message = _localization["SuccessProcess"].Value;
             return _response;
         }
@@ -218,5 +218,7 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             _response.Data = reservations;
             return _response;
         }
+
+       
     }
 }

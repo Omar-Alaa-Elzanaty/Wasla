@@ -664,7 +664,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             if (tripCheck is null)
                 return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound,_localization["tripNotFound"].Value);
           
-            tripCheck.Status = TripSatus.TakeBreak;
+            tripCheck.Status = TripStatus.TakeBreak;
             var result = _context.TripTimeTables.Update(tripCheck);
             await _context.SaveChangesAsync();
             _response.Message = _localization["updateTripSuccess"].Value;
@@ -698,7 +698,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                 Where(t => t.Trip.OrganizationId == tripRequest.OrgId &&
                 t.DriverId == tripRequest.DriverId &&
                 t.StartTime >= tripRequest.CurrentDate && t.StartTime <= endDate &&
-                t.Status != TripSatus.Arrived && t.Status != TripSatus.end && t.Status != TripSatus.OnRoad).OrderBy(t => t.StartTime)
+                t.Status != TripStatus.Arrived && t.Status != TripStatus.end && t.Status != TripStatus.OnRoad).OrderBy(t => t.StartTime)
                 .Select(t => new TripForOrgDriverDays
                 {
                     TripTimeTableId = t.Id,
@@ -808,5 +808,6 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             }
           return _response;
         }
+
     }
 }
