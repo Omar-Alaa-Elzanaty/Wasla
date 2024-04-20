@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Runtime.CompilerServices;
+using AutoMapper;
 using Wasla.Model.Dtos;
 using Wasla.Model.Models;
 
@@ -73,7 +74,7 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<TripTimeTable, UpdateTripDto>().ReverseMap();
             CreateMap<TripTimeTable, TripForDriverDto>().ReverseMap();
             CreateMap<TripTimeTable, TripForUserDto>().ForMember(dest=>dest.orgName,opt=>opt.MapFrom(src=>src.Trip.Organization.Name));
-
+            CreateMap<TripTimeTableStationDto, Station>();
             //*****************************
 
             //Package
@@ -113,7 +114,7 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<UpdatePublicDriverProfileVehicleCommand, Vehicle>();
             CreateMap<FollowDto,UserFollow>().ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.SenderId));
             CreateMap<FollowRequests, FollowDto>().ReverseMap();
-
+            CreateMap<GetOrgDriverProfileDto, Driver>().ReverseMap();
 
             CreateMap<Vehicle, TripForDriverVehicleDto>();
         }

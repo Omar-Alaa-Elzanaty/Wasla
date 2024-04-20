@@ -21,6 +21,7 @@ namespace Wasla.Model.Models
 		public virtual ICollection<VehicleRate> VehicleRates { get; set; }
 		public virtual ICollection<DriverRate> DriversRate { get; set; }
 		public virtual ICollection<OrganizationRate> OrganizationRates { get; set; }
+		public virtual ICollection<UserFollow> Follows { get; set; }
 
 	}
 }
