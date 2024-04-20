@@ -2,13 +2,8 @@
 using AutoMapper.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-using Microsoft.IdentityModel.Tokens;
-using Org.BouncyCastle.Asn1.Cms;
-using Org.BouncyCastle.Ocsp;
-using Twilio.Rest.Accounts.V1.Credential;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
@@ -17,7 +12,6 @@ using Wasla.Model.Helpers.Statics;
 using Wasla.Model.Models;
 using Wasla.Services.Exceptions;
 using Wasla.Services.HlepServices.MediaSerivces;
-using Wasla.Services.ShareService;
 
 namespace Wasla.Services.EntitiesServices.PassangerServices
 {
@@ -533,10 +527,10 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             if (requestExist)
                 return BaseResponse.GetErrorException(HttpStatusErrorCode.BadRequest, "this request already exist");
             var req = _mapper.Map<FollowRequests>(followDto);
-             await _context.FollowRequests.AddAsync(req);
-              await _context.SaveChangesAsync();
-             _response.Message = _localization["createFollowRequestSuccess"].Value;
-             return _response;
+            await _context.FollowRequests.AddAsync(req);
+            await _context.SaveChangesAsync();
+            _response.Message = _localization["createFollowRequestSuccess"].Value;
+            return _response;
         }
 
 
@@ -570,8 +564,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         {
             var requestExist = _context.FollowRequests.Any(f => f.SenderId == followDto.SenderId && f.FollowerId == followDto.FollowerId);
             if (!requestExist)
-                return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound,_localization[ "FollowRequestExist"].Value);
-            var request= _mapper.Map<FollowRequests>(followDto);
+                return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, _localization["FollowRequestExist"].Value);
+            var request = _mapper.Map<FollowRequests>(followDto);
 
             _context.FollowRequests.Remove(request);
             await _context.SaveChangesAsync();
@@ -581,16 +575,77 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
         public async Task<BaseResponse> DeleteFollowerAsync(FollowDto followDto)
         {
-            var followExist = _context.UserFollows.Any(f => (f.CustomerId == followDto.SenderId && f.FollowerId == followDto.FollowerId)||(f.CustomerId == followDto.FollowerId && f.FollowerId == followDto.SenderId));
+            var followExist = _context.UserFollows.Any(f => (f.CustomerId == followDto.SenderId && f.FollowerId == followDto.FollowerId) || (f.CustomerId == followDto.FollowerId && f.FollowerId == followDto.SenderId));
             if (!followExist)
-                return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound,_localization["FollowNotFound"].Value);
+                return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, _localization["FollowNotFound"].Value);
             var request = _mapper.Map<UserFollow>(followDto);
             _context.UserFollows.Remove(request);
             await _context.SaveChangesAsync();
             _response.Message = _localization["RemoveFollowSuccess"].Value;
             return _response;
         }
+        public async Task<BaseResponse> DeleteFollowersAsync(DeleteFromFollowersCommand command)
+        {
+            var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User);
 
-        
+            if (user is null)
+            {
+                return BaseResponse.GetErrorException(System.Net.HttpStatusCode.Unauthorized, _localization["Unauthorized"].Value);
+            }
+
+            var customer = await _context.Customers.FindAsync(user.Id);
+
+            var follower = customer!.Follows.Single(x => x.CustomerId == command.followerId);
+
+            _context.UserFollows.Remove(follower);
+            await _context.SaveChangesAsync();
+
+            _response.Message = _localization["SuccessProcess"].Value;
+            return _response;
+        }
+        public async Task<BaseResponse> AcceptFollowRequestAsync(AcceptFollowRequestCommand command)
+        {
+
+
+            var followRequest = await _context.FollowRequests
+                .SingleAsync(x => x.SenderId == command.SenderId && x.FollowerId == command.FolowerId);
+
+            if (followRequest is null)
+            {
+                return BaseResponse.GetErrorException(System.Net.HttpStatusCode.Unauthorized, _localization["InvalidRequest"].Value);
+            }
+
+            var follow = new UserFollow()
+            {
+                CustomerId = followRequest.SenderId,
+                FollowerId = followRequest.FollowerId
+            };
+
+            await _context.AddAsync(follow);
+            await _context.SaveChangesAsync();
+
+            _response.Message = _localization["SuccessProcess"].Value;
+            return _response;
+        }
+        public async Task<BaseResponse> DisplayFollowingRequestsAsync()
+        {
+            var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User);
+
+            if (user is null)
+            {
+                return BaseResponse.GetErrorException(System.Net.HttpStatusCode.Unauthorized, _localization["Unauthorized"].Value);
+            }
+
+            var requests = await _context.FollowRequests.Where(x => x.FollowerId == user.Id)
+                                        .Select(x => new DisplayFollowingRequestsDto()
+                                        {
+                                            FollowingId = x.FollowerId,
+                                            Name = x.Follower.FirstName + ' ' + x.Follower.LastName,
+                                            PhotoUrl = x.Follower.PhotoUrl,
+                                            UserName = x.Follower.UserName
+                                        }).ToListAsync();
+            _response.Data = requests;
+            return _response;
+        }
     }
 }

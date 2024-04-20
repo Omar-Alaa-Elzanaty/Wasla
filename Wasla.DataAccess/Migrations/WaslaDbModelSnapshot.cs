@@ -37,7 +37,7 @@ namespace Wasla.DataAccess.Migrations
 
                     b.HasIndex("BussesId");
 
-                    b.ToTable("AdvertismentVehicle");
+                    b.ToTable("AdvertismentVehicle", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -279,7 +279,7 @@ namespace Wasla.DataAccess.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("Advertisments");
+                    b.ToTable("Advertisments", (string)null);
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.CustomerTripOrder", b =>
@@ -326,7 +326,7 @@ namespace Wasla.DataAccess.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("CustomerTripOrders");
+                    b.ToTable("CustomerTripOrders", (string)null);
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.DriverRate", b =>
@@ -345,7 +345,7 @@ namespace Wasla.DataAccess.Migrations
                     b.HasIndex("CustomerId")
                         .IsUnique();
 
-                    b.ToTable("DriverRates");
+                    b.ToTable("DriverRates", (string)null);
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.FollowRequests", b =>
@@ -360,7 +360,7 @@ namespace Wasla.DataAccess.Migrations
 
                     b.HasIndex("FollowerId");
 
-                    b.ToTable("FollowRequests");
+                    b.ToTable("FollowRequests", (string)null);
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.Line", b =>
@@ -383,7 +383,7 @@ namespace Wasla.DataAccess.Migrations
 
                     b.HasIndex("StartId");
 
-                    b.ToTable("Lines");
+                    b.ToTable("Lines", (string)null);
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.OrganizationRate", b =>
@@ -401,7 +401,7 @@ namespace Wasla.DataAccess.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("OrganizationRate");
+                    b.ToTable("OrganizationRate", (string)null);
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.OrganizationRegisterRequest", b =>
@@ -441,7 +441,7 @@ namespace Wasla.DataAccess.Migrations
 
                     b.HasKey("RequestId");
 
-                    b.ToTable("OrganizationsRegisters");
+                    b.ToTable("OrganizationsRegisters", (string)null);
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.Package", b =>
@@ -499,7 +499,7 @@ namespace Wasla.DataAccess.Migrations
 
                     b.HasIndex("TripId");
 
-                    b.ToTable("Packages");
+                    b.ToTable("Packages", (string)null);
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.PublicDriverRate", b =>
@@ -517,7 +517,7 @@ namespace Wasla.DataAccess.Migrations
 
                     b.HasIndex("CustomerId");
 
-                    b.ToTable("PublicDriversRates");
+                    b.ToTable("PublicDriversRates", (string)null);
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.PublicDriverTrip", b =>
@@ -570,7 +570,7 @@ namespace Wasla.DataAccess.Migrations
 
                     b.HasIndex("StartStationId");
 
-                    b.ToTable("PublicDriverTrips");
+                    b.ToTable("PublicDriverTrips", (string)null);
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.PublicDriverTripRequest", b =>
@@ -597,7 +597,7 @@ namespace Wasla.DataAccess.Migrations
 
                     b.HasIndex("PublicDriverTripId");
 
-                    b.ToTable("PublicDriverTripRequests");
+                    b.ToTable("PublicDriverTripRequests", (string)null);
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.PublicDriverTripReservation", b =>
@@ -621,7 +621,7 @@ namespace Wasla.DataAccess.Migrations
 
                     b.HasIndex("PublicDriverTripId");
 
-                    b.ToTable("PublicDriverTripReservation");
+                    b.ToTable("PublicDriverTripReservation", (string)null);
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.PublicStation", b =>
@@ -646,7 +646,7 @@ namespace Wasla.DataAccess.Migrations
 
                     b.HasKey("StationId");
 
-                    b.ToTable("PublicStations");
+                    b.ToTable("PublicStations", (string)null);
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.Reservation", b =>
@@ -700,7 +700,7 @@ namespace Wasla.DataAccess.Migrations
 
                     b.HasIndex("TriptimeTableId");
 
-                    b.ToTable("Reservations");
+                    b.ToTable("Reservations", (string)null);
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.Seat", b =>
@@ -718,7 +718,7 @@ namespace Wasla.DataAccess.Migrations
 
                     b.HasIndex("TripTimeTableId");
 
-                    b.ToTable("Seats");
+                    b.ToTable("Seats", (string)null);
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.Station", b =>
@@ -749,7 +749,7 @@ namespace Wasla.DataAccess.Migrations
 
                     b.HasIndex("OrganizationId");
 
-                    b.ToTable("Stations");
+                    b.ToTable("Stations", (string)null);
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.Trip", b =>
@@ -788,7 +788,7 @@ namespace Wasla.DataAccess.Migrations
 
                     b.HasIndex("OrganizationId");
 
-                    b.ToTable("Trips");
+                    b.ToTable("Trips", (string)null);
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.TripTimeTable", b =>
@@ -835,7 +835,7 @@ namespace Wasla.DataAccess.Migrations
 
                     b.HasIndex("VehicleId");
 
-                    b.ToTable("TripTimeTables");
+                    b.ToTable("TripTimeTables", (string)null);
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.UserFollow", b =>
@@ -850,7 +850,7 @@ namespace Wasla.DataAccess.Migrations
 
                     b.HasIndex("FollowerId");
 
-                    b.ToTable("UserFollows");
+                    b.ToTable("UserFollows", (string)null);
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.Vehicle", b =>
@@ -903,7 +903,7 @@ namespace Wasla.DataAccess.Migrations
                         .IsUnique()
                         .HasFilter("[PublicDriverId] IS NOT NULL");
 
-                    b.ToTable("Vehicles");
+                    b.ToTable("Vehicles", (string)null);
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.VehicleRate", b =>
@@ -924,7 +924,7 @@ namespace Wasla.DataAccess.Migrations
 
                     b.HasIndex("VehicleId");
 
-                    b.ToTable("VehicleRates");
+                    b.ToTable("VehicleRates", (string)null);
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.Organization", b =>
@@ -1117,7 +1117,7 @@ namespace Wasla.DataAccess.Migrations
 
             modelBuilder.Entity("Wasla.Model.Models.Account", b =>
                 {
-                    b.OwnsMany("Wasla.Model.Helpers.RefreshToken", "RefreshTokens", b1 =>
+                    b.OwnsMany("Wasla.Model.Models.Account.RefreshTokens#Wasla.Model.Helpers.RefreshToken", "RefreshTokens", b1 =>
                         {
                             b1.Property<string>("AccountId")
                                 .HasColumnType("nvarchar(450)");

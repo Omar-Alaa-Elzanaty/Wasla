@@ -14,9 +14,9 @@ namespace Wasla.DataAccess.ModelsConfig
 		public void Configure(EntityTypeBuilder<UserFollow> builder)
 		{
 			builder.HasKey(uf => new {uf.CustomerId,uf.FollowerId});
-			builder.HasOne(uf => uf.Customer).WithMany().HasForeignKey(u => u.CustomerId);
+			builder.HasOne(uf => uf.Customer).WithMany(x => x.Follows).HasForeignKey(u => u.CustomerId);
 			builder.HasOne(uf => uf.Follower).WithMany().HasForeignKey(uf => uf.FollowerId)
-				.OnDelete(deleteBehavior:DeleteBehavior.NoAction);
+				.OnDelete(deleteBehavior: DeleteBehavior.NoAction);
 		}
 	}
 }

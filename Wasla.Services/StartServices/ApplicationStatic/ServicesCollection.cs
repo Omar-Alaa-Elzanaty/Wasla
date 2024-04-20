@@ -15,6 +15,7 @@ using Wasla.Services.EntitiesServices.OrganizationSerivces;
 using Wasla.Services.EntitiesServices.PassangerServices;
 using Wasla.Services.EntitiesServices.PublicDriverServices;
 using Wasla.Services.Exceptions.ErrorExceptionService;
+using Wasla.Services.EntitiesServices.OrganizationDriverServices;
 
 namespace Wasla.Services.StartServices.ApplicationStatic
 {
@@ -35,6 +36,7 @@ namespace Wasla.Services.StartServices.ApplicationStatic
             services.AddScoped<IOrganizationService, OrganizationSerivce>();
             services.AddScoped<IPassangerService, PassangerService>();
             services.AddScoped<IDriverServices, DriverServices>();
+            services.AddScoped<IOrganizationDriverService,OrganizationDriverService>();
             services.AddScoped<IVerifyService, VerifyService>();
             services.AddScoped<IAuthVerifyService, AuthVerifyService>();
         }
