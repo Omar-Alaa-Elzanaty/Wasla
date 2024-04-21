@@ -75,7 +75,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
             List<Reservation> completeReserve = new List<Reservation>();
             //TODO: need to make reservation to every name in reservation dto seatInfo
-            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result.Id;
+            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result?.Id;
 
             if (customerId is null)
             {
@@ -162,7 +162,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         }
         public async Task<BaseResponse> OrganizationRateAsync(OrganizationRateDto model)
         {
-            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result.Id;
+            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result?.Id;
 
             if (customerId is null)
             {
@@ -196,7 +196,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         }
         public async Task<BaseResponse> OrganizationRateRemoveAsync(string organizationId)
         {
-            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result.Id;
+            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result?.Id;
 
             if (customerId is null)
             {
@@ -240,7 +240,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
         public async Task<BaseResponse> AddAdsAsync(PassangerAddAdsDto adsRequest)
         {
-            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result.Id;
+            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result?.Id;
 
             if (customerId is null)
             {
@@ -357,7 +357,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         }
         public async Task<BaseResponse> GetUserOrgPackagesAsync()
         {
-            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result.Id;
+            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result?.Id;
 
             if (customerId is null)
             {
@@ -370,7 +370,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         }
         public async Task<BaseResponse> GetUserPublicPackagesAsync()
         {
-            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result.Id;
+            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result?.Id;
 
             if (customerId is null)
             {
@@ -383,7 +383,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         }
         public async Task<BaseResponse> GetProfile()
         {
-            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result.Id;
+            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result?.Id;
 
             if (customerId is null)
             {
@@ -418,7 +418,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         }
         public async Task<BaseResponse> GetInComingReservations()
         {
-            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result.Id;
+            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result?.Id;
 
             if (customerId is null)
             {
@@ -436,7 +436,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         }
         public async Task<BaseResponse> GetEndedReservations()
         {
-            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result.Id;
+            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result?.Id;
 
             if (customerId is null)
             {
@@ -453,7 +453,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         }
         public async Task<BaseResponse> GetTripSuggestion()
         {
-            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result.Id;
+            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result?.Id;
 
             if (customerId is null)
             {
