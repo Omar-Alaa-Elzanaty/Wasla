@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace Wasla.Model.Helpers
 {
     public class RegisterHelp
     {
-      //  [Required(ErrorMessage = "phoneNumberRequired")]
+        //  [Required(ErrorMessage = "phoneNumberRequired")]
         public string? PhoneNumber { get; set; }
 
+        [StringLength(6,MinimumLength =6)]
         [Required(ErrorMessage = "PasswordRequired")]
         public string Password { get; set; }
         public string? Email { get; set; }
@@ -23,7 +19,7 @@ namespace Wasla.Model.Helpers
 
         public string? LastName { get; set; }
 
-        
+
         [Required(ErrorMessage = "userNameRequired")]
         public string UserName { get; set; }
     }
