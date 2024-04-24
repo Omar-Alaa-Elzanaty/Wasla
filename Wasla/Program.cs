@@ -1,30 +1,28 @@
+using System.Globalization;
+using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
-using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Globalization;
-using System.Text;
 using Wasla.DataAccess;
 using Wasla.DataAccess.AutoMapping;
 using Wasla.Model.Helpers;
 using Wasla.Model.Models;
 using Wasla.Services.Exceptions.FilterException;
-using Wasla.Services.StartServices.Initizalize;
-using Wasla.Services.StartServices.ApplicationStatic;
 using Wasla.Services.HlepServices.MultLanguageService.JsonLocalizer;
+using Wasla.Services.StartServices.ApplicationStatic;
+using Wasla.Services.StartServices.Initizalize;
 
 namespace Wasla
 {
     public class Program
-	{
-		public static void Main(string[] args)
-		{
-			var builder = WebApplication.CreateBuilder(args);
+    {
+        public static void Main(string[] args)
+        {
+            var builder = WebApplication.CreateBuilder(args);
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(option =>
             {
@@ -59,12 +57,12 @@ namespace Wasla
                                     );
             builder.Services.AddIdentity<Account, IdentityRole>(opt =>
             {
-				opt.Password.RequireDigit = false;
-				opt.Password.RequiredLength = 4;
-				opt.Password.RequireNonAlphanumeric = false;
-				opt.Password.RequireUppercase = false;
-				opt.Password.RequireLowercase = false;
-			})
+                opt.Password.RequireDigit = false;
+                opt.Password.RequiredLength = 1;
+                opt.Password.RequireNonAlphanumeric = false;
+                opt.Password.RequireUppercase = false;
+                opt.Password.RequireLowercase = false;
+            })
                 .AddEntityFrameworkStores<WaslaDb>().AddDefaultTokenProviders();
 
             builder.Services.AddDistributedMemoryCache();
@@ -131,20 +129,20 @@ namespace Wasla
             // Add services to the container.
             builder.Services.AddServices();
 
-			builder.Services.AddControllers();
-			builder.Services.AddAutoMapper(typeof(AuthAutoMapper));
-			builder.Services.AddScoped<ValidationFilterAttribute>();
+            builder.Services.AddControllers();
+            builder.Services.AddAutoMapper(typeof(AuthAutoMapper));
+            builder.Services.AddScoped<ValidationFilterAttribute>();
 
             builder.Services.AddCors();
             builder.Services.AddAuthorization();
 
             var app = builder.Build();
-			// Configure the HTTP request pipeline.
-			if (app.Environment.IsDevelopment())
-			{
-				app.UseSwagger();
-				app.UseSwaggerUI();
-			}
+            // Configure the HTTP request pipeline.
+            if (app.Environment.IsDevelopment())
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI();
+            }
 
             _ = DataSeed(app);
 
@@ -163,15 +161,15 @@ namespace Wasla
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseCors(cores => cores.AllowAnyHeader().AllowAnyHeader().AllowAnyOrigin().AllowAnyMethod());
-			app.MapControllers();
+            app.MapControllers();
             app.Run();
         }
         static async Task DataSeed(WebApplication app)
-		{
-			using var scope = app.Services.CreateScope();
-			var Initalizer = scope.ServiceProvider.GetRequiredService<IInitializer>();
+        {
+            using var scope = app.Services.CreateScope();
+            var Initalizer = scope.ServiceProvider.GetRequiredService<IInitializer>();
             await Initalizer.Initialize();
-		}
-        
+        }
+
     }
 }
