@@ -58,7 +58,7 @@ namespace Wasla
             builder.Services.AddIdentity<Account, IdentityRole>(opt =>
             {
                 opt.Password.RequireDigit = false;
-                opt.Password.RequiredLength = 1;
+                opt.Password.RequiredLength = 6;
                 opt.Password.RequireNonAlphanumeric = false;
                 opt.Password.RequireUppercase = false;
                 opt.Password.RequireLowercase = false;
