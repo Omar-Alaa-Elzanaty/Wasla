@@ -31,7 +31,7 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
         public async Task<BaseResponse> GetPublicPackagesRequestAsync(string driverId)
         {
             var packages = await _context.Packages.Where(p => p.DriverId != null && p.DriverId == driverId && p.Status == 0).ToListAsync();
-            var res = _mapper.Map<DriverPackagesDto>(packages);
+            var res = _mapper.Map<List<DriverPackagesDto>>(packages);
             _response.Data = res;
             return _response;
         }
@@ -52,7 +52,7 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
         public async Task<BaseResponse> GetDriverPublicPackagesAsync(string DriverId)
         {
             var packages = await _context.Packages.Where(p => p.DriverId == DriverId).ToListAsync();
-            var res = _mapper.Map<DriverPackagesDto>(packages);
+            var res = _mapper.Map<List<DriverPackagesDto>>(packages);
             _response.Data = res;
             return _response;
         }
