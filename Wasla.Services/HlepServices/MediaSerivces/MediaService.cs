@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Twilio.TwiML.Messaging;
 using Wasla.Model.Helpers;
+using Wasla.Model.Helpers.Statics;
 using Wasla.Services.Exceptions;
 
 namespace Wasla.Services.HlepServices.MediaSerivces
@@ -34,7 +35,7 @@ namespace Wasla.Services.HlepServices.MediaSerivces
             
             ext = ext.ToLower();
 
-            return ext == ".png" || ext == ".jpg" || ext == ".jfif"; 
+            return true/*ext == ".png" || ext == ".jpg" || ext == ".jfif"*/; 
         }
         bool IsVideoExtension(string ext) => ext == "d" || ext == "dd";
 
@@ -87,6 +88,10 @@ namespace Wasla.Services.HlepServices.MediaSerivces
         }
         public async Task DeleteAsync(string url)
         {
+            if(url== MediaStandar.StandarProfileImage)
+            {
+                return;
+            }
             string RootPath = _host.WebRootPath.Replace("\\\\", "\\");
             var mediaNameToDelete = Path.GetFileNameWithoutExtension(url);
             var EXT = Path.GetExtension(url);

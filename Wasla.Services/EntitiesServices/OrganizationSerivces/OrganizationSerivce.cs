@@ -198,6 +198,15 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             }
             return _response;
         }
+        public async Task<BaseResponse> GetEmployees(string orgId)
+        {
+            var entities = await _context.Employees.Where(x => x.OrgId == orgId)
+                            .ToListAsync();
+            var employess = _mapper.Map<List<GetEmployeeOrganizationDto>>(entities);
+
+            _response.Data = employess;
+            return _response;
+        }
         public async Task<BaseResponse> AddEmployeeAsync(EmployeeRegisterDto model, string? orgId)
         {
             Employee employee = _mapper.Map<Employee>(model);
@@ -861,6 +870,17 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             await _context.SaveChangesAsync();
             return _response;
             
+        }
+
+        public async Task<BaseResponse> GetAllAds(string orgId)
+        {
+            var entities = await _context.Advertisments.Where(x => x.organizationId == orgId)
+                            .ToListAsync();
+
+            var advertisments = _mapper.Map<List<GetOrganizationAds>>(entities);
+
+            _response.Data = advertisments;
+            return _response;
         }
     }
 }

@@ -97,7 +97,7 @@ namespace Wasla.Services.Authentication.AuthServices
 		public async Task<BaseResponse> OrgnaizationRegisterAsync(OrgRegisterRequestDto request)
 		{
 			//TODO: remove comment
-			_ =_verifyService.CompareOtpAsync(request.Otp);
+			//_ =_verifyService.CompareOtpAsync(request.Otp);
 
 			if (await _dbContext.OrganizationsRegisters.AnyAsync(o => o.Email == request.Email)
 				|| await _authVerifyService.CheckEmail(request.Email))
@@ -264,7 +264,7 @@ namespace Wasla.Services.Authentication.AuthServices
 		}
 		public async Task<BaseResponse> GetOrgRoles(string userName)
 		{
-			var preRole = "Org_" + userName;
+			var preRole = "Org_" + userName.Split('@')[0];
 			var Roles = await _roleManager.Roles
 		   .Where(r => r.Name.StartsWith(preRole)).Select(r => new { r.Id, r.Name })
 		   .ToListAsync();

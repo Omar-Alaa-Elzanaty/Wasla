@@ -15,6 +15,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         Task<BaseResponse> DeleteEmployeeAsync(string employeeId);
         Task<BaseResponse> GetAllDrivers(string orgId);
         #region Ads
+        Task<BaseResponse>GetAllAds(string orgId);
         Task<BaseResponse> AddAdsAsync(AdsDto model, string orgId);
         Task<BaseResponse> AddAdsToVehicleAsync(int adsId, int vehicleId);
         Task<BaseResponse> RemoveAdsFromVehicleAsync(int adsId, int vehicleId);
@@ -22,6 +23,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         Task<BaseResponse> DeleteAdsAsync(int adsId);
         #endregion
         Task<BaseResponse> AddEmployeeAsync(EmployeeRegisterDto model, string? orgId);
+        Task<BaseResponse> GetEmployees(string orgId);
         #region station
         Task<BaseResponse> AddStationAsync(StationDto model, string orgId);
         Task<BaseResponse> UpdateStationAsync(StationDto stationDto, string orgId, int stationId);

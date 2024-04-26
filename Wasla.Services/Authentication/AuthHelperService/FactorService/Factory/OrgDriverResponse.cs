@@ -20,6 +20,7 @@ namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
         {
             var driver = await _db.Drivers.FirstOrDefaultAsync(u => u.Id == responseHelp.userId);
             var driverResponse = new DriverResponseDto();
+            driverResponse.UserId = driver.Id;
             driverResponse.ConnectionData.Email = driver.Email;
             driverResponse.UserName = driver.UserName;
             driverResponse.ConnectionData.phone = driver.PhoneNumber;

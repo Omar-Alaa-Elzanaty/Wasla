@@ -87,6 +87,11 @@ namespace Wasla.Api.Controllers
 		{
 			return Ok(await _orgService.VehicleAnalysisAsync(orgId??""));
 		}
+		[HttpGet("getEmplyees/{orgId}")]
+		public async Task<IActionResult>GetAllOrganizationEmployees(string orgId)
+		{
+			return Ok(await _orgService.GetEmployees(orgId));
+		}
 		[HttpPost("{orgId}/employee/add")]
 		public async Task<IActionResult> AddEmployee([FromForm] EmployeeRegisterDto model, string orgId)
 		{
@@ -103,6 +108,11 @@ namespace Wasla.Api.Controllers
 			return Ok(await _orgService.GetAllDrivers(orgId));
 		}
 		#region Ads
+		[HttpGet("getAds/{orgId}")]
+		public async Task<IActionResult> GetAllAds(string orgId)
+		{
+			return Ok(await _orgService.GetAllAds(orgId));
+		}
 		[HttpPost("{orgId}/ads/add")]
 		public async Task<IActionResult> AddAds([FromForm]AdsDto model, string orgId)
 		{

@@ -26,6 +26,7 @@ namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
         {
             var employee = await _db.Organizations.FirstOrDefaultAsync(u => u.Id == responseHelp.userId);
             var employeeResponse = new OrgEmployeeResponseDto();
+            employeeResponse.UserId = employee.Id;
             employeeResponse.ConnectionData.Email = employee.Email;
             employeeResponse.UserName = employee.UserName;
             employeeResponse.ConnectionData.phone = employee.PhoneNumber;
