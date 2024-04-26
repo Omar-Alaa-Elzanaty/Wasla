@@ -148,7 +148,7 @@ namespace Wasla.Services.Authentication.AdminServices
         }
 
         #region Station
-        public async Task<BaseResponse> AddStationAsync(StationDto stationDto)
+        public async Task<BaseResponse> AddStationAsync(PublicStationRequestDto stationDto)
         {
             if (await _context.PublicStations.AnyAsync(v => v.Name == stationDto.Name))
             {
@@ -162,7 +162,7 @@ namespace Wasla.Services.Authentication.AdminServices
             // _response.Data = station;
             return _response;
         }
-        public async Task<BaseResponse> UpdateStationAsync(StationDto stationDto, int stationId)
+        public async Task<BaseResponse> UpdateStationAsync(PublicStationRequestDto stationDto, int stationId)
         {
             var station = await _context.PublicStations.FirstOrDefaultAsync(v => v.StationId == stationId);
 

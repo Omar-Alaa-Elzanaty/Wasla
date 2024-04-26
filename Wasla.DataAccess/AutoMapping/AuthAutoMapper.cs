@@ -24,15 +24,18 @@ namespace Wasla.DataAccess.AutoMapping
 
             CreateMap<Station,StationDto>().ReverseMap();
             CreateMap<PublicStation, StationDto>().ReverseMap();
+            CreateMap<PublicStation, PublicStationRequestDto>().ReverseMap();
+
 
             //************
             //Trip
-
+            CreateMap<PublicDriver, PubliDriverProfileDto>();
             CreateMap<Trip,AddTripDto>().ReverseMap();
             CreateMap<Trip,UpdateTripDto>().ReverseMap();
             CreateMap<Trip,TripDto>().ReverseMap();
             CreateMap<Trip,TripForDriverDto>().ReverseMap();
-
+            CreateMap<CreatePublicDriverCommand,PublicDriverTrip>().ForMember(dest=>dest.StartDate,opt=>opt.MapFrom(src=>src.StartDate))
+                .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.EndDate));
             //
             CreateMap<AdsDto, Advertisment>().ReverseMap();
             CreateMap<Organization, ResponseOrgSearch>().ReverseMap();
