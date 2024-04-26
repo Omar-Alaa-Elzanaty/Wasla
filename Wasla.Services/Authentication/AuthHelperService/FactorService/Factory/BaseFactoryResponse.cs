@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Localization;
 using Wasla.DataAccess;
 using Wasla.Model.Helpers;
@@ -14,12 +15,18 @@ namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
         private readonly WaslaDb _db;
         private readonly IStringLocalizer<BaseFactoryResponse> _localization;
         private readonly RoleManager<IdentityRole> _roleManager;
-        public BaseFactoryResponse(WaslaDb db, IStringLocalizer<BaseFactoryResponse> localization,RoleManager<IdentityRole> roleManager)
+        private readonly IMapper _mapper;
+        public BaseFactoryResponse(
+            WaslaDb db,
+            IStringLocalizer<BaseFactoryResponse> localization,
+            RoleManager<IdentityRole> roleManager,
+            IMapper mapper)
         {
             _response = new();
             _db = db;
             _localization = localization;
             _roleManager = roleManager;
+            _mapper = mapper;
         }
 
         public async Task<BaseResponse> BaseAuthResponseAsync(AuthResponseFactoryHelp help,string role)
@@ -31,7 +38,7 @@ namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
                     _response.Data = await new PassengerResponse(_db).AuthRespnseFactory(help);
                     break;
                 case  Roles.Role_OrgDriver:
-                    _response.Data = await new OrgDriverResponse(_db,_roleManager).AuthRespnseFactory(help);
+                    _response.Data = await new OrgDriverResponse(_db,_roleManager,_mapper).AuthRespnseFactory(help);
                     break;
                 case Roles.Role_PublicDriver:
                     _response.Data = await new PublicDriverResponse(_db, _roleManager).AuthRespnseFactory(help);

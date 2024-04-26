@@ -117,6 +117,9 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<FollowDto,UserFollow>().ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.SenderId));
             CreateMap<FollowRequests, FollowDto>().ReverseMap();
             CreateMap<GetOrgDriverProfileDto, Driver>().ReverseMap();
+            CreateMap<Organization, DriverOrganization>().ReverseMap();
+            CreateMap<DriverRate, DriverRates>().ReverseMap();
+            CreateMap<Trip, DriverTrip>().ReverseMap();
 
             CreateMap<Vehicle, TripForDriverVehicleDto>();
         }

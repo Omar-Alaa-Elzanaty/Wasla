@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
@@ -11,10 +12,12 @@ namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
     {
         private readonly WaslaDb _db;
         private readonly RoleManager<IdentityRole> _roleManager;
-        public OrgDriverResponse(WaslaDb db,RoleManager<IdentityRole> roleManager) 
+        private readonly IMapper _mapper;
+        public OrgDriverResponse(WaslaDb db, RoleManager<IdentityRole> roleManager, IMapper mapper)
         {
             _db = db;
             _roleManager = roleManager;
+            _mapper = mapper;
         }
         public async Task<DataAuthResponse> AuthRespnseFactory(AuthResponseFactoryHelp responseHelp)
         {
@@ -39,8 +42,8 @@ namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
             //driverResponse.Trips = driver.Trips;
             if(driver.Orgainzation != null)
             {
-                driverResponse.Rates = driver.Rates;
-                driverResponse.Orgainzation = driver.Orgainzation;
+                driverResponse.Rates = _mapper.Map<List<DriverRates>>(driver.Rates);
+                driverResponse.Orgainzation = _mapper.Map<DriverOrganization>(driver.Orgainzation);
 
                 var role = await _roleManager.FindByNameAsync(responseHelp.role);
                 driverResponse.DriverPermissions = _roleManager.GetClaimsAsync(role).Result.Select(c => c.Value).ToList();
