@@ -52,7 +52,7 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _driverService.CreatePublicTrip(userId, command));
         }
-        [HttpGet("updateProfile")]
+        [HttpPut("updateProfile")]
         public async Task<IActionResult> UpdateProflie(UpdatePublicDriverProfileCommand command)
         {
             return Ok(await _driverService.UpdatePublicTrip(command));
@@ -68,7 +68,7 @@ namespace Wasla.Api.Controllers
             return Ok(await _driverService.UpdatePublicTripStart(tripId));
         }
         [HttpGet("trip/byDate/{date}")]
-        public async Task<IActionResult> GetPublicTripsByDate(string date)
+        public async Task<IActionResult> GetPublicTripsByDate(DateTime date)
         {
             return Ok(await _driverService.GetPublicTripsByDate(date));
         }

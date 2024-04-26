@@ -13,6 +13,7 @@
   "ProfileImageFileRequire": "صوره البروفيل مطلوبه",
   "LicenseImageFileRequire": "صوره الرخصه مطلوبه",
   "LicenseNumRequire": "رقم الرخصه مطلوب",
+  "NotPublicTripInDate": "لا يوجد رحلات في هذا البوم",
   //errors
   "AccountExist": "المستخدم موجود مسبقا",
   "phoneNumberExist": "رقم الهاتف موجود مسبقا",

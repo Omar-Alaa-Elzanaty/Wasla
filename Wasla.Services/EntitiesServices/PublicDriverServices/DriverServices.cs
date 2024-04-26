@@ -105,7 +105,12 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
         }
         public async Task<BaseResponse> CreatePublicTrip(string userId, CreatePublicDriverCommand command)
         {
-            var publicDriverTrip = _mapper.Map<PublicDriverTrip>(command);
+            // var publicDriverTrip = _mapper.Map<PublicDriverTrip>(command);
+            var publicDriverTrip = new PublicDriverTrip();
+            publicDriverTrip.StartDate = command.StartDate;
+            publicDriverTrip.EndDate=command.EndDate;
+            publicDriverTrip.StartStationId = command.StartStationId;
+            publicDriverTrip.EndStationId = command.EndStationId;
             publicDriverTrip.PublicDriverId = userId;
             publicDriverTrip.IsActive = true;
             publicDriverTrip.AcceptPackages = publicDriverTrip.AcceptRequests = true;
@@ -170,18 +175,15 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             return _response;
         }
 
-        public async Task<BaseResponse> GetPublicTripsByDate(string date)
+        public async Task<BaseResponse> GetPublicTripsByDate(DateTime date)
         {
-
-            if (DateTime.TryParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var searchDate))
-            {
-                var trips = await _context.PublicDriverTrips.Where(t => t.StartDate.Date == searchDate).ToListAsync();
-                var tripRes = _mapper.Map<List<PublicTripDto>>(trips);
-                _response.Data = tripRes;
-            }
+          var trips = await _context.PublicDriverTrips.Where(t => t.StartDate.Date == date.Date).ToListAsync();
+            if (trips.Count == 0)
+                _response.Message = _localization["NotPublicTripInDate"].Value;
             else
             {
-                _response.Message = _localization["NotPublicTripInDate"].Value;
+                var tripRes = _mapper.Map<List<PublicTripDto>>(trips);
+                _response.Data = tripRes;
             }
             return _response;
         }
@@ -218,7 +220,5 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             _response.Data = reservations;
             return _response;
         }
-
-       
     }
 }

@@ -33,13 +33,13 @@ namespace Wasla.Api.Controllers
             return Ok(await _adminService.ConfirmOrgnaizationRequestAsync(id));
         }
         [HttpPost("station/add")]
-        public async Task<IActionResult> AddStation([FromBody] StationDto model)
+        public async Task<IActionResult> AddStation([FromBody] PublicStationRequestDto model)
         {
 
             return Ok(await _adminService.AddStationAsync(model));
         }
         [HttpPut("station/{stationId}")]
-        public async Task<IActionResult> UpdateStation([FromRoute] int stationId, [FromBody] StationDto model) //circle
+        public async Task<IActionResult> UpdateStation([FromRoute] int stationId, [FromBody] PublicStationRequestDto model) //circle
         {
 
             return Ok(await _adminService.UpdateStationAsync(model, stationId));

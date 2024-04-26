@@ -10,8 +10,8 @@ namespace Wasla.Services.Authentication.AdminServices
         Task<BaseResponse> ConfirmOrgnaizationRequestAsync(int requestId);
         Task<BaseResponse> GetAllOrgsAsync();
         Task<BaseResponse> DisplayOrganizationRequestAsync();
-        Task<BaseResponse> AddStationAsync(StationDto model);
-        Task<BaseResponse> UpdateStationAsync(StationDto stationDto,int stationId);
+        Task<BaseResponse> AddStationAsync(PublicStationRequestDto model);
+        Task<BaseResponse> UpdateStationAsync(PublicStationRequestDto stationDto,int stationId);
         Task<BaseResponse> GetStationsAsync();
         Task<BaseResponse> GetStationAsync(int id);
         Task<BaseResponse> DeleteStationAsync(int id);
