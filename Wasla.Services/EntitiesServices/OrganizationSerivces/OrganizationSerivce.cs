@@ -211,15 +211,15 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         {
             Employee employee = _mapper.Map<Employee>(model);
             employee.OrgId = orgId;
-            employee.UserName = model.Email.Split('@')[0].ToLower() + (model.NationalId % 10000).ToString() + '@' + "wasla.com";
-            string password = string.Empty;
+            employee.UserName = model.Email.Split('@')[0].ToLower();// + (model.NationalId % 10000).ToString() + '@' + "wasla.com";
+            string password = "123@Abc";// string.Empty;
             var rand = new Random();
-
-            for (int i = 0; i < 5; i++)
-            {
-                password += rand.Next(0, 9).ToString();
-            }
-            password += "@Wasla";
+            //
+            //for (int i = 0; i < 5; i++)
+            //{
+            //    password += rand.Next(0, 9).ToString();
+            //}
+            //password += "@Wasla";
 
             if (model.PhotoFile is not null)
             {
