@@ -34,6 +34,7 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<Trip,AddTripDto>().ReverseMap();
             CreateMap<Trip,UpdateTripDto>().ReverseMap();
             CreateMap<Trip,TripDto>().ReverseMap();
+            CreateMap<Trip, OrganizationTripResponse>();
             CreateMap<Trip,TripForDriverDto>().ReverseMap();
             CreateMap<CreatePublicDriverCommand,PublicDriverTrip>().ForMember(dest=>dest.StartDate,opt=>opt.MapFrom(src=>src.StartDate))
                 .ForMember(dest => dest.EndDate, opt => opt.MapFrom(src => src.EndDate));

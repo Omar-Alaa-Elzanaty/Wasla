@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -16,11 +17,16 @@ namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
     public class OrganizationResponse:IAuthResponse
     {
         private readonly WaslaDb _db;
+        private readonly IMapper _mapper;
         private readonly RoleManager<IdentityRole> _roleManager;
-        public OrganizationResponse(WaslaDb db,RoleManager<IdentityRole> roleManager) : base()
+        public OrganizationResponse(
+            WaslaDb db,
+            RoleManager<IdentityRole> roleManager,
+            IMapper mapper) : base()
         {
             _db = db;
             _roleManager = roleManager;
+            _mapper = mapper;
         }
         public async Task<DataAuthResponse> AuthRespnseFactory(AuthResponseFactoryHelp responseHelp)
         {
@@ -38,7 +44,7 @@ namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
             organizationResponse.Role = responseHelp.role;
             organizationResponse.TokensData.RefreshToken = responseHelp.TokensData.RefreshToken;
             organizationResponse.TokensData.RefTokenExpiryDate = responseHelp.TokensData.RefTokenExpiryDate;
-            organizationResponse.TripList = organization.TripList;
+            organizationResponse.TripList = _mapper.Map<List<OrganizationTripResponse>>(organization.TripList);
             organizationResponse.MaxWeight=organization.MaxWeight;
             organizationResponse.WebsiteLink = organization.WebsiteLink;
             organizationResponse.MinWeight=organization.MinWeight;

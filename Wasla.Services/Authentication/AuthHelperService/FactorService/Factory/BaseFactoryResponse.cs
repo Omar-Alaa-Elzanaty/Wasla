@@ -44,7 +44,7 @@ namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
                     _response.Data = await new PublicDriverResponse(_db, _roleManager).AuthRespnseFactory(help);
                     break;
                 case Roles.Role_Org_SuperAdmin:
-                    _response.Data = await new OrganizationResponse(_db,_roleManager).AuthRespnseFactory(help);
+                    _response.Data = await new OrganizationResponse(_db,_roleManager,_mapper).AuthRespnseFactory(help);
                     break;
                 case Roles.Role_Org_Employee:
                     _response.Data = await new OrgEmployeeResponse(_db, _roleManager).AuthRespnseFactory(help);
