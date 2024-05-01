@@ -7,7 +7,7 @@ namespace Wasla.Model.Helpers
         //  [Required(ErrorMessage = "phoneNumberRequired")]
         public string? PhoneNumber { get; set; }
 
-        [StringLength(6,MinimumLength =6)]
+        [StringLength(100,MinimumLength =6)]
         [Required(ErrorMessage = "PasswordRequired")]
         public string Password { get; set; }
         public string? Email { get; set; }

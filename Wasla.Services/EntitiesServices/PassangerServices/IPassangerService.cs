@@ -6,32 +6,32 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 {
     public interface IPassangerService
     {
-        Task<BaseResponse> GetProfile();
-        Task<BaseResponse> ReservationAsync(ReservationDto order);
-        Task<BaseResponse> GetInComingReservations();
-        Task<BaseResponse> GetEndedReservations();
+        Task<BaseResponse> GetProfile(string customerId);
+        Task<BaseResponse> ReservationAsync(ReservationDto order,string customerId);
+        Task<BaseResponse> GetInComingReservations(string customerId);
+        Task<BaseResponse> GetEndedReservations(string customerId);
         Task<BaseResponse> PassengerCancelReversionAsyn(int reverseId);
         Task<BaseResponse> SeatsRecordsAsync(int tripId);
-        Task<BaseResponse> OrganizationRateAsync(OrganizationRateDto model);
-        Task<BaseResponse> OrganizationRateRemoveAsync(string organizationId);
+        Task<BaseResponse> OrganizationRateAsync(OrganizationRateDto model,string customerId);
+        Task<BaseResponse> OrganizationRateRemoveAsync(string organizationId,string customerId);
         Task<BaseResponse> GetLinesAsync(string orgId);
         Task<BaseResponse> AddPackagesAsync(PackagesRequestDto model);
         Task<BaseResponse> UpdatePackagesAsync(PackagesRequestDto model, int packageId);
-        Task<BaseResponse> GetUserOrgPackagesAsync();
-        Task<BaseResponse> GetUserPublicPackagesAsync();
+        Task<BaseResponse> GetUserOrgPackagesAsync(string customerId);
+        Task<BaseResponse> GetUserPublicPackagesAsync(string customerId);
         Task<BaseResponse> RemovePackageAsync(int packageId);
         Task<BaseResponse> CreateFollowRequestAsync(FollowDto followDto);
         Task<BaseResponse> ConfirmFollowRequestAsync(FollowDto followDto);
         Task<BaseResponse> DeleteFollowRequestAsync(FollowDto followDto);
         Task<BaseResponse> DeleteFollowerAsync(FollowDto followDto);
-        Task<BaseResponse> GetTripSuggestion();
+        Task<BaseResponse> GetTripSuggestion(string customerId);
 
-        Task<BaseResponse>AddAdsAsync(PassangerAddAdsDto ads);
+        Task<BaseResponse>AddAdsAsync(PassangerAddAdsDto ads, string customerId);
         Task<BaseResponse> LinesVehiclesCountAsync(string orgId);
         Task<BaseResponse> SearchUser(string request);
         Task<BaseResponse> GetUserBySearch(string userId);
         Task<BaseResponse> DeleteFollowersAsync(DeleteFromFollowersCommand command);
         Task<BaseResponse> AcceptFollowRequestAsync(AcceptFollowRequestCommand command);
-        Task<BaseResponse> DisplayFollowingRequestsAsync();
+        Task<BaseResponse> DisplayFollowingRequestsAsync(string customerId);
     }
 }

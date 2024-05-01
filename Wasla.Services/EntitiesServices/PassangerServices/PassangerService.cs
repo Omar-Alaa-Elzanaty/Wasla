@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Security.Claims;
+using AutoMapper;
 using AutoMapper.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -70,12 +71,11 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             return _response;
 
         }
-        public async Task<BaseResponse> ReservationAsync(ReservationDto order)
+        public async Task<BaseResponse> ReservationAsync(ReservationDto order,string customerId)
         {
 
             List<Reservation> completeReserve = new List<Reservation>();
             //TODO: need to make reservation to every name in reservation dto seatInfo
-            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result?.Id;
 
             if (customerId is null)
             {
@@ -160,10 +160,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             return _response;
 
         }
-        public async Task<BaseResponse> OrganizationRateAsync(OrganizationRateDto model)
+        public async Task<BaseResponse> OrganizationRateAsync(OrganizationRateDto model,string customerId)
         {
-            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result?.Id;
-
             if (customerId is null)
             {
                 throw new BadRequestException(_localization["Unauthorized"].Value);
@@ -194,10 +192,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
             return _response;
         }
-        public async Task<BaseResponse> OrganizationRateRemoveAsync(string organizationId)
+        public async Task<BaseResponse> OrganizationRateRemoveAsync(string organizationId,string customerId)
         {
-            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result?.Id;
-
             if (customerId is null)
             {
                 throw new BadRequestException(_localization["Unauthorized"].Value);
@@ -238,10 +234,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             return _response;
         }
 
-        public async Task<BaseResponse> AddAdsAsync(PassangerAddAdsDto adsRequest)
+        public async Task<BaseResponse> AddAdsAsync(PassangerAddAdsDto adsRequest,string customerId)
         {
-            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result?.Id;
-
             if (customerId is null)
             {
                 throw new BadRequestException(_localization["Unauthorized"].Value);
@@ -355,9 +349,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             _response.Message = _localization["RemovePackageSuccess"].Value;
             return _response;
         }
-        public async Task<BaseResponse> GetUserOrgPackagesAsync()
+        public async Task<BaseResponse> GetUserOrgPackagesAsync(string customerId)
         {
-            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result?.Id;
 
             if (customerId is null)
             {
@@ -368,10 +361,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             _response.Data = res;
             return _response;
         }
-        public async Task<BaseResponse> GetUserPublicPackagesAsync()
+        public async Task<BaseResponse> GetUserPublicPackagesAsync(string customerId)
         {
-            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result?.Id;
-
             if (customerId is null)
             {
                 throw new BadRequestException(_localization["Unauthorized"].Value);
@@ -381,10 +372,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             _response.Data = res;
             return _response;
         }
-        public async Task<BaseResponse> GetProfile()
+        public async Task<BaseResponse> GetProfile(string customerId)
         {
-            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result?.Id;
-
             if (customerId is null)
             {
                 throw new BadRequestException(_localization["Unauthorized"].Value);
@@ -416,9 +405,9 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             _response.Data = customer;
             return _response;
         }
-        public async Task<BaseResponse> GetInComingReservations()
+        public async Task<BaseResponse> GetInComingReservations(string customerId)
         {
-            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result?.Id;
+            //var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result?.Id;
 
             if (customerId is null)
             {
@@ -434,10 +423,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
             return await GetReservationOnMatchDate(x => x.ReservationDate > DateTime.Now, user);
         }
-        public async Task<BaseResponse> GetEndedReservations()
+        public async Task<BaseResponse> GetEndedReservations(string customerId)
         {
-            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result?.Id;
-
             if (customerId is null)
             {
                 throw new BadRequestException(_localization["Unauthorized"].Value);
@@ -451,10 +438,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
             return await GetReservationOnMatchDate(x => x.ReservationDate <= DateTime.Now, user);
         }
-        public async Task<BaseResponse> GetTripSuggestion()
+        public async Task<BaseResponse> GetTripSuggestion(string customerId)
         {
-            var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result?.Id;
-
             if (customerId is null)
             {
                 throw new BadRequestException(_localization["Unauthorized"].Value);
@@ -626,8 +611,6 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         }
         public async Task<BaseResponse> AcceptFollowRequestAsync(AcceptFollowRequestCommand command)
         {
-
-
             var followRequest = await _context.FollowRequests
                 .SingleAsync(x => x.SenderId == command.SenderId && x.FollowerId == command.FolowerId);
 
@@ -648,16 +631,14 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             _response.Message = _localization["SuccessProcess"].Value;
             return _response;
         }
-        public async Task<BaseResponse> DisplayFollowingRequestsAsync()
+        public async Task<BaseResponse> DisplayFollowingRequestsAsync(string customerId)
         {
-            var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User);
-
-            if (user is null)
+            if (customerId is null)
             {
                 return BaseResponse.GetErrorException(System.Net.HttpStatusCode.Unauthorized, _localization["Unauthorized"].Value);
             }
 
-            var requests = await _context.FollowRequests.Where(x => x.FollowerId == user.Id)
+            var requests = await _context.FollowRequests.Where(x => x.FollowerId == customerId)
                                         .Select(x => new DisplayFollowingRequestsDto()
                                         {
                                             FollowingId = x.FollowerId,
