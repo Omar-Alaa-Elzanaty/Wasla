@@ -1,10 +1,10 @@
-﻿using System.Security.Claims;
-using AutoMapper;
+﻿using AutoMapper;
 using AutoMapper.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using Microsoft.IdentityModel.Tokens;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
@@ -71,7 +71,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             return _response;
 
         }
-        public async Task<BaseResponse> ReservationAsync(ReservationDto order,string customerId)
+        public async Task<BaseResponse> ReservationAsync(ReservationDto order, string customerId)
         {
 
             List<Reservation> completeReserve = new List<Reservation>();
@@ -160,7 +160,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             return _response;
 
         }
-        public async Task<BaseResponse> OrganizationRateAsync(OrganizationRateDto model,string customerId)
+        public async Task<BaseResponse> OrganizationRateAsync(OrganizationRateDto model, string customerId)
         {
             if (customerId is null)
             {
@@ -192,7 +192,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
             return _response;
         }
-        public async Task<BaseResponse> OrganizationRateRemoveAsync(string organizationId,string customerId)
+        public async Task<BaseResponse> OrganizationRateRemoveAsync(string organizationId, string customerId)
         {
             if (customerId is null)
             {
@@ -234,7 +234,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             return _response;
         }
 
-        public async Task<BaseResponse> AddAdsAsync(PassangerAddAdsDto adsRequest,string customerId)
+        public async Task<BaseResponse> AddAdsAsync(PassangerAddAdsDto adsRequest, string customerId)
         {
             if (customerId is null)
             {
@@ -445,24 +445,26 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 throw new BadRequestException(_localization["Unauthorized"].Value);
             }
 
-            var last3Trips = await _context.Reservations.Where(x => x.TriptimeTableId != null && x.TripTimeTable != null
+            var x = await _context.Reservations.Where(x => x.TriptimeTableId != null && x.TripTimeTable != null
                                                                && x.TripTimeTable.StartTime >= DateTime.Now && x.CustomerId == customerId)
-                                                   .DistinctBy(x => x.TriptimeTableId).Select(x => x.TripTimeTable).Take(3).ToListAsync();
+                                               .ToListAsync();
+
+            var last3Trips = x.DistinctBy(x => x.TriptimeTableId).Take(3).Select(x => x.TripTimeTable).ToList();
+
             if (last3Trips.Count < 3)
             {
                 var first3AvailableTrips = await _context.TripTimeTables.Where(x => x.StartTime >= DateTime.Now)
-                    .Take(3)
                     .Select(x => new SuggestionTripsDto()
                     {
                         ComapnyName = x.Trip.Organization.Name,
-                        CompanyRating = x.Trip.Organization.Rates.Average(t => t.Rate),
+                        CompanyRating = (x.Trip.Organization.Rates.Count==0) ? x.Trip.Organization.Rates.Average(t => t.Rate) : 0,
                         From = x.IsStart == true ? x.Trip.Line.Start.Name : x.Trip.Line.End.Name,
                         To = x.IsStart == true ? x.Trip.Line.Start.Name : x.Trip.Line.End.Name,
                         ArrivalTime = x.ArriveTime,
                         StartTime = x.StartTime,
                         Id = x.Id,
-                        price = x.Trip.Price
-                    }).ToListAsync();
+                        price = (x.Trip != null) ? x.Trip.Price : 0
+                    }).Take(3).ToListAsync();
 
                 _response.Data = first3AvailableTrips;
                 return _response;
@@ -571,21 +573,21 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         }
         public async Task<BaseResponse> SearchUser(string request)
         {
-            var users = await _context.Customers.Where(c => (c.UserName.StartsWith(request)) || (c.FirstName.StartsWith(request))).Select(c=>new UserSearchProfileDto
+            var users = await _context.Customers.Where(c => (c.UserName.StartsWith(request)) || (c.FirstName.StartsWith(request))).Select(c => new UserSearchProfileDto
             {
                 UserId = c.Id,
-                Name =c.FirstName,
-                UserImage=c.PhotoUrl,
-                UserName=c.UserName
+                Name = c.FirstName,
+                UserImage = c.PhotoUrl,
+                UserName = c.UserName
             }).ToListAsync();
-            
+
             _response.Data = users;
             return _response;
         }
         public async Task<BaseResponse> GetUserBySearch(string userId)
         {
             var user = await _context.Customers.FindAsync(userId);
-            var userDto = new UserSearchProfileDto {UserId =user.Id, Name = user.FirstName, UserImage = user.PhotoUrl, UserName = user.UserName };
+            var userDto = new UserSearchProfileDto { UserId = user.Id, Name = user.FirstName, UserImage = user.PhotoUrl, UserName = user.UserName };
             _response.Data = userDto;
             return _response;
         }

@@ -14,7 +14,7 @@ namespace Wasla.Model.Models
         public virtual Driver Driver { get; set; }
         public int VehicleId { get; set; }
         public virtual Vehicle Vehicle { get; set; }
-        public virtual int TripId {  get; set; }
+        public int TripId {  get; set; }
         public virtual Trip Trip { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime ArriveTime { get; set; }
