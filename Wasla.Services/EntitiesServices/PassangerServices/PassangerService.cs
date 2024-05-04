@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
-using Microsoft.IdentityModel.Tokens;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
@@ -94,6 +93,9 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                         completeReserve.Add(new Reservation()
                         {
                             SetNum = set.SeatNum,
+                            PassengerName = set.Name,
+                            IsRide = false,
+                            OnRoad = false,
                             CustomerId = customerId,
                             ReservationDate = DateTime.Now,
                             TriptimeTableId = order.TripId,
@@ -115,7 +117,9 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                     }
                     customer.points += completeReserve.Count * trip.Trip.Points;
 
+                    await _userManager.UpdateAsync(customer);
                     await _context.SaveChangesAsync();
+
                     await trans.CommitAsync();
                 }
                 catch (KeynotFoundException)
@@ -457,7 +461,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                     .Select(x => new SuggestionTripsDto()
                     {
                         ComapnyName = x.Trip.Organization.Name,
-                        CompanyRating = (x.Trip.Organization.Rates.Count==0) ? x.Trip.Organization.Rates.Average(t => t.Rate) : 0,
+                        CompanyRating = (x.Trip.Organization.Rates.Count == 0) ? x.Trip.Organization.Rates.Average(t => t.Rate) : 0,
                         From = x.IsStart == true ? x.Trip.Line.Start.Name : x.Trip.Line.End.Name,
                         To = x.IsStart == true ? x.Trip.Line.Start.Name : x.Trip.Line.End.Name,
                         ArrivalTime = x.ArriveTime,
