@@ -88,7 +88,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 {
                     foreach (var set in order.seats)
                     {
-                        _context.Seats.Add(new Seat() { setNum = set.SeatNum, TripTmeTableId = order.TripId });
+                        _context.Seats.Add(new Seat() { setNum = set.SeatNum, TripTimeTableId = order.TripId });
                         _context.SaveChanges();
                         completeReserve.Add(new Reservation()
                         {

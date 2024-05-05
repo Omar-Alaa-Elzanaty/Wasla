@@ -866,7 +866,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
 
         public async Task<BaseResponse> IncreaseTripSeats(AddTripSeatDto tripSeat)
         {
-            _context.Seats.Add(new Seat() { setNum =tripSeat.seatNumber, TripTmeTableId =tripSeat.tripId });
+            _context.Seats.Add(new Seat() { setNum =tripSeat.seatNumber, TripTimeTableId =tripSeat.tripId });
             await _context.SaveChangesAsync();
             return _response;
             

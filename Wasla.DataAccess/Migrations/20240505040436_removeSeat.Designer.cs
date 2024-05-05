@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wasla.DataAccess;
 
@@ -11,9 +12,11 @@ using Wasla.DataAccess;
 namespace Wasla.DataAccess.Migrations
 {
     [DbContext(typeof(WaslaDb))]
-    partial class WaslaDbModelSnapshot : ModelSnapshot
+    [Migration("20240505040436_removeSeat")]
+    partial class removeSeat
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -703,21 +706,6 @@ namespace Wasla.DataAccess.Migrations
                     b.ToTable("Reservations");
                 });
 
-            modelBuilder.Entity("Wasla.Model.Models.Seat", b =>
-                {
-                    b.Property<int>("setNum")
-                        .HasColumnType("int");
-
-                    b.Property<int>("TripTimeTableId")
-                        .HasColumnType("int");
-
-                    b.HasKey("setNum", "TripTimeTableId");
-
-                    b.HasIndex("TripTimeTableId");
-
-                    b.ToTable("Seats");
-                });
-
             modelBuilder.Entity("Wasla.Model.Models.Station", b =>
                 {
                     b.Property<int>("StationId")
@@ -1348,15 +1336,6 @@ namespace Wasla.DataAccess.Migrations
                     b.Navigation("TripTimeTable");
                 });
 
-            modelBuilder.Entity("Wasla.Model.Models.Seat", b =>
-                {
-                    b.HasOne("Wasla.Model.Models.TripTimeTable", null)
-                        .WithMany("RecervedSeats")
-                        .HasForeignKey("TripTimeTableId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Wasla.Model.Models.Station", b =>
                 {
                     b.HasOne("Wasla.Model.Models.Organization", null)
@@ -1546,8 +1525,6 @@ namespace Wasla.DataAccess.Migrations
             modelBuilder.Entity("Wasla.Model.Models.TripTimeTable", b =>
                 {
                     b.Navigation("Packages");
-
-                    b.Navigation("RecervedSeats");
 
                     b.Navigation("Reservations");
                 });

@@ -13,7 +13,7 @@ namespace Wasla.DataAccess.ModelsConfig
 	{
 		public void Configure(EntityTypeBuilder<Seat> builder)
 		{
-			builder.HasKey(s => new { s.setNum, s.TripTmeTableId });
+			builder.HasKey(s => new { s.setNum, s.TripTimeTableId });
 		}
 	}
 }
