@@ -142,7 +142,7 @@ namespace Wasla.Api.Controllers
             var userId = User.FindFirst("uid").Value;
             return Ok(await _passangerService.DisplayFollowingRequestsAsync(userId));
         }
-        [HttpGet("getFollower")]
+        [HttpGet("getFollowing")]
         public async Task<IActionResult> GetFollowing()
         {
             var userId = User.FindFirst("uid").Value;
