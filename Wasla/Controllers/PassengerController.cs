@@ -1,5 +1,4 @@
-﻿using System.Security.Claims;
-using Microsoft.AspNetCore.Authorization;
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Wasla.Model.Dtos;
 using Wasla.Services.EntitiesServices.PassangerServices;
@@ -25,7 +24,7 @@ namespace Wasla.Api.Controllers
         public async Task<IActionResult> ReserveTicket([FromBody] ReservationDto order)
         {
             var userId = User.FindFirst("uid").Value;
-            return Ok(await _passangerService.ReservationAsync(order,userId));
+            return Ok(await _passangerService.ReservationAsync(order, userId));
         }
         [HttpPost("organization/rate")]
         public async Task<IActionResult> RateOrganize([FromBody] OrganizationRateDto model)
@@ -37,7 +36,7 @@ namespace Wasla.Api.Controllers
         public async Task<IActionResult> RemoveOrganizationRate(string orgainzationId)
         {
             var userId = User.FindFirst("uid").Value;
-            return Ok(await _passangerService.OrganizationRateRemoveAsync(orgainzationId,userId));
+            return Ok(await _passangerService.OrganizationRateRemoveAsync(orgainzationId, userId));
         }
         [HttpGet("lines/{orgId}")]
         public async Task<IActionResult> GetLines([FromRoute] string orgId)
@@ -142,6 +141,30 @@ namespace Wasla.Api.Controllers
         {
             var userId = User.FindFirst("uid").Value;
             return Ok(await _passangerService.DisplayFollowingRequestsAsync(userId));
+        }
+        [HttpGet("getFollower")]
+        public async Task<IActionResult> GetFollowing()
+        {
+            var userId = User.FindFirst("uid").Value;
+
+            if (userId is null)
+            {
+                return BadRequest("user not found");
+            }
+
+            return Ok(await _passangerService.GetFollowing(userId));
+        }
+        [HttpGet("getFollower")]
+        public async Task<IActionResult> GetFollower()
+        {
+            var userId = User.FindFirst("uid").Value;
+
+            if (userId is null)
+            {
+                return BadRequest("user not found");
+            }
+
+            return Ok(await _passangerService.GetFollowers(userId));
         }
     }
 

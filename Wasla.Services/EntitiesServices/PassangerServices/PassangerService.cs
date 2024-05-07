@@ -655,5 +655,25 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             _response.Data = requests;
             return _response;
         }
+
+        public async Task<BaseResponse> GetFollowers(string userId)
+        {
+            var entities = await _context.UserFollows.Where(x => x.CustomerId == userId).ToListAsync();
+
+            var followers = _mapper.Map<GetFollowerQueryDto>(entities);
+
+            _response.Data = followers;
+            return _response;
+        }
+
+        public async Task<BaseResponse> GetFollowing(string userId)
+        {
+            var entities = await _context.UserFollows.Where(x => x.CustomerId == userId).ToListAsync();
+
+            var following = _mapper.Map<GetFollowerQueryDto>(entities);
+
+            _response.Data = following;
+            return _response;
+        }
     }
 }

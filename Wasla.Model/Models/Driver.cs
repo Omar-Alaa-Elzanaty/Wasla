@@ -10,7 +10,6 @@ namespace Wasla.Model.Models
 	{
         public Driver()
         {
-			Trips = new List<TripTimeTable>();
 			Rates = new List<DriverRate>();
         }
         public string LicenseImageUrl { get; set; }
@@ -18,7 +17,6 @@ namespace Wasla.Model.Models
         public string? NationalId { get; set; }
         public string? OrganizationId { get; set; }
 		public virtual Organization? Orgainzation { get; set; }
-		public virtual ICollection<TripTimeTable> Trips { get; set; }
         public virtual ICollection<DriverRate> Rates { get; set; }
     }
 }

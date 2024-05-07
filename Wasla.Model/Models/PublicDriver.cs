@@ -12,6 +12,7 @@ namespace Wasla.Model.Models
         public string LicenseNum { get; set; }
         public string? NationalId { get; set; }
         public virtual ICollection<PublicDriverRate> Rates { get; set; }
+        public virtual ICollection<TripTimeTable> Trips { get; set; }
         public int VehicleId { get; set; }
         public virtual Vehicle Vehicle { get; set; }
     }

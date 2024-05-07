@@ -20,6 +20,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         Task<BaseResponse> GetUserOrgPackagesAsync(string customerId);
         Task<BaseResponse> GetUserPublicPackagesAsync(string customerId);
         Task<BaseResponse> RemovePackageAsync(int packageId);
+        Task<BaseResponse> GetFollowers(string userId);
+        Task<BaseResponse>GetFollowing(string userId);
         Task<BaseResponse> CreateFollowRequestAsync(FollowDto followDto);
         Task<BaseResponse> ConfirmFollowRequestAsync(FollowDto followDto);
         Task<BaseResponse> DeleteFollowRequestAsync(FollowDto followDto);

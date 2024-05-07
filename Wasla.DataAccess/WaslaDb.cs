@@ -25,6 +25,7 @@ namespace Wasla.DataAccess
 			modelBuilder.Entity<IdentityUserToken<string>>().ToTable("UserTokens", "Account");
 			modelBuilder.Entity<Account>().HasIndex(x => x.Email).IsUnique(false);
 			#endregion
+			//modelBuilder.Ignore<TripTimeTable>();
 
 			modelBuilder.ApplyConfigurationsFromAssembly(typeof(DriverConfig).Assembly);
 		}

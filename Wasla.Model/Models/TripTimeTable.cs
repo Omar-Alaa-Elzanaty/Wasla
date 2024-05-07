@@ -11,7 +11,7 @@ namespace Wasla.Model.Models
     {
         public int Id { get; set; }
         public string DriverId { get; set; }
-        public virtual Driver Driver { get; set; }
+        public virtual PublicDriver Driver { get; set; }
         public int VehicleId { get; set; }
         public virtual Vehicle Vehicle { get; set; }
         public int TripId {  get; set; }
