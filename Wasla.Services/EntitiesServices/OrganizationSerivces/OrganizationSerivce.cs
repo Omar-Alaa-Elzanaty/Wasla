@@ -748,12 +748,12 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         }
 
         public async Task<BaseResponse> GetTripsForUserAsync(string orgId, string lineName)
-         {
+        {
              var trips = await _context.TripTimeTables.Where(t => t.Trip.OrganizationId == orgId && (t.Trip.Line.Start.Name.StartsWith(lineName) || t.Trip.Line.End.Name.StartsWith(lineName))).ToListAsync();
              var tripRes = _mapper.Map<List<TripForUserDto>>(trips);
              _response.Data = tripRes;
              return _response;
-         }
+        }
         public async Task<BaseResponse> GetTripsForUserWithToAndFromAsync(string orgId, string from, string to)
         {
             var trips = await _context.TripTimeTables.Where(t => t.Trip.OrganizationId == orgId && (t.Trip.Line.Start.Name == from || t.Trip.Line.End.Name == to)).ToListAsync();

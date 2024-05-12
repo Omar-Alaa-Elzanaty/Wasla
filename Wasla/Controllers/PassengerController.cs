@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Wasla.Model.Dtos;
 using Wasla.Services.EntitiesServices.PassangerServices;
@@ -165,6 +166,18 @@ namespace Wasla.Api.Controllers
             }
 
             return Ok(await _passangerService.GetFollowers(userId));
+        }
+
+        [HttpGet("trip/user/{orgId}/{name}")]
+        public async Task<IActionResult> GetTripForUser([FromRoute] string orgId, [FromRoute] string name)
+        {
+            return Ok(await _passangerService.GetTripsForUserAsync(orgId, name));
+        }
+
+        [HttpGet("trip/user/{orgId}/{from}/{to}")]
+        public async Task<IActionResult> GetTripForUserWithFromTo([FromRoute] string orgId, [FromRoute] string from, [FromRoute] string to)
+        {
+            return Ok(await _passangerService.GetTripsForUserWithToAndFromAsync(orgId, from, to));
         }
     }
 

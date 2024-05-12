@@ -35,5 +35,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         Task<BaseResponse> DeleteFollowersAsync(DeleteFromFollowersCommand command);
         Task<BaseResponse> AcceptFollowRequestAsync(AcceptFollowRequestCommand command);
         Task<BaseResponse> DisplayFollowingRequestsAsync(string customerId);
+
+        Task<BaseResponse> GetTripsForUserAsync(string orgId, string lineName);
+        Task<BaseResponse> GetTripsForUserWithToAndFromAsync(string orgId, string from, string to);
     }
 }

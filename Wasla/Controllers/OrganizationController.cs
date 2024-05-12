@@ -281,18 +281,6 @@ namespace Wasla.Api.Controllers
 		}
 		//I Make command in it
 
-		/*[HttpGet("trip/user/{orgId}/{name}")]
-		public async Task<IActionResult> GetTripForUser([FromRoute] string orgId, [FromRoute] string name)
-		{
-			return Ok(await _orgService.GetUsersForTripLineAsync(orgId, name));
-		}*/
-
-		[HttpGet("trip/user/{orgId}/{from}/{to}")]
-		public async Task<IActionResult> GetTripForUserWithFromTo([FromRoute] string orgId, [FromRoute] string from, [FromRoute] string to)
-		{
-			return Ok(await _orgService.GetTripsForUserWithToAndFromAsync(orgId, from, to));
-		}
-
         [HttpGet("trips/user/{tripId}/{date}")]
         public async Task<IActionResult> GetTripstimeByDate([FromRoute] int tripId, [FromRoute] string date)
         {
