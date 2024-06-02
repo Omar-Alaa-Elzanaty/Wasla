@@ -691,5 +691,38 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             _response.Data = tripRes;
             return _response;
         }
+
+        public async Task<BaseResponse> FollowersLocation(string userId)
+        {
+            var user = await _context.Customers.FindAsync(userId);
+
+            if (user is null)
+            {
+                _response.IsSuccess = false;
+                _response.Status = System.Net.HttpStatusCode.NotFound;
+                _response.Message = "user not found.";
+
+                return _response;
+            }
+
+            var followers = user.Follows.Select(x => x.FollowerId)
+                                .ToList();
+
+            var followersInTrips = _context.Reservations
+                            .Where(x => followers.Contains(x.CustomerId) && x.TripTimeTable != null &&
+                            x.StartTime <= DateTime.Now && x.EndTime >= DateTime.Now)
+                            .DistinctBy(x => x.CustomerId)
+                            .Select(x => new FollowerCurrentTripDto()
+                            {
+                                Id = x.CustomerId,
+                                FullName = x.Customer.FirstName + ' ' + x.Customer.LastName,
+                                Langtitude = x.TripTimeTable.Langtitude,
+                                Latitude = x.TripTimeTable.Latitude,
+                                UserName = x.Customer.UserName
+                            });
+
+            _response.Data = followersInTrips;
+            return _response;
+        }
     }
 }

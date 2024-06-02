@@ -38,5 +38,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
         Task<BaseResponse> GetTripsForUserAsync(string orgId, string lineName);
         Task<BaseResponse> GetTripsForUserWithToAndFromAsync(string orgId, string from, string to);
+
+        Task<BaseResponse> FollowersLocation(string userId);
     }
 }

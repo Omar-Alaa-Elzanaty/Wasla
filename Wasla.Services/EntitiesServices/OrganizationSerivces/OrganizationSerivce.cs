@@ -707,7 +707,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                 Where(t => t.Trip.OrganizationId == tripRequest.OrgId &&
                 t.DriverId == tripRequest.DriverId &&
                 t.StartTime >= tripRequest.CurrentDate && t.StartTime <= endDate &&
-                t.Status != TripStatus.Arrived && t.Status != TripStatus.end && t.Status != TripStatus.OnRoad).OrderBy(t => t.StartTime)
+                t.Status != TripStatus.Arrived && t.Status != TripStatus.OnRoad).OrderBy(t => t.StartTime)
                 .Select(t => new TripForOrgDriverDays
                 {
                     TripTimeTableId = t.Id,
@@ -732,7 +732,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                 Where(t => t.Trip.OrganizationId ==orgId &&
                 t.DriverId == DriverId &&
                  t.StartTime < currentDate &&
-               ( t.Status == TripStatus.Arrived || t.Status ==TripStatus.end)).OrderBy(t => t.StartTime)
+               t.Status == TripStatus.Arrived).OrderBy(t => t.StartTime)
                 .Select(t => new TripForOrgDriverDays
                 {
                     TripTimeTableId = t.Id,
@@ -846,7 +846,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                             Where(t => t.Trip.OrganizationId == orgId &&
                             t.DriverId == DriverId &&
                             t.StartTime >= currentDate &&
-                            t.Status != TripStatus.Arrived && t.Status != TripStatus.end).OrderBy(t => t.StartTime).FirstOrDefaultAsync();
+                            t.Status != TripStatus.Arrived).OrderBy(t => t.StartTime).FirstOrDefaultAsync();
             if (trip != null)
             {
                 var response = new TripForOrgDriverDays

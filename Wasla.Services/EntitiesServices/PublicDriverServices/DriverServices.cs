@@ -114,7 +114,7 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             publicDriverTrip.PublicDriverId = userId;
             publicDriverTrip.IsActive = true;
             publicDriverTrip.AcceptPackages = publicDriverTrip.AcceptRequests = true;
-            publicDriverTrip.Status = TripStatus.None;
+            publicDriverTrip.Status = TripStatus.preparing;
 
             await _context.AddAsync(publicDriverTrip);
             await _context.SaveChangesAsync();

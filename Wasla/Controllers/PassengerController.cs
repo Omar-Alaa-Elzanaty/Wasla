@@ -179,6 +179,19 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _passangerService.GetTripsForUserWithToAndFromAsync(orgId, from, to));
         }
+
+        [HttpGet("followerTrips")]
+        public async Task<IActionResult> GetFollowersTrips()
+        {
+            var userId = User.FindFirst("uid")?.Value;
+
+            if (userId is null)
+            {
+                return BadRequest("user not found");
+            }
+
+            return Ok(await _passangerService.FollowersLocation(userId));
+        }
     }
 
 }
