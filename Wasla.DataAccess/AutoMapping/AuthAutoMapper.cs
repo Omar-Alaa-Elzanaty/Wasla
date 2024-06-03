@@ -24,7 +24,10 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<VehicleDto, Vehicle>().ReverseMap();
             CreateMap<EmployeeRegisterDto, Employee>();
             CreateMap<Customer, DisplayCustomerProfileDto>()
+
                 .ForMember(dest=>dest.FullName,src=>src.MapFrom(src=>src.FirstName+' '+src.LastName));
+            CreateMap<Customer, SearchByUserNameDto>();
+
             //station
 
             CreateMap<Station,StationDto>().ReverseMap();
