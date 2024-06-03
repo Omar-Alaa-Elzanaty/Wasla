@@ -24,7 +24,10 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<VehicleDto, Vehicle>().ReverseMap();
             CreateMap<EmployeeRegisterDto, Employee>();
             CreateMap<Customer, DisplayCustomerProfileDto>()
+
                 .ForMember(dest=>dest.FullName,src=>src.MapFrom(src=>src.FirstName+' '+src.LastName));
+            CreateMap<Customer, SearchByUserNameDto>();
+
             //station
 
             CreateMap<Station,StationDto>().ReverseMap();
@@ -90,6 +93,7 @@ namespace Wasla.DataAccess.AutoMapping
             //Package
 
             CreateMap<Package, PackagesRequestDto>().ReverseMap();
+            CreateMap<Package, PublicPackagesDto>();
             CreateMap<Package, PackagesDto>().ForMember(dest => dest.IsStart, opt => opt.MapFrom(src => src.Trip.IsStart))
             .ForMember(dest => dest.StartTime, opt => opt.MapFrom(src => src.Trip.StartTime))
             .ForMember(dest => dest.ArriveTime, opt => opt.MapFrom(src => src.Trip.ArriveTime))
@@ -122,7 +126,7 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<CreatePublicDriverCommand, PublicDriver>();
             CreateMap<UpdatePublicDriverProfileCommand,PublicDriver>();
             CreateMap<UpdatePublicDriverProfileVehicleCommand, Vehicle>();
-            CreateMap<FollowDto,UserFollow>().ForMember(dest => dest.CustomerId, opt => opt.MapFrom(src => src.SenderId));
+            CreateMap<FollowDto,UserFollow>();
             CreateMap<FollowRequests, FollowDto>().ReverseMap();
             CreateMap<GetOrgDriverProfileDto, Driver>().ReverseMap();
             CreateMap<Organization, DriverOrganization>().ReverseMap();

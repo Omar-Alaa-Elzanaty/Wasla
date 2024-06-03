@@ -402,7 +402,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 throw new BadRequestException(_localization["Unauthorized"].Value);
             }
             var packages = await _context.Packages.Where(p => p.SenderId == customerId && p.DriverId != null).ToListAsync();
-            var res = _mapper.Map<PublicPackagesDto>(packages);
+            var res = _mapper.Map<List<PublicPackagesDto>>(packages);
             _response.Data = res;
             return _response;
         }
@@ -416,10 +416,10 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
             if (user is null)
             {
-                return BaseResponse.GetErrorException(System.Net.HttpStatusCode.NotFound, _localization["UserNameNotFound"].Value);
+                return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, _localization["UserNameNotFound"].Value);
             }
 
-            var customer = _mapper.Map<DisplayCustomerProfileDto>(user);
+            var customer =  _mapper.Map<DisplayCustomerProfileDto>(user);
 
             customer.Followers.TryAdd(_context.UserFollows.Where(x => x.CustomerId == user.Id)
                 .Select(x => new Follow()
@@ -560,9 +560,9 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             return _response;
         }
 
-        public async Task<BaseResponse> CreateFollowRequestAsync(FollowDto followDto)
+        public async Task<BaseResponse> CreateFollowRequestAsync(string senderId, FollowDto followDto)
         {
-            var requestExist = _context.FollowRequests.Any(f => f.SenderId == followDto.SenderId && f.FollowerId == followDto.FollowerId);
+            var requestExist = _context.FollowRequests.Any(f => f.SenderId == senderId && f.FollowerId == followDto.FollowerId);
             if (requestExist)
                 return BaseResponse.GetErrorException(HttpStatusErrorCode.BadRequest, "this request already exist");
             var req = _mapper.Map<FollowRequests>(followDto);
@@ -585,9 +585,9 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         }
 
 
-        public async Task<BaseResponse> ConfirmFollowRequestAsync(FollowDto followDto)
+        public async Task<BaseResponse> ConfirmFollowRequestAsync(string senderId,FollowDto followDto)
         {
-            var requestExist = _context.FollowRequests.Any(f => f.SenderId == followDto.SenderId && f.FollowerId == followDto.FollowerId);
+            var requestExist = _context.FollowRequests.Any(f => f.SenderId ==senderId && f.FollowerId == followDto.FollowerId);
             if (!requestExist)
                 return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, "this request not exist");
             var follow = _mapper.Map<UserFollow>(followDto);
@@ -611,9 +611,9 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             return _response;
         }
 
-        public async Task<BaseResponse> DeleteFollowRequestAsync(FollowDto followDto)
+        public async Task<BaseResponse> DeleteFollowRequestAsync(string senderId, FollowDto followDto)
         {
-            var requestExist = _context.FollowRequests.Any(f => f.SenderId == followDto.SenderId && f.FollowerId == followDto.FollowerId);
+            var requestExist = _context.FollowRequests.Any(f => f.SenderId == senderId && f.FollowerId == followDto.FollowerId);
             if (!requestExist)
                 return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, _localization["FollowRequestExist"].Value);
             var request = _mapper.Map<FollowRequests>(followDto);
@@ -624,9 +624,9 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             return _response;
         }
 
-        public async Task<BaseResponse> DeleteFollowerAsync(FollowDto followDto)
+        public async Task<BaseResponse> DeleteFollowerAsync(string senderId,FollowDto followDto)
         {
-            var followExist = _context.UserFollows.Any(f => (f.CustomerId == followDto.SenderId && f.FollowerId == followDto.FollowerId) || (f.CustomerId == followDto.FollowerId && f.FollowerId == followDto.SenderId));
+            var followExist = _context.UserFollows.Any(f => (f.CustomerId == senderId && f.FollowerId == followDto.FollowerId) || (f.CustomerId == followDto.FollowerId && f.FollowerId == senderId));
             if (!followExist)
                 return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, _localization["FollowNotFound"].Value);
             var request = _mapper.Map<UserFollow>(followDto);
