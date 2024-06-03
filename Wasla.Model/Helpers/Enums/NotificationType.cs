@@ -8,6 +8,10 @@ namespace Wasla.Model.Helpers.Enums
 {
     public enum NotificationType
     {
-        FollowReqeust
+        FollowReqeust,
+        PackageRequest,
+        PackageAccept,
+        AdsAccept,
+        TripAlarm
     }
 }

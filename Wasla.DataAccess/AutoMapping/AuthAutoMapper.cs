@@ -130,6 +130,7 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<Trip, DriverTrip>().ReverseMap();
 
             CreateMap<Vehicle, TripForDriverVehicleDto>();
+            CreateMap<Package, AcceptedPackagesOrgDriver>();
         }
     }
 }

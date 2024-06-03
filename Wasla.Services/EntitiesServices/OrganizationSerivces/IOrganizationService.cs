@@ -1,6 +1,7 @@
 ﻿
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
+using Wasla.Model.Helpers.Enums;
 
 namespace Wasla.Services.EntitiesServices.OrganizationSerivces
 {
@@ -73,7 +74,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         //Task<BaseResponse> GetUserPackagesAsync(string userName);
         
         Task<BaseResponse> GetPackagesRequestAsync(string orgId);
-        Task<BaseResponse> ReviewPackagesRequest(int packageId, int status);
+        Task<BaseResponse> ReviewPackagesRequest(int packageId, PackageStatus status);
         #endregion
     }
 }

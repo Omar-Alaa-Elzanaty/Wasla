@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Wasla.Model.Dtos;
 using Wasla.Services.EntitiesServices.PassangerServices;
@@ -133,9 +132,14 @@ namespace Wasla.Api.Controllers
             return Ok(await _passangerService.DeleteFollowerAsync(followDto));
         }
         [HttpPost("acceptFollowRequest")]
-        public async Task<IActionResult> AcceptRequest(AcceptFollowRequestCommand command)
+        public async Task<IActionResult> AcceptRequest([FromBody]string follwerId)
         {
-            return Ok(await _passangerService.AcceptFollowRequestAsync(command));
+            var userId = User.FindFirst("uid").Value;
+            return Ok(await _passangerService.AcceptFollowRequestAsync(new AcceptFollowRequestCommand()
+            {
+                FolowerId = follwerId,
+                SenderId = userId
+            }));
         }
         [HttpGet("displayFollowRequest")]
         public async Task<IActionResult> DisplayFollowRequest()

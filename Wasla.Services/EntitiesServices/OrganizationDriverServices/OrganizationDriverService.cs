@@ -1,7 +1,9 @@
 ﻿using System.Diagnostics;
 using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using Microsoft.Extensions.Localization;
 using Wasla.DataAccess;
@@ -151,6 +153,17 @@ namespace Wasla.Services.EntitiesServices.OrganizationDriverServices
             };
 
             _response.Data= location;
+            return _response;
+        }
+        public async Task<BaseResponse> GetAccpetedPackagesRequestsAsync(string userId)
+        {
+            var trip = await _context.TripTimeTables.SingleOrDefaultAsync(x => x.DriverId == userId && x.StartTime >= DateTime.Now);
+
+            var packages = await _context.Packages.Where(x => x.TripId == trip.Id)
+                          .ProjectTo<AcceptedPackagesOrgDriver>(_mapper.ConfigurationProvider)
+                          .ToListAsync();
+
+            _response.Data = packages;
             return _response;
         }
 

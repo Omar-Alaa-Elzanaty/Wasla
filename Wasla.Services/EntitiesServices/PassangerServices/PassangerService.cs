@@ -1,4 +1,5 @@
-﻿using AutoMapper;
+﻿using System.Runtime.InteropServices;
+using AutoMapper;
 using AutoMapper.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -297,13 +298,42 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
              }*/
 
             Package package = _mapper.Map<Package>(model);
-            package.Status = (int)PackageStatus.UnderConfirm;
+            package.Status = PackageStatus.UnderConfirm;
+
 
             if (model.ImageFile is not null)
             {
                 package.ImageUrl = await _mediaSerivce.AddAsync(model.ImageFile);
             }
             await _context.Packages.AddAsync(package);
+
+            var sender = await _context.Customers.FindAsync(model.SenderId);
+
+            if (model.isPublic)
+            {
+                var trip = await _context.PublicDriverTrips.Where(x => x.PublicDriverId == model.DriverId)
+                    .OrderByDescending(x => x.StartDate).FirstAsync();
+
+                await _context.Notifications.AddAsync(new Notification()
+                {
+                    AccountId = trip.PublicDriverId,
+                    Title = "New package Request.",
+                    Description = $"{sender.FirstName + ' ' + sender.LastName} want to send package through your trip.",
+                    Type = NotificationType.PackageRequest
+                });
+            }
+            else
+            {
+                var trip = await _context.Trips.FindAsync(model.TripId);
+                await _context.Notifications.AddAsync(new Notification()
+                {
+                    AccountId = trip.Organization.Id,
+                    Title = "New package Request.",
+                    Description = $"{sender.FirstName + ' ' + sender.LastName} want to send package through your trip.",
+                    Type = NotificationType.PackageRequest
+                });
+            }
+
             _ = await _context.SaveChangesAsync();
             //  _response.Data = package;
             _response.Message = _localization["AddPAckagesSuccess"];
@@ -518,6 +548,18 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             if (requestExist)
                 return BaseResponse.GetErrorException(HttpStatusErrorCode.BadRequest, "this request already exist");
             var req = _mapper.Map<FollowRequests>(followDto);
+
+            var Passenger = await _context.Customers.FindAsync(followDto.SenderId);
+
+            var notification = new Notification()
+            {
+                AccountId = followDto.FollowerId,
+                Title = "New Follow Request.",
+                Description = $"{Passenger.FirstName + ' ' + Passenger.LastName} want to follow you.",
+                Type = NotificationType.FollowReqeust
+            };
+
+            await _context.AddAsync(notification);
             await _context.FollowRequests.AddAsync(req);
             await _context.SaveChangesAsync();
             _response.Message = _localization["createFollowRequestSuccess"].Value;
