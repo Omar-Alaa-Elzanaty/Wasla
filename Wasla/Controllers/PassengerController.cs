@@ -172,10 +172,10 @@ namespace Wasla.Api.Controllers
             return Ok(await _passangerService.GetFollowers(userId));
         }
 
-        [HttpGet("trip/user/{orgId}/{name}")]
-        public async Task<IActionResult> GetTripForUser([FromRoute] string orgId, [FromRoute] string name)
+        [HttpGet("trip/user/{orgId}/{lineName}")]
+        public async Task<IActionResult> GetTripForUser([FromRoute] string orgId, [FromRoute] string lineName)
         {
-            return Ok(await _passangerService.GetTripsForUserAsync(orgId, name));
+            return Ok(await _passangerService.GetTripsForUserAsync(orgId, lineName));
         }
 
         [HttpGet("trip/user/{orgId}/{from}/{to}")]

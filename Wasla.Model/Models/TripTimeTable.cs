@@ -25,8 +25,8 @@ namespace Wasla.Model.Models
         public virtual ICollection<Reservation> Reservations { get; set; }
         public virtual ICollection<Package> Packages { get; set; }
         public float AvailablePackageSpace { get; set; }
-        public string Latitude { get; set; }
-        public string Langtitude { get; set; }
+        public string? Latitude { get; set; }
+        public string? Langtitude { get; set; }
 
     }
     public class Seat
