@@ -24,10 +24,10 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         Task<BaseResponse> RemovePackageAsync(int packageId);
         Task<BaseResponse> GetFollowers(string userId);
         Task<BaseResponse>GetFollowing(string userId);
-        Task<BaseResponse> CreateFollowRequestAsync(FollowDto followDto);
-        Task<BaseResponse> ConfirmFollowRequestAsync(FollowDto followDto);
-        Task<BaseResponse> DeleteFollowRequestAsync(FollowDto followDto);
-        Task<BaseResponse> DeleteFollowerAsync(FollowDto followDto);
+        Task<BaseResponse> CreateFollowRequestAsync(string senderId,FollowDto followDto);
+        Task<BaseResponse> ConfirmFollowRequestAsync(string senderId,FollowDto followDto);
+        Task<BaseResponse> DeleteFollowRequestAsync(string senderId, FollowDto followDto);
+        Task<BaseResponse> DeleteFollowerAsync(string senderId,FollowDto followDto);
         Task<BaseResponse> GetTripSuggestion(string customerId);
 
         Task<BaseResponse>AddAdsAsync(PassangerAddAdsDto ads, string customerId);
