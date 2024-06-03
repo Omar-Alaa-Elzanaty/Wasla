@@ -515,7 +515,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                         ArrivalTime = x.ArriveTime,
                         StartTime = x.StartTime,
                         Id = x.Id,
-                        price = (x.Trip != null) ? x.Trip.Price : 0
+                        price = (x.Trip != null) ? x.Trip.Price : 0,
+                        ImageUrl=x.Trip.Organization.LogoUrl
                     }).Take(3).ToListAsync();
 
                 _response.Data = first3AvailableTrips;
@@ -531,7 +532,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 ArrivalTime = x.ArriveTime,
                 StartTime = x.StartTime,
                 Id = x.Id,
-                price = x.Trip.Price
+                price = x.Trip.Price,
+                ImageUrl=x.Trip.Organization.LogoUrl
             }).ToList();
 
             _response.Data = suggestionsTrips;
@@ -567,7 +569,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 return BaseResponse.GetErrorException(HttpStatusErrorCode.BadRequest, "this request already exist");
             var req = _mapper.Map<FollowRequests>(followDto);
 
-            var Passenger = await _context.Customers.FindAsync(followDto.SenderId);
+            var Passenger = await _context.Customers.FindAsync(senderId);
 
             var notification = new Notification()
             {

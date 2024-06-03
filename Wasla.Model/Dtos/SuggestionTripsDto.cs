@@ -10,6 +10,7 @@ namespace Wasla.Model.Dtos
     {
         public int? Id { get;set; }
         public string? ComapnyName { get; set; }
+        public string ImageUrl { get; set; }
         public DateTime? StartTime { get; set; }
         public DateTime? ArrivalTime { get; set; }
         public string? From { get; set; }
