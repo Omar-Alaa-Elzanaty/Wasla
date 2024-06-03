@@ -10,6 +10,8 @@ namespace Wasla.Model.Dtos
     {
         public string Id { get; set; }
         public string UserName { get; set; }
+        public string CustomerImageUrl { get; set; }
+        public string CompanyImageUrl { get; set; }
         public string FullName { get; set; }
         public string Latitude { get; set; }
         public string Langtitude { get; set; }
