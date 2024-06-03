@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Wasla.Model.Dtos;
@@ -86,6 +87,13 @@ namespace Wasla.Api.Controllers
         public async Task<IActionResult> GetReservationOnRoad(int tripId )
         {
             return Ok(await _driverService.GetReservationOnRoad(tripId));
+        }
+        [HttpPut("trip/updateLocation")]
+        public async Task<IActionResult> TripLocation(TripLocationUpdateDto tripLocationUpdate)
+        {
+            var userId = User.FindFirst("uid").Value;
+
+            return Ok(await _driverService.UpdateCurrentPublicTripLocationAsync(userId, tripLocationUpdate));
         }
     }
 }

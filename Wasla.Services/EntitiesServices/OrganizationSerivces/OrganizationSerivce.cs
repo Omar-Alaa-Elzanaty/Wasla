@@ -724,6 +724,22 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             _response.Data = trips;
             return _response;
         }
+        public async Task<BaseResponse> UpdateCurrentOrgTripLocationAsync(string driverId,TripLocationUpdateDto tripDto)
+        {
+            DateTime currentData = DateTime.Now;
+            var trip = await _context.TripTimeTables.
+                FirstOrDefaultAsync(t => t.DriverId == driverId &&
+                t.StartTime <= currentData &&
+                ( t.Status == TripStatus.OnRoad || t.Status == TripStatus.TakeBreak));
+            if (trip == null)
+                return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, _localization["ObjectNotFound"].Value);
+            trip.Langtitude = tripDto.Langtitude;
+            trip.Latitude = tripDto.Latitude;
+            _context.TripTimeTables.Update(trip);
+           await _context.SaveChangesAsync();
+            _response.Message = _localization["UpdateSuccess"].Value;
+            return _response;
+        }
 
         public async Task<BaseResponse> GetTripsHistoryForDriverAsync(string orgId, string DriverId, DateTime currentDate)
         {

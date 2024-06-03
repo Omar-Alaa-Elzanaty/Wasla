@@ -25,7 +25,6 @@ namespace Wasla.Services.Exceptions.FilterException
                 var claims = Task.Run(() => _roleManager.GetClaimsAsync(role)).Result;
                 var hasPermission = claims.Any(c =>
                   c.Type == PermissionsName.Org_Permission && c.Value == _permission && c.Issuer == "LOCAL AUTHORITY");
-
                 if (!hasPermission)
                 {
                     throw new ForbiddenException("There No Permission");

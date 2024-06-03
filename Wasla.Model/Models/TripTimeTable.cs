@@ -27,7 +27,6 @@ namespace Wasla.Model.Models
         public float AvailablePackageSpace { get; set; }
         public string Latitude { get; set; }
         public string Langtitude { get; set; }
-
     }
     public class Seat
     {

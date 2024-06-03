@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Services.Authentication.AuthServices;

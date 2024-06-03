@@ -12,8 +12,8 @@ using Wasla.DataAccess;
 namespace Wasla.DataAccess.Migrations
 {
     [DbContext(typeof(WaslaDb))]
-    [Migration("20240419182827_upfollowr")]
-    partial class upfollowr
+    [Migration("20240603081212_uptrips")]
+    partial class uptrips
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -353,25 +353,15 @@ namespace Wasla.DataAccess.Migrations
 
             modelBuilder.Entity("Wasla.Model.Models.FollowRequests", b =>
                 {
-                    b.Property<int>("FollowId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("FollowId"));
+                    b.Property<string>("SenderId")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FollowerId")
-                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("SenderId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("FollowId");
+                    b.HasKey("SenderId", "FollowerId");
 
                     b.HasIndex("FollowerId");
-
-                    b.HasIndex("SenderId");
 
                     b.ToTable("FollowRequests");
                 });
@@ -559,6 +549,14 @@ namespace Wasla.DataAccess.Migrations
                     b.Property<bool>("IsStart")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Langtitude")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Latitude")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("PublicDriverId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
@@ -721,13 +719,10 @@ namespace Wasla.DataAccess.Migrations
                     b.Property<int>("setNum")
                         .HasColumnType("int");
 
-                    b.Property<int>("TripTmeTableId")
+                    b.Property<int>("TripTimeTableId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("TripTimeTableId")
-                        .HasColumnType("int");
-
-                    b.HasKey("setNum", "TripTmeTableId");
+                    b.HasKey("setNum", "TripTimeTableId");
 
                     b.HasIndex("TripTimeTableId");
 
@@ -828,6 +823,17 @@ namespace Wasla.DataAccess.Migrations
                     b.Property<bool>("IsStart")
                         .HasColumnType("bit");
 
+                    b.Property<string>("Langtitude")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Latitude")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PublicDriverId")
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<DateTime>("StartTime")
                         .HasColumnType("datetime2");
 
@@ -843,6 +849,8 @@ namespace Wasla.DataAccess.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("DriverId");
+
+                    b.HasIndex("PublicDriverId");
 
                     b.HasIndex("TripId");
 
@@ -1368,7 +1376,9 @@ namespace Wasla.DataAccess.Migrations
                 {
                     b.HasOne("Wasla.Model.Models.TripTimeTable", null)
                         .WithMany("RecervedSeats")
-                        .HasForeignKey("TripTimeTableId");
+                        .HasForeignKey("TripTimeTableId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.Station", b =>
@@ -1402,10 +1412,14 @@ namespace Wasla.DataAccess.Migrations
             modelBuilder.Entity("Wasla.Model.Models.TripTimeTable", b =>
                 {
                     b.HasOne("Wasla.Model.Models.Driver", "Driver")
-                        .WithMany("Trips")
+                        .WithMany()
                         .HasForeignKey("DriverId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Wasla.Model.Models.PublicDriver", null)
+                        .WithMany("Trips")
+                        .HasForeignKey("PublicDriverId");
 
                     b.HasOne("Wasla.Model.Models.Trip", "Trip")
                         .WithMany("TimesTable")
@@ -1429,7 +1443,7 @@ namespace Wasla.DataAccess.Migrations
             modelBuilder.Entity("Wasla.Model.Models.UserFollow", b =>
                 {
                     b.HasOne("Wasla.Model.Models.Customer", "Customer")
-                        .WithMany()
+                        .WithMany("Follows")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -1592,6 +1606,8 @@ namespace Wasla.DataAccess.Migrations
                 {
                     b.Navigation("DriversRate");
 
+                    b.Navigation("Follows");
+
                     b.Navigation("OrganizationRates");
 
                     b.Navigation("Reservations");
@@ -1602,13 +1618,13 @@ namespace Wasla.DataAccess.Migrations
             modelBuilder.Entity("Wasla.Model.Models.Driver", b =>
                 {
                     b.Navigation("Rates");
-
-                    b.Navigation("Trips");
                 });
 
             modelBuilder.Entity("Wasla.Model.Models.PublicDriver", b =>
                 {
                     b.Navigation("Rates");
+
+                    b.Navigation("Trips");
 
                     b.Navigation("Vehicle")
                         .IsRequired();

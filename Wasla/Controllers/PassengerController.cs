@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Wasla.Model.Dtos;
 using Wasla.Services.EntitiesServices.PassangerServices;
@@ -7,7 +6,7 @@ namespace Wasla.Api.Controllers
 {
     [Route("api/passanger")]
     [ApiController]
-    [Authorize]
+   [Authorize]
     public class PassengerController : ControllerBase
     {
         private readonly IPassangerService _passangerService;
@@ -93,6 +92,11 @@ namespace Wasla.Api.Controllers
         {
             var userId = User.FindFirst("uid").Value;
             return Ok(await _passangerService.GetProfile(userId));
+        }
+        [HttpGet("searchByUserName")]
+        public async Task<IActionResult> SearchByUserName(string userName)
+        {
+            return Ok(await _passangerService.SearchByUserName(userName));
         }
         [HttpGet("incomingTrips")]
         public async Task<IActionResult> GetIncomingTrips()

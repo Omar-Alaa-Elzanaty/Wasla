@@ -401,7 +401,8 @@ namespace Wasla.Services.Authentication.AuthServices
 		}
 		private async Task<bool> RevokeTokenAsync(string token)
 		{
-			var user = await _authVerifyService.getUserByToken(token);
+
+            var user = await _authVerifyService.getUserByToken(token);
 			var refreshToken = user.RefreshTokens.Single(t => t.RefToken == token);
 
 			if (!refreshToken.IsActive)

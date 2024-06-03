@@ -21,6 +21,7 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
         Task<BaseResponse> GetPublicTripsByDate(DateTime date);
         Task<BaseResponse> UpdateTripReservationByOne(int tripId);
         Task<BaseResponse> GetPublicTripState(int tripId);
+        Task<BaseResponse> UpdateCurrentPublicTripLocationAsync(string driverId, TripLocationUpdateDto tripDto);
         Task<BaseResponse> GetReservationOnRoad(int tripId);
     }
 }

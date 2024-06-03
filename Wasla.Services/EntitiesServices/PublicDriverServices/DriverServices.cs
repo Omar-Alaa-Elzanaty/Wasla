@@ -6,6 +6,7 @@ using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
 using Wasla.Model.Helpers.Enums;
+using Wasla.Model.Helpers.Statics;
 using Wasla.Model.Models;
 using Wasla.Services.EntitiesServices.OrganizationSerivces;
 using Wasla.Services.Exceptions;
@@ -101,6 +102,22 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
 
             trip.Status = status;
 
+            return _response;
+        }
+        public async Task<BaseResponse> UpdateCurrentPublicTripLocationAsync(string driverId, TripLocationUpdateDto tripDto)
+        {
+            DateTime currentData = DateTime.Now;
+            var trip = await _context.PublicDriverTrips.
+                FirstOrDefaultAsync(t => t.PublicDriverId == driverId &&
+                t.StartDate <= currentData &&
+                (t.Status == TripStatus.OnRoad || t.Status == TripStatus.TakeBreak));
+            if (trip == null)
+                return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, _localization["ObjectNotFound"].Value);
+            trip.Langtitude = tripDto.Langtitude;
+            trip.Latitude = tripDto.Latitude;
+            _context.PublicDriverTrips.Update(trip);
+            await _context.SaveChangesAsync();
+            _response.Message = _localization["UpdateSuccess"].Value;
             return _response;
         }
         public async Task<BaseResponse> CreatePublicTrip(string userId, CreatePublicDriverCommand command)

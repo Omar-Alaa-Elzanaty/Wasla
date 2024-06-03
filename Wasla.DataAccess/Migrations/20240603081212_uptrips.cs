@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Wasla.DataAccess.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreation : Migration
+    public partial class uptrips : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -476,6 +476,31 @@ namespace Wasla.DataAccess.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "FollowRequests",
+                columns: table => new
+                {
+                    SenderId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FollowerId = table.Column<string>(type: "nvarchar(450)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FollowRequests", x => new { x.SenderId, x.FollowerId });
+                    table.ForeignKey(
+                        name: "FK_FollowRequests_Customer_FollowerId",
+                        column: x => x.FollowerId,
+                        principalSchema: "Account",
+                        principalTable: "Customer",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_FollowRequests_Customer_SenderId",
+                        column: x => x.SenderId,
+                        principalSchema: "Account",
+                        principalTable: "Customer",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "OrganizationRate",
                 columns: table => new
                 {
@@ -595,7 +620,9 @@ namespace Wasla.DataAccess.Migrations
                     PublicDriverId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     ReservedSeats = table.Column<int>(type: "int", nullable: false),
                     IsStart = table.Column<bool>(type: "bit", nullable: false),
-                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                    IsActive = table.Column<bool>(type: "bit", nullable: false),
+                    Latitude = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Langtitude = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -802,7 +829,12 @@ namespace Wasla.DataAccess.Migrations
                     StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     ArriveTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsStart = table.Column<bool>(type: "bit", nullable: false),
-                    AvailablePackageSpace = table.Column<float>(type: "real", nullable: false)
+                    Status = table.Column<byte>(type: "tinyint", nullable: false),
+                    BreakPeriod = table.Column<TimeSpan>(type: "time", nullable: false),
+                    AvailablePackageSpace = table.Column<float>(type: "real", nullable: false),
+                    Latitude = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Langtitude = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PublicDriverId = table.Column<string>(type: "nvarchar(450)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -814,6 +846,12 @@ namespace Wasla.DataAccess.Migrations
                         principalTable: "Drivers",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_TripTimeTables_PublicDrivers_PublicDriverId",
+                        column: x => x.PublicDriverId,
+                        principalSchema: "Account",
+                        principalTable: "PublicDrivers",
+                        principalColumn: "Id");
                     table.ForeignKey(
                         name: "FK_TripTimeTables_Trips_TripId",
                         column: x => x.TripId,
@@ -877,7 +915,9 @@ namespace Wasla.DataAccess.Migrations
                     StartTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     EndTime = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CustomerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    TriptimeTableId = table.Column<int>(type: "int", nullable: true)
+                    TriptimeTableId = table.Column<int>(type: "int", nullable: true),
+                    OnRoad = table.Column<bool>(type: "bit", nullable: false),
+                    IsRide = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -901,17 +941,17 @@ namespace Wasla.DataAccess.Migrations
                 columns: table => new
                 {
                     setNum = table.Column<int>(type: "int", nullable: false),
-                    TripTmeTableId = table.Column<int>(type: "int", nullable: false),
-                    TripTimeTableId = table.Column<int>(type: "int", nullable: true)
+                    TripTimeTableId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Seats", x => new { x.setNum, x.TripTmeTableId });
+                    table.PrimaryKey("PK_Seats", x => new { x.setNum, x.TripTimeTableId });
                     table.ForeignKey(
                         name: "FK_Seats_TripTimeTables_TripTimeTableId",
                         column: x => x.TripTimeTableId,
                         principalTable: "TripTimeTables",
-                        principalColumn: "Id");
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -961,6 +1001,11 @@ namespace Wasla.DataAccess.Migrations
                 schema: "Account",
                 table: "Employees",
                 column: "OrgId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_FollowRequests_FollowerId",
+                table: "FollowRequests",
+                column: "FollowerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Lines_EndId",
@@ -1077,6 +1122,11 @@ namespace Wasla.DataAccess.Migrations
                 column: "DriverId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_TripTimeTables_PublicDriverId",
+                table: "TripTimeTables",
+                column: "PublicDriverId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_TripTimeTables_TripId",
                 table: "TripTimeTables",
                 column: "TripId");
@@ -1148,6 +1198,9 @@ namespace Wasla.DataAccess.Migrations
             migrationBuilder.DropTable(
                 name: "Employees",
                 schema: "Account");
+
+            migrationBuilder.DropTable(
+                name: "FollowRequests");
 
             migrationBuilder.DropTable(
                 name: "OrganizationRate");

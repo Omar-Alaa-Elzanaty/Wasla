@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Wasla.Model.Dtos;
@@ -14,16 +15,15 @@ namespace Wasla.Api.Controllers
 {
     [Route("api/organization")]
 	[ApiController]
+	[Authorize]
 	//[Authorize(Roles ="Organization")]
 	public class OrganizationController : ControllerBase
 	{
 		private readonly IOrganizationService _orgService;
-		private readonly UserManager<Account> _userManager;
         private readonly IAuthService _authservice;
-        public OrganizationController(IOrganizationService organizationService, UserManager<Account> userManager,IAuthService authService)
+        public OrganizationController(IOrganizationService organizationService,IAuthService authService)
 		{
 			_orgService = organizationService;
-			_userManager = userManager;
             _authservice = authService;
 
         }
@@ -317,6 +317,13 @@ namespace Wasla.Api.Controllers
         public async Task<IActionResult> TaxkeBreak(int tripId)
         {
             return Ok(await _orgService.TakeBreakAsync(tripId));
+        }
+        [HttpPut("trip/updateLocation")]
+        public async Task<IActionResult> TripLocation(TripLocationUpdateDto tripLocationUpdate)
+        {
+            var userId = User.FindFirst("uid").Value;
+
+            return Ok(await _orgService.UpdateCurrentOrgTripLocationAsync(userId,tripLocationUpdate));
         }
         [HttpPut("Package/{packageId}/{status}")]
         public async Task<IActionResult> ReviewPackagesRequest(int packageId, int status)

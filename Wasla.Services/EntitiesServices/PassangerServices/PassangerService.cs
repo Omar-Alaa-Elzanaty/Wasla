@@ -409,6 +409,24 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             _response.Data = customer;
             return _response;
         }
+        public async Task<BaseResponse> SearchByUserName(string userName)
+        {
+            if (userName is null)
+            {
+                throw new BadRequestException(_localization["Unauthorized"].Value);
+            }
+            var user = await _context.Customers.FirstOrDefaultAsync(c=>c.UserName==userName);
+
+            if (user is null)
+            {
+                return BaseResponse.GetErrorException(System.Net.HttpStatusCode.NotFound, _localization["UserNameNotFound"].Value);
+            }
+
+            var customer = _mapper.Map<SearchByUserNameDto>(user);
+
+            _response.Data = customer;
+            return _response;
+        }
         public async Task<BaseResponse> GetInComingReservations(string customerId)
         {
             //var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result?.Id;
