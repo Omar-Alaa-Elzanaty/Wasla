@@ -15,5 +15,6 @@ namespace Wasla.Model.Models
             RefreshTokens = new List<RefreshToken>();
         }
 		public List<RefreshToken> RefreshTokens { get; set; }
+        public virtual ICollection<Notification> Notifications { get; set; }
     }
 }

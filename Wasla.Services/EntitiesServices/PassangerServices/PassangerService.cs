@@ -708,7 +708,9 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             var followers = user.Follows.Select(x => x.FollowerId)
                                 .ToList();
 
-            var followersInTrips = _context.Reservations
+            followers.Add(userId);
+
+            var followersInTrips = await _context.Reservations
                             .Where(x => followers.Contains(x.CustomerId) && x.TripTimeTable != null &&
                             x.StartTime <= DateTime.Now && x.EndTime >= DateTime.Now)
                             .DistinctBy(x => x.CustomerId)
@@ -718,10 +720,47 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                                 FullName = x.Customer.FirstName + ' ' + x.Customer.LastName,
                                 Langtitude = x.TripTimeTable.Langtitude,
                                 Latitude = x.TripTimeTable.Latitude,
-                                UserName = x.Customer.UserName
-                            });
+                                UserName = x.Customer.UserName,
+                                CustomerImageUrl = x.Customer.PhotoUrl,
+                                CompanyImageUrl = x.TripTimeTable.Trip.Organization.LogoUrl
+                            }).ToListAsync();
+
+            followersInTrips.AddRange(await _context.PublicDriverTripReservation
+                                        .Where(x => followers.Contains(x.CustomerId))
+                                        .Where(x => x.PublicDriverTrip.StartDate <= DateTime.Now && x.PublicDriverTrip.EndDate >= DateTime.Now)
+                                        .Select(x => new FollowerCurrentTripDto()
+                                        {
+                                            CompanyImageUrl = x.PublicDriverTrip.PublicDriver.PhotoUrl,
+                                            FullName = x.PublicDriverTrip.PublicDriver.FirstName + ' ' + x.PublicDriverTrip.PublicDriver.LastName,
+                                            CustomerImageUrl = x.Customer.PhotoUrl,
+                                            Id = x.CustomerId,
+                                            Langtitude = x.PublicDriverTrip.Langtitude,
+                                            Latitude = x.PublicDriverTrip.Latitude,
+                                            UserName = x.Customer.UserName
+                                        }).ToListAsync());
+
+            followersInTrips = followersInTrips.DistinctBy(x => x.UserName).ToList();
 
             _response.Data = followersInTrips;
+            return _response;
+        }
+
+        public async Task<BaseResponse> PackagesLocations(string userId)
+        {
+            var packages = await _context.Packages
+                               .Where(x => x.SenderId == userId && x.Trip.StartTime <= DateTime.Now && x.Trip.ArriveTime >= DateTime.Now)
+                               .Select(x => new PackageLocationDto()
+                               {
+                                   Id = x.Id,
+                                   ImageUrl = x.ImageUrl,
+                                   Name = x.Name,
+                                   ReciverName = x.ReciverName,
+                                   ReciverUserName = x.ReciverUserName,
+                                   Langtitude = x.Trip.Langtitude,
+                                   Latitude = x.Trip.Latitude
+                               }).ToListAsync();
+
+            _response.Data = packages;
             return _response;
         }
     }

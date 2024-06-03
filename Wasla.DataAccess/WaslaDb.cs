@@ -59,5 +59,6 @@ namespace Wasla.DataAccess
 		public virtual DbSet<PublicDriverTrip> PublicDriverTrips { get; set; }
 		public virtual DbSet<PublicDriverTripReservation> PublicDriverTripReservation { get; set; }
 		public virtual DbSet<PublicDriverTripRequest> PublicDriverTripRequests { get; set; }
+		public virtual DbSet<Notification> Notifications { get; set; }
 	}
 }
