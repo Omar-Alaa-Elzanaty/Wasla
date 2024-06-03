@@ -87,5 +87,12 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _driverService.GetReservationOnRoad(tripId));
         }
+        [HttpPut("trip/updateLocation")]
+        public async Task<IActionResult> TripLocation(TripLocationUpdateDto tripLocationUpdate)
+        {
+            var userId = User.FindFirst("uid").Value;
+
+            return Ok(await _driverService.UpdateCurrentPublicTripLocationAsync(userId, tripLocationUpdate));
+        }
     }
 }

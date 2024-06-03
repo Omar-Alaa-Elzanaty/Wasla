@@ -57,6 +57,8 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         Task<BaseResponse> DeleteTripAsync(int id);
         Task<BaseResponse> GetOriganizationsWithName(string name);
         #region Trip Time Table
+        Task<BaseResponse> UpdateCurrentOrgTripLocationAsync(string driverId, TripLocationUpdateDto tripDto);
+
         Task<BaseResponse> AddTripTimeAsync(AddTripTimeDto model);
         Task<BaseResponse> UpdateTripTimeAsync(UpdateTripTimeDto model, int id);
         Task<BaseResponse> TakeBreakAsync(int id);

@@ -205,6 +205,11 @@ namespace Wasla.Api.Controllers
 
             return Ok(await _passangerService.PackagesLocations(userId));
         }
+        [HttpGet("searchByUserName")]
+        public async Task<IActionResult> SearchByUserName(string userName)
+        {
+            return Ok(await _passangerService.SearchByUserName(userName));
+        }
     }
 
 }

@@ -7,6 +7,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
     public interface IPassangerService
     {
         Task<BaseResponse> GetProfile(string customerId);
+        Task<BaseResponse> SearchByUserName(string userName);
+
         Task<BaseResponse> ReservationAsync(ReservationDto order,string customerId);
         Task<BaseResponse> GetInComingReservations(string customerId);
         Task<BaseResponse> GetEndedReservations(string customerId);
