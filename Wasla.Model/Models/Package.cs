@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Wasla.Model.Helpers.Enums;
 
 namespace Wasla.Model.Models
 {
@@ -22,6 +23,6 @@ namespace Wasla.Model.Models
 		public virtual TripTimeTable? Trip { get; set; }
         public string? DriverId { get; set; }
         public virtual PublicDriver? Driver { get; set; }
-		public int Status { get; set; }
+		public PackageStatus Status { get; set; }
     }
 }

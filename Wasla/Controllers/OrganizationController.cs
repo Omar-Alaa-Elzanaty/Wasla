@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
+using Wasla.Model.Helpers.Enums;
 using Wasla.Model.Models;
 using Wasla.Services.Authentication.AuthServices;
 using Wasla.Services.EntitiesServices.OrganizationSerivces;
@@ -319,7 +320,7 @@ namespace Wasla.Api.Controllers
             return Ok(await _orgService.TakeBreakAsync(tripId));
         }
         [HttpPut("Package/{packageId}/{status}")]
-        public async Task<IActionResult> ReviewPackagesRequest(int packageId, int status)
+        public async Task<IActionResult> ReviewPackagesRequest(int packageId, PackageStatus status)
         {
             return Ok(await _orgService.ReviewPackagesRequest(packageId, status));
         }
