@@ -169,9 +169,6 @@ namespace Wasla.Services.Authentication.AuthServices
 			return response;
 
 		}
-	
-		
-	
 		public async Task<BaseResponse> ResetPasswordByphoneAsync(ResetPasswordByPhoneDto resetPassword)
 		{
 			var user = await _authVerifyService.getUserByPhone(resetPassword.Phone);

@@ -35,6 +35,7 @@ namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
             driverResponse.FirstName = driver.FirstName;
             driverResponse.LastName = driver.LastName;
             driverResponse.PhotoUrl = driver.PhotoUrl;
+            driverResponse.LicenseImageUrl = driver.LicenseImageUrl;
             driverResponse.LicenseNum = driver.LicenseNum;
             
             return driverResponse;

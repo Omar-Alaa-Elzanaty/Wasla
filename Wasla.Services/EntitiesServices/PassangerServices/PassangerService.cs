@@ -504,7 +504,25 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 return BaseResponse.GetErrorException(System.Net.HttpStatusCode.NotFound, _localization["UserNameNotFound"].Value);
             }
 
-            return await GetReservationOnMatchDate(x => x.ReservationDate > DateTime.Now, user);
+            return await GetReservationOnMatchDate(x => x.ReservationDate > DateTime.UtcNow, user);
+        }
+        public async Task<BaseResponse> GetFirstInComingReservations(string customerId)
+        {
+            //var customerId = _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User).Result?.Id;
+
+            if (customerId is null)
+            {
+                throw new BadRequestException(_localization["Unauthorized"].Value);
+            }
+
+            var user = await _context.Customers.FindAsync(customerId);
+
+            if (user is null)
+            {
+                return BaseResponse.GetErrorException(System.Net.HttpStatusCode.NotFound, _localization["UserNameNotFound"].Value);
+            }
+
+            return await GetFirstReservationOnMatchDate(x => x.ReservationDate > DateTime.UtcNow, user);
         }
         public async Task<BaseResponse> GetEndedReservations(string customerId)
         {
@@ -586,6 +604,27 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 SeatNumber = x.SetNum,
                 TripTimeTableId = (int)x.TriptimeTableId!
             }).ToList();
+
+            await Task.CompletedTask;
+
+            _response.Data = inComingTrips;
+            return _response;
+        }
+        private async Task<BaseResponse> GetFirstReservationOnMatchDate(Func<Reservation, bool> match, Customer customer)
+        {
+            var inComingTrips = customer.Reservations.Where(match)
+                .Where(x => x.TriptimeTableId != null).OrderBy(x=>x.TripTimeTable.StartTime)
+            .Select(x => new CustomerTicket()
+            {
+                StartStation = x.TripTimeTable.Trip.Line.Start.Name,
+                EndStation = x.TripTimeTable.Trip.Line.End.Name,
+                EndTime = x.TripTimeTable.ArriveTime,
+                StartTime = x.TripTimeTable.StartTime,
+                PassengerName = x.PassengerName,
+                Price = x.TripTimeTable.Trip.Price,
+                SeatNumber = x.SetNum,
+                TripTimeTableId = (int)x.TriptimeTableId!
+            }).FirstOrDefault();
 
             await Task.CompletedTask;
 
@@ -772,9 +811,20 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
         public async Task<BaseResponse> GetTripsForUserAsync(string orgId, string lineName)
         {
-            var trips = await _context.TripTimeTables.Where(t => t.Trip.OrganizationId == orgId && (t.Trip.Line.Start.Name.StartsWith(lineName) || t.Trip.Line.End.Name.StartsWith(lineName))).ToListAsync();
-            var tripRes = _mapper.Map<List<TripForUserDto>>(trips);
-            _response.Data = tripRes;
+            var trips = await _context.TripTimeTables.Where(t => t.Trip.OrganizationId == orgId && 
+            (t.Trip.Line.Start.Name.StartsWith(lineName) || 
+            t.Trip.Line.End.Name.StartsWith(lineName))).Select(t=>new TripForUserDto
+            {
+                Price=t.Trip.Price,
+                From=t.Trip.Line.Start.Name,
+                To=t.Trip.Line.End.Name,
+                orgName=t.Trip.Organization.Name,
+                AvailablePackageSpace=t.AvailablePackageSpace,
+                AvailableSets=t.RecervedSeats.Count()
+                
+            }).ToListAsync();
+          //  var tripRes = _mapper.Map<List<TripForUserDto>>(trips);
+            _response.Data = trips;
             return _response;
         }
 
@@ -855,6 +905,54 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                                }).ToListAsync();
 
             _response.Data = packages;
+            return _response;
+        }
+
+
+
+        public async Task<BaseResponse> SearchTripsForUserAsync(string from, string to, DateTime? date)
+        {
+            var today = DateTime.Today;
+           List< SearchTripsForUser> orgTrips =await _context.TripTimeTables
+                .Where(tt =>
+                    ((tt.Trip.Line.Start.Name == from && tt.Trip.Line.End.Name == to && tt.IsStart) ||
+                     (tt.Trip.Line.Start.Name == to && tt.Trip.Line.End.Name == from && !tt.IsStart))
+                     && (date.HasValue ? tt.StartTime.Date == date.Value.Date : tt.StartTime.Date >= today)
+
+                    ).OrderBy(t => t.StartTime)
+                .Select(t => new SearchTripsForUser
+                {
+                    TripId = t.Id,
+                    TripDate = t.StartTime.ToString("MM/dd/yyyy"),
+                    TripDay = t.StartTime.ToString("dddd"),
+                    TripStartTime = t.StartTime.ToString("h:mm tt"),
+                    StartStation = t.Trip.Line.Start.Name,
+                    EndStation = t.Trip.Line.End.Name,
+                    ImgUrl=t.Trip.Organization.LogoUrl
+                    
+
+                }).ToListAsync();
+            List<SearchTripsForUser> publicTrips = await _context.PublicDriverTrips
+               .Where(tt =>
+                   ((tt.StartStation.Name == from && tt.EndStation.Name == to && tt.IsStart) ||
+                    (tt.StartStation.Name == to && tt.EndStation.Name == from && !tt.IsStart))
+                   && (date.HasValue ? tt.StartDate.Date == date.Value.Date : tt.StartDate.Date >= today)&&
+                   tt.IsActive==true
+
+                   ).OrderBy(t => t.StartDate)
+               .Select(t => new SearchTripsForUser
+               {
+                   TripId = t.Id,
+                   TripDate = t.StartDate.ToString("MM/dd/yyyy"),
+                   TripDay = t.StartDate.ToString("dddd"),
+                   TripStartTime = t.StartDate.ToString("h:mm tt"),
+                   StartStation = t.StartStation.Name,
+                   EndStation = t.EndStation.Name,
+                   ImgUrl = t.PublicDriver.PhotoUrl
+
+               }).ToListAsync();
+
+            _response.Data = new {orgTrips,publicTrips};
             return _response;
         }
     }

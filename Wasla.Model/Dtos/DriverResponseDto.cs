@@ -11,8 +11,7 @@ namespace Wasla.Model.Dtos
 {
     public class DriverResponseDto:BaseData
     {
-        public IFormFile ProfileImageFile { get; set; }
-        public IFormFile LicenseImageFile { get; set; }
+        public string LicenseImageUrl { get; set; }
         public string LicenseNum { get; set; }
         public List<string> DriverPermissions { get; set; }
         public virtual DriverOrganization? Orgainzation { get; set; }

@@ -25,7 +25,7 @@ namespace Wasla.Model.Models
         public int ReservedSeats { get; set; }
         public bool IsStart { get; set; }
         public bool IsActive { get; set; }
-        public string Latitude { get; set; }
-        public string Langtitude { get; set; }
+        public string? Latitude { get; set; }
+        public string? Langtitude { get; set; }
     }
 }

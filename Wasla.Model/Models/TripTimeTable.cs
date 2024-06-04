@@ -21,7 +21,7 @@ namespace Wasla.Model.Models
         public bool IsStart { get; set; }
         public TripStatus Status { get; set; }
         public TimeSpan BreakPeriod { get; set; }
-        public virtual List<Seat> RecervedSeats { get; set; }
+        public virtual List<Seat>? RecervedSeats { get; set; }
         public virtual ICollection<Reservation> Reservations { get; set; }
         public virtual ICollection<Package> Packages { get; set; }
         public float AvailablePackageSpace { get; set; }
