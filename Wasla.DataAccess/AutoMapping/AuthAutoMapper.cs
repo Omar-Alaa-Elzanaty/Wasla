@@ -12,16 +12,7 @@ namespace Wasla.DataAccess.AutoMapping
             //User
 
             CreateMap<Customer, PassengerRegisterDto>().ReverseMap();
-            CreateMap<UserFollow,GetFollowingQueryDto>().ReverseMap()
-                .ForMember(dest => dest.Follower.FirstName + ' ' + dest.Follower.LastName, src => src.MapFrom(src => src.FullName))
-                .ForMember(dest => dest.Follower, src => src.MapFrom(src => src.Id))
-                .ForMember(dest => dest.Follower.PhotoUrl, src => src.MapFrom(src => src.PhotoUrl))
-                .ForMember(dest => dest.Follower.UserName, src => src.MapFrom(src => src.UserName));
-            CreateMap<UserFollow, GetFollowerQueryDto>().ReverseMap()
-                .ForMember(dest => dest.Customer.FirstName + ' ' + dest.Customer.LastName, src => src.MapFrom(src => src.FullName))
-                .ForMember(dest => dest.Customer, src => src.MapFrom(src => src.Id))
-                .ForMember(dest => dest.Customer.PhotoUrl, src => src.MapFrom(src => src.PhotoUrl))
-                .ForMember(dest => dest.Customer.UserName, src => src.MapFrom(src => src.UserName));
+
             CreateMap<OrgRegisterRequestDto, OrganizationRegisterRequest>().ReverseMap();
             CreateMap<OrganizationRegisterRequest, Organization>().ReverseMap();
             CreateMap<DriverRegisterDto, Driver>().ReverseMap();

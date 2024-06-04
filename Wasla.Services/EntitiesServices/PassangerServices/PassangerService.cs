@@ -796,9 +796,15 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
         public async Task<BaseResponse> GetFollowers(string userId)
         {
-            var entities = await _context.UserFollows.Where(x => x.FollowerId == userId).ToListAsync();
+            var followers = await _context.UserFollows.Where(x => x.FollowerId == userId)
+                        .Select(x => new GetFollowerQueryDto()
+                        {
+                            Id = x.CustomerId,
+                            FullName = x.Customer.FirstName + ' ' + x.Customer.LastName,
+                            PhotoUrl = x.Customer.PhotoUrl,
+                            UserName = x.Customer.UserName
+                        }).ToListAsync();
 
-            var followers = _mapper.Map<GetFollowerQueryDto>(entities);
 
             _response.Data = followers;
             return _response;
@@ -806,9 +812,14 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
         public async Task<BaseResponse> GetFollowing(string userId)
         {
-            var entities = await _context.UserFollows.Where(x => x.CustomerId == userId).ToListAsync();
-
-            var following = _mapper.Map<GetFollowerQueryDto>(entities);
+            var following = await _context.UserFollows.Where(x => x.CustomerId == userId)
+                          .Select(x => new GetFollowerQueryDto()
+                          {
+                              Id = x.FollowerId,
+                              FullName = x.Follower.FirstName + ' ' + x.Follower.LastName,
+                              PhotoUrl = x.Follower.PhotoUrl,
+                              UserName = x.Follower.UserName
+                          }).ToListAsync();
 
             _response.Data = following;
             return _response;
