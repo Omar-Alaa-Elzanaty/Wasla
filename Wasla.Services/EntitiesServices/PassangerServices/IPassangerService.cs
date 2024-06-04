@@ -25,7 +25,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         Task<BaseResponse> GetFollowers(string userId);
         Task<BaseResponse>GetFollowing(string userId);
         Task<BaseResponse> CreateFollowRequestAsync(string senderId,FollowDto followDto);
-        Task<BaseResponse> ConfirmFollowRequestAsync(string senderId,FollowDto followDto);
+        Task<BaseResponse> ConfirmFollowRequestAsync(string userId,FollowDto followDto);
         Task<BaseResponse> DeleteFollowRequestAsync(string senderId, FollowDto followDto);
         Task<BaseResponse> DeleteFollowerAsync(string senderId,FollowDto followDto);
         Task<BaseResponse> GetTripSuggestion(string customerId);

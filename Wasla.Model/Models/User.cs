@@ -11,14 +11,11 @@ namespace Wasla.Model.Models
 {
 	public  class User:Account
 	{
-        public User()
-        {
-			PhotoUrl = "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
-		}
         public string FirstName { get; set; }
 		public string LastName { get; set; }
-		public string? PhotoUrl { get; set; }
-		public Gender Gender { get; set; }
+		public string? PhotoUrl { get; set; } = "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
+
+        public Gender Gender { get; set; }
 		public DateTime? Birthdate { get; set; }
 
     }

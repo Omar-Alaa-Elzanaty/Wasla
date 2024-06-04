@@ -845,8 +845,8 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                 await _context.AddAsync(new Notification()
                 {
                     AccountId = package.SenderId,
-                    Title = "Accept Your package",
-                    Description = "Your package reqeust was accepted from trip driver side.",
+                    Title = _localization["NotificationAcceptPackageRequestTopic"].Value,
+                    Description = _localization["NotificationAcceptPackageRequestDescription"].Value,
                     Type = NotificationType.PackageAccept,
                 });
 
@@ -857,8 +857,8 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                     await _context.AddAsync(new Notification()
                     {
                         AccountId = package.SenderId,
-                        Title = "New Package",
-                        Description = $"{sender.FirstName + ' ' + sender.LastName} send a new package for you.",
+                        Title = _localization["NotificationRecivePackageReqeustTopic"].Value,
+                        Description = _localization["NotificationRecivePackageDescription"].Value.Replace("Name", $"{sender.FirstName + ' ' + sender.LastName}"),
                         Type = NotificationType.PackageAccept,
                     });
                 }

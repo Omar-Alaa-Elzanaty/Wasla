@@ -122,9 +122,9 @@ namespace Wasla.Api.Controllers
         [HttpPost("ConfirmFollowRequest")]
         public async Task<IActionResult> ConfirmFollowRequest(FollowDto followDto)
         {
-            var senderId = User.FindFirst("uid").Value;
+            var userId = User.FindFirst("uid").Value;
 
-            return Ok(await _passangerService.ConfirmFollowRequestAsync(senderId,followDto));
+            return Ok(await _passangerService.ConfirmFollowRequestAsync(userId,followDto));
         }
         [HttpDelete("deleteFollowRequest")]
         public async Task<IActionResult> DeleteFollowRequest(FollowDto followDto)
@@ -140,16 +140,16 @@ namespace Wasla.Api.Controllers
 
             return Ok(await _passangerService.DeleteFollowerAsync(senderId,followDto));
         }
-        [HttpPost("acceptFollowRequest")]
-        public async Task<IActionResult> AcceptRequest([FromBody]string follwerId)
-        {
-            var userId = User.FindFirst("uid").Value;
-            return Ok(await _passangerService.AcceptFollowRequestAsync(new AcceptFollowRequestCommand()
-            {
-                FolowerId = follwerId,
-                SenderId = userId
-            }));
-        }
+        //[HttpPost("acceptFollowRequest")]
+        //public async Task<IActionResult> AcceptRequest([FromBody]string follwerId)
+        //{
+        //    var userId = User.FindFirst("uid").Value;
+        //    return Ok(await _passangerService.AcceptFollowRequestAsync(new AcceptFollowRequestCommand()
+        //    {
+        //        FolowerId = follwerId,
+        //        SenderId = userId
+        //    }));
+        //}
         [HttpGet("displayFollowRequest")]
         public async Task<IActionResult> DisplayFollowRequest()
         {

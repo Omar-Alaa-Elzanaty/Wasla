@@ -317,8 +317,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 await _context.Notifications.AddAsync(new Notification()
                 {
                     AccountId = trip.PublicDriverId,
-                    Title = "New package Request.",
-                    Description = $"{sender.FirstName + ' ' + sender.LastName} want to send package through your trip.",
+                    Title = _localization["DriverNewPackageRequestTopic"].Value,
+                    Description = _localization["DriverNewPackageRequestDescrption"].Value.Replace("Name", $"{sender.FirstName + ' ' + sender.LastName}"),
                     Type = NotificationType.PackageRequest
                 });
             }
@@ -328,8 +328,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 await _context.Notifications.AddAsync(new Notification()
                 {
                     AccountId = trip.Organization.Id,
-                    Title = "New package Request.",
-                    Description = $"{sender.FirstName + ' ' + sender.LastName} want to send package through your trip.",
+                    Title = _localization["DriverNewPackageRequestTopic"].Value,
+                    Description = _localization["DriverNewPackageRequestDescrption"].Value.Replace("Name", $"{sender.FirstName + ' ' + sender.LastName}"),
                     Type = NotificationType.PackageRequest
                 });
             }
@@ -454,6 +454,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             customer.Gender = model.Gender;
             customer.Email = model.Email;
             customer.PhoneNumber = model.PhoneNumber;
+            customer.UserName = model.UserName;
 
             if (model.Photo is null && customer.PhotoUrl != null)
             {
@@ -594,7 +595,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
         public async Task<BaseResponse> CreateFollowRequestAsync(string senderId, FollowDto followDto)
         {
-            var requestExist = _context.FollowRequests.Any(f => f.SenderId == senderId && f.FollowerId == followDto.FollowerId);
+            var requestExist = _context.FollowRequests.Any(f => f.SenderId == senderId && f.FollowerId == followDto.SenderId);
             if (requestExist)
                 return BaseResponse.GetErrorException(HttpStatusErrorCode.BadRequest, "this request already exist");
             var req = _mapper.Map<FollowRequests>(followDto);
@@ -604,9 +605,9 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
             var notification = new Notification()
             {
-                AccountId = followDto.FollowerId,
-                Title = "New Follow Request.",
-                Description = $"{Passenger.FirstName + ' ' + Passenger.LastName} want to follow you.",
+                AccountId = followDto.SenderId,
+                Title = _localization["FollowReqeustTopic"].Value,
+                Description = _localization["FollowReqeustDescription"].Value.Replace("Name", $"{Passenger.FirstName + ' ' + Passenger.LastName}"),
                 Type = NotificationType.FollowReqeust
             };
 
@@ -618,9 +619,9 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         }
 
 
-        public async Task<BaseResponse> ConfirmFollowRequestAsync(string senderId, FollowDto followDto)
+        public async Task<BaseResponse> ConfirmFollowRequestAsync(string userId, FollowDto followDto)
         {
-            var requestExist = _context.FollowRequests.Any(f => f.SenderId == senderId && f.FollowerId == followDto.FollowerId);
+            var requestExist = _context.FollowRequests.Any(f => f.SenderId == followDto.SenderId && f.FollowerId == userId);
             if (!requestExist)
                 return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, "this request not exist");
             var follow = _mapper.Map<UserFollow>(followDto);
@@ -646,7 +647,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
         public async Task<BaseResponse> DeleteFollowRequestAsync(string senderId, FollowDto followDto)
         {
-            var requestExist = _context.FollowRequests.Any(f => f.SenderId == senderId && f.FollowerId == followDto.FollowerId);
+            var requestExist = _context.FollowRequests.Any(f => f.SenderId == senderId && f.FollowerId == followDto.SenderId);
             if (!requestExist)
                 return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, _localization["FollowRequestExist"].Value);
             var request = _mapper.Map<FollowRequests>(followDto);
@@ -659,7 +660,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
         public async Task<BaseResponse> DeleteFollowerAsync(string senderId, FollowDto followDto)
         {
-            var followExist = _context.UserFollows.Any(f => (f.CustomerId == senderId && f.FollowerId == followDto.FollowerId) || (f.CustomerId == followDto.FollowerId && f.FollowerId == senderId));
+            var followExist = _context.UserFollows.Any(f => (f.CustomerId == senderId && f.FollowerId == followDto.SenderId) || (f.CustomerId == followDto.SenderId && f.FollowerId == senderId));
             if (!followExist)
                 return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, _localization["FollowNotFound"].Value);
             var request = _mapper.Map<UserFollow>(followDto);
