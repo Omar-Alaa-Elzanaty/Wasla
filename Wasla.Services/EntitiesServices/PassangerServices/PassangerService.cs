@@ -684,9 +684,9 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             return _response;
         }
 
-        public async Task<BaseResponse> DeleteFollowRequestAsync(string senderId, FollowDto followDto)
+        public async Task<BaseResponse> DeleteFollowRequestAsync(string userId, FollowDto followDto)
         {
-            var requestExist = _context.FollowRequests.Any(f => f.SenderId == senderId && f.FollowerId == followDto.SenderId);
+            var requestExist = _context.FollowRequests.Any(f => f.SenderId == followDto.SenderId && f.FollowerId == userId);
             if (!requestExist)
                 return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, _localization["FollowRequestExist"].Value);
             var request = _mapper.Map<FollowRequests>(followDto);

@@ -135,9 +135,9 @@ namespace Wasla.Api.Controllers
         [HttpDelete("deleteFollowRequest")]
         public async Task<IActionResult> DeleteFollowRequest(FollowDto followDto)
         {
-            var senderId = User.FindFirst("uid").Value;
+            var userId = User.FindFirst("uid").Value;
 
-            return Ok(await _passangerService.DeleteFollowRequestAsync(senderId,followDto));
+            return Ok(await _passangerService.DeleteFollowRequestAsync(userId,followDto));
         }
         [HttpDelete("deleteFollower")]
         public async Task<IActionResult> DeleteFollower(FollowDto followDto)
