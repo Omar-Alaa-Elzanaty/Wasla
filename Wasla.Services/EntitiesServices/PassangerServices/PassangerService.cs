@@ -518,7 +518,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 return BaseResponse.GetErrorException(System.Net.HttpStatusCode.NotFound, _localization["UserNameNotFound"].Value);
             }
 
-            return await GetReservationOnMatchDate(x => x.ReservationDate <= DateTime.Now, user);
+            return await GetReservationOnMatchDate(x => x.TripTimeTable!.ArriveTime <= DateTime.Now, user);
         }
         public async Task<BaseResponse> GetTripSuggestion(string customerId)
         {
@@ -598,6 +598,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             if (requestExist)
                 return BaseResponse.GetErrorException(HttpStatusErrorCode.BadRequest, "this request already exist");
             var req = _mapper.Map<FollowRequests>(followDto);
+            req.SenderId = senderId;
 
             var Passenger = await _context.Customers.FindAsync(senderId);
 
