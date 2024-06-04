@@ -26,7 +26,8 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<Customer, DisplayCustomerProfileDto>()
 
                 .ForMember(dest=>dest.FullName,src=>src.MapFrom(src=>src.FirstName+' '+src.LastName));
-            CreateMap<Customer, SearchByUserNameDto>();
+            CreateMap<Customer, SearchByUserNameDto>()
+                .ForMember(dest => dest.FullName, src => src.MapFrom(src => src.FirstName + ' ' + src.LastName));
 
             //station
 
