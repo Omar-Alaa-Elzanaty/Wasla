@@ -785,10 +785,10 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             var requests = await _context.FollowRequests.Where(x => x.FollowerId == customerId)
                                         .Select(x => new DisplayFollowingRequestsDto()
                                         {
-                                            FollowingId = x.FollowerId,
+                                            FollowingId = x.SenderId,
                                             Name = x.Follower.FirstName + ' ' + x.Follower.LastName,
-                                            PhotoUrl = x.Follower.PhotoUrl,
-                                            UserName = x.Follower.UserName
+                                            PhotoUrl = x.Sender.PhotoUrl,
+                                            UserName = x.Sender.UserName
                                         }).ToListAsync();
             _response.Data = requests;
             return _response;
