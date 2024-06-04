@@ -10,7 +10,7 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
     {
         Task<BaseResponse> UpdateCurrentPublicTripLocationAsync(string driverId, TripLocationUpdateDto tripDto);
         Task<BaseResponse> GetPublicPackagesRequestAsync(string driverId);
-        Task<BaseResponse> ReviewPackagesRequest(int packageId, int status);
+        Task<BaseResponse> ReviewPackagesRequest(int packageId, PackageStatus status);
         Task<BaseResponse> GetDriverPublicPackagesAsync(string DriverId);
         Task<BaseResponse> GetProfileAsync(string userId);
         Task<BaseResponse> GetTripStatus(string userId);

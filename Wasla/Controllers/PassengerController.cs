@@ -1,5 +1,4 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Wasla.Model.Dtos;
 using Wasla.Services.EntitiesServices.PassangerServices;
@@ -129,9 +128,9 @@ namespace Wasla.Api.Controllers
         [HttpPost("ConfirmFollowRequest")]
         public async Task<IActionResult> ConfirmFollowRequest(FollowDto followDto)
         {
-            var senderId = User.FindFirst("uid").Value;
+            var userId = User.FindFirst("uid").Value;
 
-            return Ok(await _passangerService.ConfirmFollowRequestAsync(senderId,followDto));
+            return Ok(await _passangerService.ConfirmFollowRequestAsync(userId,followDto));
         }
         [HttpDelete("deleteFollowRequest")]
         public async Task<IActionResult> DeleteFollowRequest(FollowDto followDto)
@@ -147,11 +146,16 @@ namespace Wasla.Api.Controllers
 
             return Ok(await _passangerService.DeleteFollowerAsync(senderId,followDto));
         }
-        [HttpPost("acceptFollowRequest")]
-        public async Task<IActionResult> AcceptRequest(AcceptFollowRequestCommand command)
-        {
-            return Ok(await _passangerService.AcceptFollowRequestAsync(command));
-        }
+        //[HttpPost("acceptFollowRequest")]
+        //public async Task<IActionResult> AcceptRequest([FromBody]string follwerId)
+        //{
+        //    var userId = User.FindFirst("uid").Value;
+        //    return Ok(await _passangerService.AcceptFollowRequestAsync(new AcceptFollowRequestCommand()
+        //    {
+        //        FolowerId = follwerId,
+        //        SenderId = userId
+        //    }));
+        //}
         [HttpGet("displayFollowRequest")]
         public async Task<IActionResult> DisplayFollowRequest()
         {
@@ -183,10 +187,10 @@ namespace Wasla.Api.Controllers
             return Ok(await _passangerService.GetFollowers(userId));
         }
 
-        [HttpGet("trip/user/{orgId}/{name}")]
-        public async Task<IActionResult> GetTripForUser([FromRoute] string orgId, [FromRoute] string name)
+        [HttpGet("trip/user/{orgId}/{lineName}")]
+        public async Task<IActionResult> GetTripForUser([FromRoute] string orgId, [FromRoute] string lineName)
         {
-            return Ok(await _passangerService.GetTripsForUserAsync(orgId, name));
+            return Ok(await _passangerService.GetTripsForUserAsync(orgId, lineName));
         }
         [HttpGet("search/trips/user/{from}/{to}/date")]
         public async Task<IActionResult> SearchTripsForUser([FromRoute] string from, [FromRoute] string to, [FromQuery] DateTime? date)
@@ -229,6 +233,18 @@ namespace Wasla.Api.Controllers
         public async Task<IActionResult> SearchByUserName(string userName)
         {
             return Ok(await _passangerService.SearchByUserName(userName));
+        }
+        [HttpPut("EditProflie")]
+        public async Task<IActionResult>UpdateProfile(EditCustomerProfileDto model)
+        {
+            var userId = User.FindFirst("uid")?.Value;
+
+            if (userId is null)
+            {
+                return BadRequest("user not found");
+            }
+
+            return Ok(await _passangerService.EditProfile(userId,model));
         }
     }
 

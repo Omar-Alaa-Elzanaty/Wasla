@@ -37,7 +37,7 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             return _response;
         }
 
-        public async Task<BaseResponse> ReviewPackagesRequest(int packageId, int status)
+        public async Task<BaseResponse> ReviewPackagesRequest(int packageId, PackageStatus status)
         {
             var package = await _context.Packages.FirstOrDefaultAsync(p => p.Id == packageId);
 

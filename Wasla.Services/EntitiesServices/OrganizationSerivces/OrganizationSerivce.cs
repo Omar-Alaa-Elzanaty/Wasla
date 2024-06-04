@@ -1,11 +1,10 @@
-﻿using AutoMapper;
-using Microsoft.AspNetCore.Http;
+﻿using System.Data;
+using System.Globalization;
+using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.IdentityModel.Tokens;
-using System.Data;
-using System.Globalization;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
@@ -166,8 +165,8 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                 PhoneNumber = model.PhoneNumber,
                 UserName = model.UserName
             };
-            newDriver.LicenseImageUrl =await _mediaSerivce.AddAsync(model.LicenseImageFile);
-            newDriver.PhotoUrl =await _mediaSerivce.AddAsync(model.ImageFile);
+            newDriver.LicenseImageUrl = await _mediaSerivce.AddAsync(model.LicenseImageFile);
+            newDriver.PhotoUrl = await _mediaSerivce.AddAsync(model.ImageFile);
 
             using (var trans = await _context.Database.BeginTransactionAsync())
             {
@@ -436,15 +435,15 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             _response.Message = _localization["addStationSuccess"].Value;
             return _response;
         }
-        public async Task<BaseResponse> UpdateStationAsync(StationDto stationDto, string orgId,int stationId)
+        public async Task<BaseResponse> UpdateStationAsync(StationDto stationDto, string orgId, int stationId)
         {
             var station = await _context.Stations.FirstOrDefaultAsync(v => v.StationId == stationId && v.OrganizationId == orgId);
 
             if (station is null)
                 throw new NotFoundException(_localization["StationNotFound"].Value);
 
-         
-            if(station.Name!=stationDto.Name)
+
+            if (station.Name != stationDto.Name)
             {
                 if (await _context.Stations.AnyAsync(v => v.Name == stationDto.Name && v.OrganizationId == orgId))
                 {
@@ -497,7 +496,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         #region Line
         public async Task<BaseResponse> AddLineAsync(LineRequestDto lineDto)
         {
-            if (await _context.Lines.AnyAsync(v => v.StartId == lineDto.StartId && v.EndId==lineDto.EndId))
+            if (await _context.Lines.AnyAsync(v => v.StartId == lineDto.StartId && v.EndId == lineDto.EndId))
             {
                 throw new BadRequestException(_localization["LineExist"].Value);
             }
@@ -508,7 +507,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             _response.Message = _localization["lineAddSuccess"].Value;
             return _response;
         }
-        public async Task<BaseResponse> UpdateLineAsync(LineRequestDto lineDto,int lineId)
+        public async Task<BaseResponse> UpdateLineAsync(LineRequestDto lineDto, int lineId)
         {
             var line = await _context.Lines.FirstOrDefaultAsync(v => v.Id == lineId);
 
@@ -536,14 +535,14 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             _response.Data = tripRes;
             return _response;
         }
-       
+
         public async Task<BaseResponse> GetLineAsync(int id)
         {
             var line = await _context.Lines.FirstOrDefaultAsync(v => v.Id == id);
-              if (line is null)
+            if (line is null)
                 throw new NotFoundException(_localization["LineNotFound"].Value);
             var tripRes = _mapper.Map<LineDto>(line);
-           _response.Data = tripRes;
+            _response.Data = tripRes;
             return _response;
         }
 
@@ -561,11 +560,11 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         #region trip
         public async Task<BaseResponse> AddTripAsync(AddTripDto model, string orgId)
         {
-            var tripExist= await _context.Trips.AnyAsync(t=>t.LineId==model.LineId&&t.OrganizationId==orgId);
+            var tripExist = await _context.Trips.AnyAsync(t => t.LineId == model.LineId && t.OrganizationId == orgId);
             if (tripExist)
                 throw new BadRequestException(_localization["TripAlreadyExist"].Value);
             var trip = _mapper.Map<Trip>(model);
-           trip.Duration =TimeSpan.FromMinutes(model.Duration);
+            trip.Duration = TimeSpan.FromMinutes(model.Duration);
             trip.OrganizationId = orgId;
 
             await _context.Trips.AddAsync(trip);
@@ -583,7 +582,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             tripCheck.Points = model.Points;
             tripCheck.LineId = model.LineId;
             tripCheck.Price = model.Price;
-            tripCheck.Duration =TimeSpan.FromMinutes(model.Duration);
+            tripCheck.Duration = TimeSpan.FromMinutes(model.Duration);
             var result = _context.Trips.Update(tripCheck);
             await _context.SaveChangesAsync();
             _response.Message = _localization["updateTripSuccess"].Value;
@@ -649,10 +648,10 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         {
             var trip = await _context.TripTimeTables.Where(t => t.Id == id).FirstOrDefaultAsync();
             var tripRes = _mapper.Map<TripTimeDto>(trip);
-          /*  tripRes.Points=trip.Trip.Points;
-            tripRes.Price=trip.Trip.Price;
-            tripRes.Line=trip.Trip.Line;
-            tripRes.Duration=trip.Trip.Duration;*/
+            /*  tripRes.Points=trip.Trip.Points;
+              tripRes.Price=trip.Trip.Price;
+              tripRes.Line=trip.Trip.Line;
+              tripRes.Duration=trip.Trip.Duration;*/
             _response.Data = tripRes;
             return _response;
         }
@@ -669,11 +668,11 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             if (tripCheck is null)
                 throw new NotFoundException(_localization["tripNotFound"].Value);
             var tripExist = await _context.TripTimeTables.AnyAsync(t => t.TripId == model.TripId &&
-                        t.StartTime == model.StartTime && t.VehicleId == t.VehicleId && t.DriverId == model.DriverId&&t.Id!=id);
+                        t.StartTime == model.StartTime && t.VehicleId == t.VehicleId && t.DriverId == model.DriverId && t.Id != id);
             if (tripExist)
                 throw new BadRequestException(_localization["TripAlreadyExist"].Value);
             tripCheck.TripId = model.TripId;
-            tripCheck.StartTime=model.StartTime;
+            tripCheck.StartTime = model.StartTime;
             tripCheck.ArriveTime = model.ArriveTime;
             tripCheck.IsStart = model.IsStart;
             tripCheck.VehicleId = model.VehicleId;
@@ -687,8 +686,8 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         {
             var tripCheck = await _context.TripTimeTables.FirstOrDefaultAsync(v => v.Id == id);
             if (tripCheck is null)
-                return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound,_localization["tripNotFound"].Value);
-          
+                return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, _localization["tripNotFound"].Value);
+
             tripCheck.Status = TripStatus.TakeBreak;
             var result = _context.TripTimeTables.Update(tripCheck);
             await _context.SaveChangesAsync();
@@ -708,7 +707,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         public async Task<BaseResponse> GetTripsForDriverAsync(string orgId, string driverId)
         {
             var trips = await _context.TripTimeTables.Where(t => t.Trip.OrganizationId == orgId && t.DriverId == driverId).ToListAsync();
-            TripForDriverDto tripDriver= new TripForDriverDto();
+            TripForDriverDto tripDriver = new TripForDriverDto();
             var tripRes = _mapper.Map<List<TripForDriverDto>>(trips);
 
             _response.Data = tripRes;
@@ -731,11 +730,11 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                     TripDay = t.StartTime.ToString("dddd"),
                     TripStartTime = t.StartTime.ToString("h:mm tt"),
                     StartStation = t.Trip.Line.Start.Name,
-                    EndStation=t.Trip.Line.End.Name
+                    EndStation = t.Trip.Line.End.Name
 
                 }).ToListAsync();
-          //  TripForDriverDto tripDriver = new TripForDriverDto();
-           // var tripRes = _mapper.Map<List<TripForDriverDto>>(trips);
+            //  TripForDriverDto tripDriver = new TripForDriverDto();
+            // var tripRes = _mapper.Map<List<TripForDriverDto>>(trips);
 
             _response.Data = trips;
             return _response;
@@ -745,7 +744,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         {
 
             var trips = await _context.TripTimeTables.
-                Where(t => t.Trip.OrganizationId ==orgId &&
+                Where(t => t.Trip.OrganizationId == orgId &&
                 t.DriverId == DriverId &&
                  t.StartTime < currentDate &&
                t.Status == TripStatus.Arrived).OrderBy(t => t.StartTime)
@@ -765,10 +764,10 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
 
         public async Task<BaseResponse> GetTripsForUserAsync(string orgId, string lineName)
         {
-             var trips = await _context.TripTimeTables.Where(t => t.Trip.OrganizationId == orgId && (t.Trip.Line.Start.Name.StartsWith(lineName) || t.Trip.Line.End.Name.StartsWith(lineName))).ToListAsync();
-             var tripRes = _mapper.Map<List<TripForUserDto>>(trips);
-             _response.Data = tripRes;
-             return _response;
+            var trips = await _context.TripTimeTables.Where(t => t.Trip.OrganizationId == orgId && (t.Trip.Line.Start.Name.StartsWith(lineName) || t.Trip.Line.End.Name.StartsWith(lineName))).ToListAsync();
+            var tripRes = _mapper.Map<List<TripForUserDto>>(trips);
+            _response.Data = tripRes;
+            return _response;
         }
         public async Task<BaseResponse> GetTripsForUserWithToAndFromAsync(string orgId, string from, string to)
         {
@@ -777,16 +776,16 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             _response.Data = tripRes;
             return _response;
         }
-        public async Task<BaseResponse> GetTripsByLineIdAsync(string orgId,int lineId)
+        public async Task<BaseResponse> GetTripsByLineIdAsync(string orgId, int lineId)
         {
-            var trips = await _context.TripTimeTables.Where(t => t.Trip.OrganizationId == orgId && (t.Trip.Line.Id==lineId)).ToListAsync();
+            var trips = await _context.TripTimeTables.Where(t => t.Trip.OrganizationId == orgId && (t.Trip.Line.Id == lineId)).ToListAsync();
             var tripRes = _mapper.Map<List<TripForUserDto>>(trips);
             _response.Data = tripRes;
             return _response;
         }
         public async Task<BaseResponse> GetTripsByLineIdInPublicAsync(int lineId)
         {
-            var trips = await _context.TripTimeTables.Where(t =>t.Trip.Line.Id == lineId).ToListAsync();
+            var trips = await _context.TripTimeTables.Where(t => t.Trip.Line.Id == lineId).ToListAsync();
             var tripRes = _mapper.Map<List<TripForUserDto>>(trips);
             _response.Data = tripRes;
             return _response;
@@ -799,7 +798,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         }
         public async Task<BaseResponse> GetPackagesTripAsync(int tripId)
         {
-            var package =await _context.Packages.Where(p => p.TripId == tripId).ToListAsync();
+            var package = await _context.Packages.Where(p => p.TripId == tripId).ToListAsync();
             var resault = _mapper.Map<List<OrgPackagesDto>>(package);
             _response.Data = resault;
             _response.Message = _localization["getPackageSuccess"].Value;
@@ -812,7 +811,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             {
                 throw new KeynotFoundException(_localization["ObjectNotFound"].Value);
             }
-            if (package.DriverId!=null)
+            if (package.DriverId != null)
             {
                 _response.Data = _mapper.Map<PublicPackagesDto>(package);
             }
@@ -821,17 +820,17 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                 _response.Data = _mapper.Map<OrgPackagesDto>(package);
             }
             _response.Message = _localization["getPackageSuccess"].Value;
-          return _response;
+            return _response;
         }
         public async Task<BaseResponse> GetPackagesRequestAsync(string orgId)
         {
-           
-            var packages = await _context.Packages.Where(p => p.TripId!=null&&p.Trip.Trip.OrganizationId==orgId&&p.Status==0).ToListAsync();
+
+            var packages = await _context.Packages.Where(p => p.TripId != null && p.Trip.Trip.OrganizationId == orgId && p.Status == 0).ToListAsync();
             var res = _mapper.Map<OrgPackagesDto>(packages);
             _response.Data = res;
             return _response;
         }
-        public async Task<BaseResponse> ReviewPackagesRequest(int packageId,int status)
+        public async Task<BaseResponse> ReviewPackagesRequest(int packageId, PackageStatus status)
         {
             var package = await _context.Packages.FirstOrDefaultAsync(p => p.Id == packageId);
 
@@ -839,24 +838,49 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             {
                 throw new KeynotFoundException(_localization["ObjectNotFound"].Value);
             }
-              package.Status = status;
+            package.Status = status;
+
+            if (status == PackageStatus.Approved)
+            {
+                await _context.AddAsync(new Notification()
+                {
+                    AccountId = package.SenderId,
+                    Title = _localization["NotificationAcceptPackageRequestTopic"].Value,
+                    Description = _localization["NotificationAcceptPackageRequestDescription"].Value,
+                    Type = NotificationType.PackageAccept,
+                });
+
+                if (package.ReciverUserName is not null)
+                {
+                    var user = await _context.Customers.FindAsync(package.ReciverUserName);
+                    var sender = await _context.Customers.FindAsync(package.SenderId);
+                    await _context.AddAsync(new Notification()
+                    {
+                        AccountId = package.SenderId,
+                        Title = _localization["NotificationRecivePackageReqeustTopic"].Value,
+                        Description = _localization["NotificationRecivePackageDescription"].Value.Replace("Name", $"{sender.FirstName + ' ' + sender.LastName}"),
+                        Type = NotificationType.PackageAccept,
+                    });
+                }
+            }
+
             await _context.SaveChangesAsync();
             _response.Message = _localization["PackageReviewedSuccess"].Value;
             return _response;
         }
         public async Task<BaseResponse> GetTripsTimeByTripIdAndDate(int tripId, string date)
         {
-           
+
             if (DateTime.TryParseExact(date, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var searchDate))
             {
-                var trips = await _context.TripTimeTables.Where(t => t.TripId == tripId &&t.StartTime.Date==searchDate ).ToListAsync();
+                var trips = await _context.TripTimeTables.Where(t => t.TripId == tripId && t.StartTime.Date == searchDate).ToListAsync();
                 var tripRes = _mapper.Map<List<TripForUserDto>>(trips);
                 _response.Data = tripRes;
             }
-          return _response;
+            return _response;
         }
 
-        public async Task<BaseResponse> GetNextTripForDriver(string orgId, string DriverId,DateTime currentDate)
+        public async Task<BaseResponse> GetNextTripForDriver(string orgId, string DriverId, DateTime currentDate)
         {
             var trip = await _context.TripTimeTables.
                             Where(t => t.Trip.OrganizationId == orgId &&
@@ -882,10 +906,10 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
 
         public async Task<BaseResponse> IncreaseTripSeats(AddTripSeatDto tripSeat)
         {
-            _context.Seats.Add(new Seat() { setNum =tripSeat.seatNumber, TripTimeTableId =tripSeat.tripId });
+            _context.Seats.Add(new Seat() { setNum = tripSeat.seatNumber, TripTimeTableId = tripSeat.tripId });
             await _context.SaveChangesAsync();
             return _response;
-            
+
         }
 
         public async Task<BaseResponse> GetAllAds(string orgId)

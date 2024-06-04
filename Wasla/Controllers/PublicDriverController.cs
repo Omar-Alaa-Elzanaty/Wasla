@@ -28,7 +28,7 @@ namespace Wasla.Api.Controllers
             return Ok(await _driverService.GetPublicPackagesRequestAsync(driverId));
         }
         [HttpPut("package/{packageId}/{status}")]
-        public async Task<IActionResult> ReviewPackagesRequest(int packageId,int status)
+        public async Task<IActionResult> ReviewPackagesRequest(int packageId,PackageStatus status)
         {
             return Ok(await _driverService.ReviewPackagesRequest(packageId,status));
         }

@@ -116,5 +116,14 @@
   "AddRate": "A new rate added",
   "UpdateRate": "Rate has been updated",
   "RemoveRate": "Rate removed",
-  "UnderConfirm": "Your request is under confirm"
+  "UnderConfirm": "Your request is under confirm",
+  "NotificationAcceptPackageRequestTopic": "Accept package request",
+  "NotificationAcceptPackageRequestDescription": "Your package reqeust was accepted from trip driver side.",
+  "NotificationRecivePackageReqeustTopic": "New Package reqeust",
+  "NotificationRecivePackageDescription": "Name send a new package for you.",
+  "DriverNewPackageRequestTopic": "New package Request.",
+  "DriverNewPackageRequestDescrption": "Name want to send package through your trip.",
+  "FollowReqeustTopic": "New Follow Request.",
+  "FollowReqeustDescription": "Name want to follow you."
+
 }

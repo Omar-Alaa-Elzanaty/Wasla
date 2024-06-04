@@ -112,5 +112,13 @@
   "AddRate": "تم اضافة تقييم",
   "UpdateRate": "تم تعديل التقييم",
   "RemoveRate": "تم حذف التقييم",
-  "UnderConfirm": "طلبك قيد المراجعة"
+  "UnderConfirm": "طلبك قيد المراجعة",
+  "NotificationAcceptPackageTopic": "تم قبول طلبك",
+  "NotificationAcceptPackageDescription": "تم قبول طلبك نمن قبل مسئول الرحبة",
+  "NotificationRecivePackageReqeustTopic": "طلب شحنة جديد",
+  "NotificationRecivePackageDescription": "Name ارسل لك شحنة جديدة",
+  "DriverNewPackageRequestTopic": "طلب شحنة جديد",
+  "DriverNewPackageRequestDescrption": "Name يريد ان يرسل شحنة من خلال رحلتك.",
+  "FollowReqeustTopic": "طلب متابعة جديد",
+  "FollowReqeustDescription": "Name يريد ان يابعك ."
 }
