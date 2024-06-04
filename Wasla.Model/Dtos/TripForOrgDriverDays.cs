@@ -8,7 +8,7 @@ namespace Wasla.Model.Dtos
 {
     public class TripForOrgDriverDays
     {
-        public int TripTimeTableId { get; set; }
+        public int TripId { get; set; }
         public string TripStartTime { get; set; }
         public string TripDay { get; set;}
         public string TripDate { get; set;}

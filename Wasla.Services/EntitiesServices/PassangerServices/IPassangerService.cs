@@ -11,6 +11,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
         Task<BaseResponse> ReservationAsync(ReservationDto order,string customerId);
         Task<BaseResponse> GetInComingReservations(string customerId);
+        Task<BaseResponse> GetFirstInComingReservations(string customerId);
         Task<BaseResponse> GetEndedReservations(string customerId);
         Task<BaseResponse> PassengerCancelReversionAsyn(int reverseId);
         Task<BaseResponse> SeatsRecordsAsync(int tripId);
@@ -43,5 +44,6 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
         Task<BaseResponse> FollowersLocation(string userId);
         Task<BaseResponse> PackagesLocations(string userId);
+        Task<BaseResponse> SearchTripsForUserAsync(string from, string to, DateTime? date);
     }
 }

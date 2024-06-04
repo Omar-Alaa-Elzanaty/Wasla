@@ -100,6 +100,12 @@ namespace Wasla.Api.Controllers
             var userId = User.FindFirst("uid").Value;
             return Ok(await _passangerService.GetInComingReservations(userId));
         }
+        [HttpGet("firstincomingTrip")]
+        public async Task<IActionResult> GetFirstIncomingTrip()
+        {
+            var userId = User.FindFirst("uid").Value;
+            return Ok(await _passangerService.GetFirstInComingReservations(userId));
+        }
         [HttpGet("endedTrips")]
         public async Task<IActionResult> GetEndedTrips()
         {
@@ -181,6 +187,11 @@ namespace Wasla.Api.Controllers
         public async Task<IActionResult> GetTripForUser([FromRoute] string orgId, [FromRoute] string name)
         {
             return Ok(await _passangerService.GetTripsForUserAsync(orgId, name));
+        }
+        [HttpGet("search/trips/user/{from}/{to}/date")]
+        public async Task<IActionResult> SearchTripsForUser([FromRoute] string from, [FromRoute] string to, [FromQuery] DateTime? date)
+        {
+            return Ok(await _passangerService.SearchTripsForUserAsync(from, to,date));
         }
 
         [HttpGet("trip/user/{orgId}/{from}/{to}")]

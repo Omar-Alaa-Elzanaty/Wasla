@@ -635,10 +635,10 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         }
         public async Task<BaseResponse> AddTripTimeAsync(AddTripTimeDto model)
         {
-             var tripExist = await _context.TripTimeTables.AnyAsync(t => t.TripId == model.TripId &&
+           /*  var tripExist = await _context.TripTimeTables.AnyAsync(t => t.TripId == model.TripId &&
              t.StartTime == model.StartTime&&t.VehicleId==t.VehicleId&&t.DriverId==model.DriverId);
              if (tripExist)
-                throw new BadRequestException(_localization["TripAlreadyExist"].Value);
+                throw new BadRequestException(_localization["TripAlreadyExist"].Value);*/
               var trip = _mapper.Map<TripTimeTable>(model);
               await _context.TripTimeTables.AddAsync(trip);
              await _context.SaveChangesAsync();
@@ -726,7 +726,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                 t.Status != TripStatus.Arrived && t.Status != TripStatus.OnRoad).OrderBy(t => t.StartTime)
                 .Select(t => new TripForOrgDriverDays
                 {
-                    TripTimeTableId = t.Id,
+                    TripId = t.Id,
                     TripDate = t.StartTime.ToString("MM/dd/yyyy"),
                     TripDay = t.StartTime.ToString("dddd"),
                     TripStartTime = t.StartTime.ToString("h:mm tt"),
@@ -751,7 +751,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                t.Status == TripStatus.Arrived).OrderBy(t => t.StartTime)
                 .Select(t => new TripForOrgDriverDays
                 {
-                    TripTimeTableId = t.Id,
+                    TripId = t.Id,
                     TripDate = t.StartTime.ToString("MM/dd/yyyy"),
                     TripDay = t.StartTime.ToString("dddd"),
                     TripStartTime = t.StartTime.ToString("h:mm tt"),
@@ -867,7 +867,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             {
                 var response = new TripForOrgDriverDays
                 {
-                    TripTimeTableId = trip.Id,
+                    TripId = trip.Id,
                     TripDate = trip.StartTime.ToString("MM/dd/yyyy"),
                     TripDay = trip.StartTime.ToString("dddd"),
                     TripStartTime = trip.StartTime.ToString("h:mm tt"),
