@@ -13,9 +13,7 @@ namespace Wasla.Model.Models
 	{
         public User()
         {
-			PhotoUrl = "https://www.google.com/url?sa=i&url=https%3A%2F%2Fstock.adobe.com%" +
-						"2Fsearch%3Fk%3Dmy%2Bprofile%2Bicon&psig=AOvVaw1qhmyXH-T4qu9HSzWFXi63&ust=1700466263740000" +
-						"&source=images&cd=vfe&ved=0CBIQjRxqFwoTCKjHtM7Iz4IDFQAAAAAdAAAAABAE";
+			PhotoUrl = "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg";
 		}
         public string FirstName { get; set; }
 		public string LastName { get; set; }
