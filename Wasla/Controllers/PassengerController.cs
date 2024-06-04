@@ -123,21 +123,21 @@ namespace Wasla.Api.Controllers
         {
             var senderId = User.FindFirst("uid").Value;
 
-            return Ok(await _passangerService.CreateFollowRequestAsync( senderId,followDto));
+            return Ok(await _passangerService.CreateFollowRequestAsync(senderId,followDto));
         }
         [HttpPost("ConfirmFollowRequest")]
-        public async Task<IActionResult> ConfirmFollowRequest(FollowDto followDto)
+        public async Task<IActionResult> ConfirmFollowRequest(string senderId)
         {
             var userId = User.FindFirst("uid").Value;
 
-            return Ok(await _passangerService.ConfirmFollowRequestAsync(userId,followDto));
+            return Ok(await _passangerService.ConfirmFollowRequestAsync(userId,senderId));
         }
-        [HttpDelete("deleteFollowRequest")]
-        public async Task<IActionResult> DeleteFollowRequest(FollowDto followDto)
+        [HttpDelete("rejectFollowRequest")]
+        public async Task<IActionResult> DeleteFollowRequest([FromBody]string senderId)
         {
             var userId = User.FindFirst("uid").Value;
 
-            return Ok(await _passangerService.DeleteFollowRequestAsync(userId,followDto));
+            return Ok(await _passangerService.DeleteFollowRequestAsync(userId,senderId));
         }
         [HttpDelete("deleteFollower")]
         public async Task<IActionResult> DeleteFollower(FollowDto followDto)

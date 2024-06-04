@@ -10,6 +10,6 @@ namespace Wasla.Model.Dtos
 {
     public class FollowDto
     {
-        public string SenderId { get; set; }
+        public string FollowerId { get; set; }
     }
 }
