@@ -1,10 +1,10 @@
-﻿using System.Runtime.InteropServices;
-using AutoMapper;
+﻿using AutoMapper;
 using AutoMapper.Internal;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using Microsoft.IdentityModel.Tokens;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
@@ -419,7 +419,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, _localization["UserNameNotFound"].Value);
             }
 
-            var customer =  _mapper.Map<DisplayCustomerProfileDto>(user);
+            var customer = _mapper.Map<DisplayCustomerProfileDto>(user);
 
             customer.Followers.TryAdd(_context.UserFollows.Where(x => x.CustomerId == user.Id)
                 .Select(x => new Follow()
@@ -437,6 +437,36 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 }));
 
             _response.Data = customer;
+            return _response;
+        }
+        public async Task<BaseResponse> EditProfile(string userId, EditCustomerProfileDto model)
+        {
+            var customer = await _context.Customers.FindAsync(userId);
+
+            if (customer is null)
+            {
+                return BaseResponse.GetErrorException(System.Net.HttpStatusCode.NotFound, "User not found.");
+            }
+
+            customer.FirstName = model.FullName.Split(' ')[0];
+            customer.LastName = model.FullName.Split(' ')[1];
+            customer.Birthdate = model.Birthdate;
+            customer.Gender = model.Gender;
+            customer.Email = model.Email;
+            customer.PhoneNumber = model.PhoneNumber;
+
+            if (model.Photo is null && customer.PhotoUrl != null)
+            {
+                await _mediaSerivce.DeleteAsync(customer.PhotoUrl);
+            }
+            else if (model.Photo is not null)
+            {
+                customer.PhotoUrl = customer.PhotoUrl.IsNullOrEmpty() ?
+                     await _mediaSerivce.AddAsync(model.Photo) : await _mediaSerivce.UpdateAsync(customer.PhotoUrl, model.Photo);
+            }
+
+            await _userManager.UpdateAsync(customer);
+
             return _response;
         }
         public async Task<BaseResponse> SearchByUserName(string userName)
@@ -509,14 +539,14 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                     .Select(x => new SuggestionTripsDto()
                     {
                         ComapnyName = x.Trip.Organization.Name,
-                        CompanyRating = (x.Trip.Organization.Rates.Count == 0) ? x.Trip.Organization.Rates.Average(t => t.Rate) : 0,
+                        CompanyRating = (x.Trip.Organization.Rates.Count != 0) ? x.Trip.Organization.Rates.Average(t => t.Rate) : 0,
                         From = x.IsStart == true ? x.Trip.Line.Start.Name : x.Trip.Line.End.Name,
                         To = x.IsStart == true ? x.Trip.Line.Start.Name : x.Trip.Line.End.Name,
                         ArrivalTime = x.ArriveTime,
                         StartTime = x.StartTime,
                         Id = x.Id,
                         price = (x.Trip != null) ? x.Trip.Price : 0,
-                        ImageUrl=x.Trip.Organization.LogoUrl
+                        ImageUrl = x.Trip.Organization.LogoUrl
                     }).Take(3).ToListAsync();
 
                 _response.Data = first3AvailableTrips;
@@ -533,7 +563,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 StartTime = x.StartTime,
                 Id = x.Id,
                 price = x.Trip.Price,
-                ImageUrl=x.Trip.Organization.LogoUrl
+                ImageUrl = x.Trip.Organization.LogoUrl
             }).ToList();
 
             _response.Data = suggestionsTrips;
@@ -587,9 +617,9 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         }
 
 
-        public async Task<BaseResponse> ConfirmFollowRequestAsync(string senderId,FollowDto followDto)
+        public async Task<BaseResponse> ConfirmFollowRequestAsync(string senderId, FollowDto followDto)
         {
-            var requestExist = _context.FollowRequests.Any(f => f.SenderId ==senderId && f.FollowerId == followDto.FollowerId);
+            var requestExist = _context.FollowRequests.Any(f => f.SenderId == senderId && f.FollowerId == followDto.FollowerId);
             if (!requestExist)
                 return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, "this request not exist");
             var follow = _mapper.Map<UserFollow>(followDto);
@@ -626,7 +656,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             return _response;
         }
 
-        public async Task<BaseResponse> DeleteFollowerAsync(string senderId,FollowDto followDto)
+        public async Task<BaseResponse> DeleteFollowerAsync(string senderId, FollowDto followDto)
         {
             var followExist = _context.UserFollows.Any(f => (f.CustomerId == senderId && f.FollowerId == followDto.FollowerId) || (f.CustomerId == followDto.FollowerId && f.FollowerId == senderId));
             if (!followExist)

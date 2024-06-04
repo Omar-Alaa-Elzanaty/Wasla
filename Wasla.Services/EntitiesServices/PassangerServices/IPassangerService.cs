@@ -43,5 +43,6 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
         Task<BaseResponse> FollowersLocation(string userId);
         Task<BaseResponse> PackagesLocations(string userId);
+        Task<BaseResponse> EditProfile(string userId, EditCustomerProfileDto model);
     }
 }

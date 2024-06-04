@@ -223,6 +223,18 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _passangerService.SearchByUserName(userName));
         }
+        [HttpPut("EditProflie")]
+        public async Task<IActionResult>UpdateProfile(EditCustomerProfileDto model)
+        {
+            var userId = User.FindFirst("uid")?.Value;
+
+            if (userId is null)
+            {
+                return BadRequest("user not found");
+            }
+
+            return Ok(await _passangerService.EditProfile(userId,model));
+        }
     }
 
 }

@@ -86,7 +86,11 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<TripTimeTable,AddTripTimeDto>().ReverseMap();
             CreateMap<TripTimeTable, UpdateTripDto>().ReverseMap();
             CreateMap<TripTimeTable, TripForDriverDto>().ReverseMap();
-            CreateMap<TripTimeTable, TripForUserDto>().ForMember(dest=>dest.orgName,opt=>opt.MapFrom(src=>src.Trip.Organization.Name));
+            CreateMap<TripTimeTable, TripForUserDto>()
+                .ForMember(dest => dest.orgName, opt => opt.MapFrom(src => src.Trip.Organization.Name))
+                .ForMember(dest => dest.From, opt => opt.MapFrom(src => src.Trip.Line.Start.Name))
+                .ForMember(dest => dest.To, opt => opt.MapFrom(src => src.Trip.Line.End.Name))
+                .ForMember(dest => dest.AvailableSets, opt => opt.MapFrom(src => src.Vehicle.Capcity - src.RecervedSeats.Count));
             CreateMap<TripTimeTableStationDto, Station>();
             //*****************************
 
