@@ -786,7 +786,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                                         .Select(x => new DisplayFollowingRequestsDto()
                                         {
                                             FollowingId = x.SenderId,
-                                            Name = x.Follower.FirstName + ' ' + x.Follower.LastName,
+                                            Name = x.Sender.FirstName + ' ' + x.Sender.LastName,
                                             PhotoUrl = x.Sender.PhotoUrl,
                                             UserName = x.Sender.UserName
                                         }).ToListAsync();
@@ -796,7 +796,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
         public async Task<BaseResponse> GetFollowers(string userId)
         {
-            var entities = await _context.UserFollows.Where(x => x.CustomerId == userId).ToListAsync();
+            var entities = await _context.UserFollows.Where(x => x.FollowerId == userId).ToListAsync();
 
             var followers = _mapper.Map<GetFollowerQueryDto>(entities);
 
