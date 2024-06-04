@@ -75,5 +75,17 @@ namespace Wasla.Api.Controllers
             return Ok(await _authservice.OrgnaizationRegisterAsync(request));
         }
 
+        [HttpGet("GetUserNotifications")]
+        public async Task<IActionResult> GetAllUserNotifications()
+        {
+            var userId = User.FindFirst("uid")!.Value;
+
+            if(userId is null)
+            {
+                return Unauthorized();
+            }
+
+            return Ok(await _authservice.GetAllNotificationsAsync(userId));
+        }
     }
 }

@@ -35,7 +35,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         Task<BaseResponse> LinesVehiclesCountAsync(string orgId);
         Task<BaseResponse> SearchUser(string request);
         Task<BaseResponse> GetUserBySearch(string userId);
-        Task<BaseResponse> DeleteFollowersAsync(DeleteFromFollowersCommand command);
+        //Task<BaseResponse> DeleteFollowersAsync(DeleteFromFollowersCommand command);
         Task<BaseResponse> AcceptFollowRequestAsync(AcceptFollowRequestCommand command);
         Task<BaseResponse> DisplayFollowingRequestsAsync(string customerId);
 

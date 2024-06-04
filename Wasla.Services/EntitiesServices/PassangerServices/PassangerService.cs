@@ -702,13 +702,12 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             return _response;
         }
 
-        public async Task<BaseResponse> DeleteFollowerAsync(string senderId, FollowDto followDto)
+        public async Task<BaseResponse> DeleteFollowerAsync(string userId, FollowDto followDto)
         {
-            var followExist = _context.UserFollows.Any(f => (f.CustomerId == senderId && f.FollowerId == followDto.FollowerId) || (f.CustomerId == followDto.FollowerId && f.FollowerId == senderId));
-            if (!followExist)
+            var follow = await _context.UserFollows.SingleOrDefaultAsync(f => f.CustomerId == followDto.FollowerId && f.FollowerId == userId);
+            if (follow is null)
                 return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, _localization["FollowNotFound"].Value);
-            var request = _mapper.Map<UserFollow>(followDto);
-            _context.UserFollows.Remove(request);
+            _context.UserFollows.Remove(follow);
             await _context.SaveChangesAsync();
             _response.Message = _localization["RemoveFollowSuccess"].Value;
             return _response;
@@ -734,25 +733,25 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             return _response;
         }
 
-        public async Task<BaseResponse> DeleteFollowersAsync(DeleteFromFollowersCommand command)
-        {
-            var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User);
+        //public async Task<BaseResponse> DeleteFollowersAsync(DeleteFromFollowersCommand command)
+        //{
+        //    var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User);
 
-            if (user is null)
-            {
-                return BaseResponse.GetErrorException(System.Net.HttpStatusCode.Unauthorized, _localization["Unauthorized"].Value);
-            }
+        //    if (user is null)
+        //    {
+        //        return BaseResponse.GetErrorException(System.Net.HttpStatusCode.Unauthorized, _localization["Unauthorized"].Value);
+        //    }
 
-            var customer = await _context.Customers.FindAsync(user.Id);
+        //    var customer = await _context.Customers.FindAsync(user.Id);
 
-            var follower = customer!.Follows.Single(x => x.CustomerId == command.followerId);
+        //    var follower = customer!.Follows.Single(x => x.CustomerId == command.followerId);
 
-            _context.UserFollows.Remove(follower);
-            await _context.SaveChangesAsync();
+        //    _context.UserFollows.Remove(follower);
+        //    await _context.SaveChangesAsync();
 
-            _response.Message = _localization["SuccessProcess"].Value;
-            return _response;
-        }
+        //    _response.Message = _localization["SuccessProcess"].Value;
+        //    return _response;
+        //}
         public async Task<BaseResponse> AcceptFollowRequestAsync(AcceptFollowRequestCommand command)
         {
             var followRequest = await _context.FollowRequests
