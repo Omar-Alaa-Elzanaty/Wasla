@@ -552,7 +552,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
             var last3Trips = x.DistinctBy(x => x.TriptimeTableId).Take(3).Select(x => x.TripTimeTable).ToList();
 
-            if (last3Trips.Count < 3)
+            if (last3Trips.Count < 15)
             {
                 var first3AvailableTrips = await _context.TripTimeTables.Where(x => x.StartTime >= DateTime.Now)
                     .Select(x => new SuggestionTripsDto()
@@ -918,14 +918,14 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         public async Task<BaseResponse> SearchTripsForUserAsync(string from, string to, DateTime? date)
         {
             var today = DateTime.Today;
-           List< SearchTripsForUser> orgTrips =await _context.TripTimeTables
+           List<SearchOrgTripsForUser> orgTrips =await _context.TripTimeTables
                 .Where(tt =>
                     ((tt.Trip.Line.Start.Name == from && tt.Trip.Line.End.Name == to && tt.IsStart) ||
                      (tt.Trip.Line.Start.Name == to && tt.Trip.Line.End.Name == from && !tt.IsStart))
                      && (date.HasValue ? tt.StartTime.Date == date.Value.Date : tt.StartTime.Date >= today)
 
                     ).OrderBy(t => t.StartTime)
-                .Select(t => new SearchTripsForUser
+                .Select(t => new SearchOrgTripsForUser
                 {
                     TripId = t.Id,
                     TripDate = t.StartTime.ToString("MM/dd/yyyy"),
@@ -933,8 +933,10 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                     TripStartTime = t.StartTime.ToString("h:mm tt"),
                     StartStation = t.Trip.Line.Start.Name,
                     EndStation = t.Trip.Line.End.Name,
-                    ImgUrl=t.Trip.Organization.LogoUrl
-                    
+                    ImgUrl=t.Trip.Organization.LogoUrl,
+                    Price=t.Trip.Price,
+                    OrgName=t.Trip.Organization.Name,
+                    Rates=t.Trip.Organization.Rates
 
                 }).ToListAsync();
             List<SearchTripsForUser> publicTrips = await _context.PublicDriverTrips
@@ -953,7 +955,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                    TripStartTime = t.StartDate.ToString("h:mm tt"),
                    StartStation = t.StartStation.Name,
                    EndStation = t.EndStation.Name,
-                   ImgUrl = t.PublicDriver.PhotoUrl
+                   ImgUrl = t.PublicDriver.PhotoUrl,
 
                }).ToListAsync();
 
