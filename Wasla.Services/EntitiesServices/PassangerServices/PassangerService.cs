@@ -702,13 +702,12 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             return _response;
         }
 
-        public async Task<BaseResponse> DeleteFollowerAsync(string senderId, FollowDto followDto)
+        public async Task<BaseResponse> DeleteFollowerAsync(string userId, FollowDto followDto)
         {
-            var followExist = _context.UserFollows.Any(f => (f.CustomerId == senderId && f.FollowerId == followDto.FollowerId) || (f.CustomerId == followDto.FollowerId && f.FollowerId == senderId));
-            if (!followExist)
+            var follow = await _context.UserFollows.SingleOrDefaultAsync(f => f.CustomerId == followDto.FollowerId && f.FollowerId == userId);
+            if (follow is null)
                 return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, _localization["FollowNotFound"].Value);
-            var request = _mapper.Map<UserFollow>(followDto);
-            _context.UserFollows.Remove(request);
+            _context.UserFollows.Remove(follow);
             await _context.SaveChangesAsync();
             _response.Message = _localization["RemoveFollowSuccess"].Value;
             return _response;
@@ -734,25 +733,25 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             return _response;
         }
 
-        public async Task<BaseResponse> DeleteFollowersAsync(DeleteFromFollowersCommand command)
-        {
-            var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User);
+        //public async Task<BaseResponse> DeleteFollowersAsync(DeleteFromFollowersCommand command)
+        //{
+        //    var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User);
 
-            if (user is null)
-            {
-                return BaseResponse.GetErrorException(System.Net.HttpStatusCode.Unauthorized, _localization["Unauthorized"].Value);
-            }
+        //    if (user is null)
+        //    {
+        //        return BaseResponse.GetErrorException(System.Net.HttpStatusCode.Unauthorized, _localization["Unauthorized"].Value);
+        //    }
 
-            var customer = await _context.Customers.FindAsync(user.Id);
+        //    var customer = await _context.Customers.FindAsync(user.Id);
 
-            var follower = customer!.Follows.Single(x => x.CustomerId == command.followerId);
+        //    var follower = customer!.Follows.Single(x => x.CustomerId == command.followerId);
 
-            _context.UserFollows.Remove(follower);
-            await _context.SaveChangesAsync();
+        //    _context.UserFollows.Remove(follower);
+        //    await _context.SaveChangesAsync();
 
-            _response.Message = _localization["SuccessProcess"].Value;
-            return _response;
-        }
+        //    _response.Message = _localization["SuccessProcess"].Value;
+        //    return _response;
+        //}
         public async Task<BaseResponse> AcceptFollowRequestAsync(AcceptFollowRequestCommand command)
         {
             var followRequest = await _context.FollowRequests
@@ -785,10 +784,10 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             var requests = await _context.FollowRequests.Where(x => x.FollowerId == customerId)
                                         .Select(x => new DisplayFollowingRequestsDto()
                                         {
-                                            FollowingId = x.FollowerId,
-                                            Name = x.Follower.FirstName + ' ' + x.Follower.LastName,
-                                            PhotoUrl = x.Follower.PhotoUrl,
-                                            UserName = x.Follower.UserName
+                                            FollowingId = x.SenderId,
+                                            Name = x.Sender.FirstName + ' ' + x.Sender.LastName,
+                                            PhotoUrl = x.Sender.PhotoUrl,
+                                            UserName = x.Sender.UserName
                                         }).ToListAsync();
             _response.Data = requests;
             return _response;
@@ -796,9 +795,15 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
         public async Task<BaseResponse> GetFollowers(string userId)
         {
-            var entities = await _context.UserFollows.Where(x => x.CustomerId == userId).ToListAsync();
+            var followers = await _context.UserFollows.Where(x => x.FollowerId == userId)
+                        .Select(x => new GetFollowerQueryDto()
+                        {
+                            Id = x.CustomerId,
+                            FullName = x.Customer.FirstName + ' ' + x.Customer.LastName,
+                            PhotoUrl = x.Customer.PhotoUrl,
+                            UserName = x.Customer.UserName
+                        }).ToListAsync();
 
-            var followers = _mapper.Map<GetFollowerQueryDto>(entities);
 
             _response.Data = followers;
             return _response;
@@ -806,9 +811,14 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
         public async Task<BaseResponse> GetFollowing(string userId)
         {
-            var entities = await _context.UserFollows.Where(x => x.CustomerId == userId).ToListAsync();
-
-            var following = _mapper.Map<GetFollowerQueryDto>(entities);
+            var following = await _context.UserFollows.Where(x => x.CustomerId == userId)
+                          .Select(x => new GetFollowerQueryDto()
+                          {
+                              Id = x.FollowerId,
+                              FullName = x.Follower.FirstName + ' ' + x.Follower.LastName,
+                              PhotoUrl = x.Follower.PhotoUrl,
+                              UserName = x.Follower.UserName
+                          }).ToListAsync();
 
             _response.Data = following;
             return _response;

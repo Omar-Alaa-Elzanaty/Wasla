@@ -19,6 +19,7 @@ namespace Wasla.Services.Authentication.AuthServices
         Task<BaseResponse> GetRolePermissions(string roleName);
         Task<BaseResponse> GetAllPermissionsAsync();
         Task<BaseResponse> AddRolePermissions(CreateRolePermissions rolePermissions);
+        Task<BaseResponse> GetAllNotificationsAsync(string userId);
         //Task<BaseResponse> GetAllDriver();
     }
 }

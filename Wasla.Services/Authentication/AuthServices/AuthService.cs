@@ -302,6 +302,16 @@ namespace Wasla.Services.Authentication.AuthServices
 			return _response;
 		}
 		
+		public async Task<BaseResponse> GetAllNotificationsAsync(string userId)
+		{
+			var entities = await _dbContext.Notifications.Where(x => x.AccountId == userId)
+								.ToListAsync();
+
+			var notifications = _mapper.Map<List<GetAllNotificationsDto>>(entities);
+
+			_response.Data = notifications;
+			return _response;
+		}
 		
 		private async Task<CheckUserExit> CheckUser(LoginDto login, bool org = false)
 		{
