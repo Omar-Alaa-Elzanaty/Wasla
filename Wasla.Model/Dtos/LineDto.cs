@@ -9,6 +9,7 @@ namespace Wasla.Model.Dtos
 {
     public class LineDto
     {
+        public int Id { get; set; }
         public virtual Station Start { get; set; }
         public virtual Station End { get; set; }
     }
