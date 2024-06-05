@@ -6,7 +6,7 @@ namespace Wasla.Api.Controllers
 {
     [Route("api/passanger")]
     [ApiController]
-    [Authorize]
+    [Authorize("")]
     public class PassengerController : ControllerBase
     {
         private readonly IPassangerService _passangerService;
