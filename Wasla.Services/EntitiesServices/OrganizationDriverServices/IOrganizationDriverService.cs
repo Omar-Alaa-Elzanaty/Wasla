@@ -16,5 +16,6 @@ namespace Wasla.Services.EntitiesServices.OrganizationDriverServices
         Task<BaseResponse> UpdateTripStatusAsync(UpdateOrgTripStatusCommand command);
         Task<BaseResponse> GeAllReservationAsync(int tripTimeTableId);
         Task<BaseResponse> GetTripTimeTableLocationAsync(int tripTimeTableId);
+        Task<BaseResponse> GetCurrentTrip(string userId);
     }
 }

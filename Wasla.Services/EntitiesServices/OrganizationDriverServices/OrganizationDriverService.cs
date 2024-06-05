@@ -166,6 +166,16 @@ namespace Wasla.Services.EntitiesServices.OrganizationDriverServices
             _response.Data = packages;
             return _response;
         }
+        public async Task<BaseResponse>GetCurrentTrip(string userId)
+        {
+            var entity = await _context.TripTimeTables
+                      .SingleOrDefaultAsync(x => x.DriverId == userId && x.StartTime <= DateTime.Now && x.ArriveTime >= DateTime.Now);
+
+            var trip = _mapper.Map<CurrentOrganizationDriverTrip>(entity);
+
+            _response.Data = trip;
+            return _response;
+        }
 
     }
 }

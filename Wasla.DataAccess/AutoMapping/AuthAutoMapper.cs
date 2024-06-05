@@ -139,6 +139,8 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<Package, AcceptedPackagesOrgDriver>();
 
             CreateMap<Notification, GetAllNotificationsDto>();
+            CreateMap<PublicDriverTrip, CurrentPublicDriverTripDto>();
+            CreateMap<TripTimeTable, CurrentOrganizationDriverTrip>();
         }
     }
 }

@@ -237,5 +237,16 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             _response.Data = reservations;
             return _response;
         }
+
+        public async Task<BaseResponse>GetCurrentTrip(string userId)
+        {
+            var entity = await _context.PublicDriverTrips
+                      .SingleOrDefaultAsync(x => x.PublicDriverId == userId && x.StartDate <= DateTime.Now && x.EndDate >= DateTime.Now);
+
+            var trip = _mapper.Map<CurrentPublicDriverTripDto>(entity);
+
+            _response.Data = trip;
+            return _response;
+        }
     }
 }

@@ -94,5 +94,17 @@ namespace Wasla.Api.Controllers
 
             return Ok(await _driverService.UpdateCurrentPublicTripLocationAsync(userId, tripLocationUpdate));
         }
+        [HttpGet("currentTrip")]
+        public async Task<IActionResult> CurrentTrip()
+        {
+            var userId = User.FindFirst("uid").Value;
+
+            if(userId is null)
+            {
+                return Unauthorized();
+            }
+
+            return Ok(await _driverService.GetCurrentTrip(userId));
+        }
     }
 }
