@@ -15,8 +15,7 @@ namespace Wasla.Model.Dtos
         public string PhoneNumber { get; set; }
         public long NationalId { get; set; }
         public string OrgId { get; set; }
-        public string FirstName { get; set; }
-        public string LastName { get; set; }
+        public string FullName { get; set; }
         public string? PhotoUrl { get; set; }
         public Gender Gender { get; set; }
         public DateTime? Birthdate { get; set; }

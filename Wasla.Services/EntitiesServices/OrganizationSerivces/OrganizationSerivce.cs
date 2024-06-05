@@ -50,7 +50,14 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                 v.Id,
                 v.LicenseWord,
                 v.LicenseNumber,
-                v.ImageUrl
+                v.ImageUrl,
+                v.Category,
+                v.PackageCapcity,
+                v.OrganizationId,
+                v.AdsSidesNumber,
+                v.Brand,
+                v.Capcity,
+                v.PublicDriverId
             }).ToListAsync();
 
             return _response;

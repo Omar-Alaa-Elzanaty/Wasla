@@ -49,7 +49,8 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<Organization, ResponseOrgSearch>().ReverseMap();
 
             CreateMap<OrgDriverDto,Driver>().ReverseMap();
-            CreateMap<Employee, GetEmployeeOrganizationDto>().ReverseMap();
+            CreateMap<Employee, GetEmployeeOrganizationDto>()
+                .ForMember(dest=>dest.FullName,src=>src.MapFrom(src=>src.FirstName+' '+src.LastName));
             CreateMap<PassangerAddAdsDto, Advertisment>().ReverseMap();
 
             CreateMap<OrganizationRateDto, OrganizationRate>();
@@ -142,7 +143,8 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<PublicDriverTrip, CurrentPublicDriverTripDto>();
             CreateMap<TripTimeTable, CurrentOrganizationDriverTrip>();
             CreateMap<Vehicle, GetVehicleByIdDto>();
-            CreateMap<Employee, GetEmployeeByIdDto>();
+            CreateMap<Employee, GetEmployeeByIdDto>()
+                .ForMember(dest => dest.FullName, src => src.MapFrom(src => src.FirstName + ' ' + src.LastName));
         }
     }
 }
