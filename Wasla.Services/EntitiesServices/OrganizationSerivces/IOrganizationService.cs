@@ -25,6 +25,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         #endregion
         Task<BaseResponse> AddEmployeeAsync(EmployeeRegisterDto model, string? orgId);
         Task<BaseResponse> GetEmployees(string orgId);
+        Task<BaseResponse> GetEmployeeById(string id);
         #region station
         Task<BaseResponse> AddStationAsync(StationDto model, string orgId);
         Task<BaseResponse> UpdateStationAsync(StationDto stationDto, string orgId, int stationId);

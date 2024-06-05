@@ -101,7 +101,7 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _orgService.DeleteEmployeeAsync(empId));
         }
-        [HttpGet("{orgId}/drviers")]
+        [HttpGet("{orgId}/drivers")]
         public async Task<IActionResult> GetAllDrivers(string orgId)
         {
             return Ok(await _orgService.GetAllDrivers(orgId));
@@ -335,6 +335,12 @@ namespace Wasla.Api.Controllers
             var userId = User.FindFirst("uid").Value;
 
             return Ok(await _orgService.UpdateCurrentOrgTripLocationAsync(userId, tripLocationUpdate));
+        }
+
+        [HttpGet("Employee/{id}")]
+        public async Task<IActionResult>GetEmployeeById(string id)
+        {
+            return Ok(await _orgService.GetEmployeeById(id));
         }
     }
 }
