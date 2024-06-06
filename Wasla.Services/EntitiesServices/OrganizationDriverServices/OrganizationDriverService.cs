@@ -1,17 +1,14 @@
-﻿using System.Diagnostics;
-using AutoMapper;
+﻿using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.SqlServer.Query.Internal;
 using Microsoft.Extensions.Localization;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
 using Wasla.Model.Models;
 using Wasla.Services.HlepServices.MediaSerivces;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace Wasla.Services.EntitiesServices.OrganizationDriverServices
 {
@@ -70,7 +67,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationDriverServices
         {
             var trip = await _context.TripTimeTables.FindAsync(command.TripTimeTableId);
 
-            if(trip is null)
+            if (trip is null)
             {
                 return BaseResponse.GetErrorException(System.Net.HttpStatusCode.NotFound, _localization["InvalidRequest"].Value);
             }
@@ -84,7 +81,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationDriverServices
 
             return _response;
         }
-        public async Task<BaseResponse>UpdateArriveTimeAsync(UpdateTripArriveTimeCommand command)
+        public async Task<BaseResponse> UpdateArriveTimeAsync(UpdateTripArriveTimeCommand command)
         {
             var trip = await _context.TripTimeTables.FindAsync(command.TripTimeTableId);
 
@@ -93,7 +90,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationDriverServices
                 return BaseResponse.GetErrorException(System.Net.HttpStatusCode.NotFound, _localization["InvalidRequest"].Value);
             }
 
-            trip.ArriveTime=command.ArriveTime;
+            trip.ArriveTime = command.ArriveTime;
             _context.Update(trip);
             _context.SaveChanges();
 
@@ -109,7 +106,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationDriverServices
                 return BaseResponse.GetErrorException(System.Net.HttpStatusCode.NotFound, _localization["InvalidRequest"].Value);
             }
 
-            trip.Status=command.Status;
+            trip.Status = command.Status;
 
             _context.Update(trip);
             _context.SaveChanges();
@@ -132,14 +129,14 @@ namespace Wasla.Services.EntitiesServices.OrganizationDriverServices
                 UserName = x.Customer.UserName,
                 IsRide = x.IsRide,
                 PhotoUrl = x.Customer.PhotoUrl,
-                LocationDescription=x.LocationDescription,
-                OnRoad=x.OnRoad
+                LocationDescription = x.LocationDescription,
+                OnRoad = x.OnRoad
             });
 
-            _response.Data= reservations;
+            _response.Data = reservations;
             return _response;
         }
-        public async Task<BaseResponse>GetTripTimeTableLocationAsync(int tripTimeTableId)
+        public async Task<BaseResponse> GetTripTimeTableLocationAsync(int tripTimeTableId)
         {
             var tripTimeTable = await _context.TripTimeTables.FindAsync(tripTimeTableId);
 
@@ -154,7 +151,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationDriverServices
                 End = _mapper.Map<TripTimeTableStationDto>(tripTimeTable.Trip.Line.End)
             };
 
-            _response.Data= location;
+            _response.Data = location;
             return _response;
         }
         public async Task<BaseResponse> GetAccpetedPackagesRequestsAsync(string userId)
@@ -168,7 +165,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationDriverServices
             _response.Data = packages;
             return _response;
         }
-        public async Task<BaseResponse>GetCurrentTrip(string userId)
+        public async Task<BaseResponse> GetCurrentTrip(string userId)
         {
             var entity = await _context.TripTimeTables
                       .SingleOrDefaultAsync(x => x.DriverId == userId && x.StartTime <= DateTime.Now && x.ArriveTime >= DateTime.Now);

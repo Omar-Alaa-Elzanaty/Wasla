@@ -252,5 +252,42 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             _response.Data = trip;
             return _response;
         }
+        public async Task<BaseResponse> UpdatePublicTripsStatus(string driverId)
+        {
+
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
+            {
+                var trips = await _context.PublicDriverTrips
+                   .Where(t => t.PublicDriverId == driverId && t.IsActive)
+                   .ToListAsync();
+
+                trips.ForEach(trip =>
+                {
+                    trip.EndDate = DateTime.Now;
+                    trip.Status = TripStatus.Arrived;
+                    trip.IsActive = false;
+                    trip.IsStart = false;
+                    trip.AcceptPackages = false;
+                });
+
+                await _context.SaveChangesAsync();
+
+                await _context.Packages
+            .Where(p => p.DriverId == driverId)
+            .ExecuteDeleteAsync();
+
+                await transaction.CommitAsync();
+                _response.Message = "update success";
+                return _response;
+            }
+            catch (Exception)
+            {
+                await transaction.RollbackAsync();
+                _response.Message = "fail update";
+                return _response;
+            }
+        }
     }
 }
