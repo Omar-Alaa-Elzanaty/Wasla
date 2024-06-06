@@ -131,7 +131,9 @@ namespace Wasla.Services.EntitiesServices.OrganizationDriverServices
                 FullName = x.Customer.FirstName + x.Customer.LastName,
                 UserName = x.Customer.UserName,
                 IsRide = x.IsRide,
-                PhotoUrl = x.Customer.PhotoUrl
+                PhotoUrl = x.Customer.PhotoUrl,
+                LocationDescription=x.LocationDescription,
+                OnRoad=x.OnRoad
             });
 
             _response.Data= reservations;

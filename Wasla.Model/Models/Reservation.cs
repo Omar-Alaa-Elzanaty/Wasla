@@ -17,6 +17,7 @@ namespace Wasla.Model.Models
 		public int? TriptimeTableId { get; set; }
 		public virtual TripTimeTable? TripTimeTable { get; set; }
 		public bool OnRoad { get; set; } = false;
-		public bool IsRide { get; set; } = false;
+        public string LocationDescription { get; set; }
+        public bool IsRide { get; set; } = false;
     }
 }

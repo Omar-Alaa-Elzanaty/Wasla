@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Wasla.DataAccess;
 
@@ -11,9 +12,11 @@ using Wasla.DataAccess;
 namespace Wasla.DataAccess.Migrations
 {
     [DbContext(typeof(WaslaDb))]
-    partial class WaslaDbModelSnapshot : ModelSnapshot
+    [Migration("20240606201842_LocationDescription")]
+    partial class LocationDescription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -623,10 +626,6 @@ namespace Wasla.DataAccess.Migrations
                     b.Property<string>("CustomerId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("LocationDescription")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("OnRoad")
                         .HasColumnType("bit");

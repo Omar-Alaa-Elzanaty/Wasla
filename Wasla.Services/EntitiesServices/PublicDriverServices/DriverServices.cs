@@ -232,7 +232,8 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
                 customerName = t.Customer.FirstName,
                 StartStation = t.PublicDriverTrip.StartStation.Name,
                 EndStation = t.PublicDriverTrip.EndStation.Name,
-                CustomerReservationId = t.Id
+                CustomerReservationId = t.Id,
+                LocationDescription=t.LocationDescription
             }).ToListAsync();
             _response.Data = reservations;
             return _response;

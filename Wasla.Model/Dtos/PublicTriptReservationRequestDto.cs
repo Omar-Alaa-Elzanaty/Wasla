@@ -14,7 +14,8 @@ namespace Wasla.Model.Dtos
         public string TripTime { get; set; }
         public string StartStation { get; set; }
         public string EndStation { get; set; }
+        public string LocationDescription { get; set; }
 
-    
+
     }
 }

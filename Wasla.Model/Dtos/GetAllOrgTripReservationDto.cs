@@ -11,6 +11,8 @@ namespace Wasla.Model.Dtos
         public string UserName { get; set; }
         public string FullName { get; set; }
         public bool IsRide { get; set; }
+        public string LocationDescription { get; set; }
+        public bool OnRoad { get; set; }
         public string? PhotoUrl { get; set; }
     }
 }

@@ -96,10 +96,11 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                             SetNum = set.SeatNum,
                             PassengerName = set.Name,
                             IsRide = false,
-                            OnRoad = false,
+                            OnRoad = order.OnRoad,
                             CustomerId = customerId,
                             ReservationDate = DateTime.Now,
                             TriptimeTableId = order.TripId,
+                            LocationDescription=order.LocationDescription,
                             QrCodeUrl = "Qr Code file Uri",//await _mediaSerivce.AddAsync(set.QrCodeFile)
                             CompnayName = tripTimeTable!.Trip.Organization.Name,
                             StartTime = tripTimeTable.StartTime,
