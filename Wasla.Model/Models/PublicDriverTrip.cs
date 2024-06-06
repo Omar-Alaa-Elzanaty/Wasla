@@ -16,9 +16,9 @@ namespace Wasla.Model.Models
         public bool AcceptRequests { get; set; }
         public bool AcceptPackages { get; set; }
         public int StartStationId { get; set;}
-        public virtual Station StartStation { get; set; }
+        public virtual PublicStation StartStation { get; set; }
         public int EndStationId { get; set; }
-        public virtual Station EndStation { get; set; }
+        public virtual PublicStation EndStation { get; set; }
         public string PublicDriverId { get; set; }
         public virtual PublicDriver PublicDriver { get; set; }
         public virtual List<PublicDriverTripRequest> Requests { get; set; }
