@@ -550,7 +550,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                                                                && x.TripTimeTable.StartTime >= DateTime.Now && x.CustomerId == customerId)
                                                .ToListAsync();
 
-            var last3Trips = x.DistinctBy(x => x.TriptimeTableId).Take(3).Select(x => x.TripTimeTable).ToList();
+            var last3Trips = x.DistinctBy(x => x.TriptimeTableId).Take(10).Select(x => x.TripTimeTable).ToList();
 
             if (last3Trips.Count < 15)
             {
