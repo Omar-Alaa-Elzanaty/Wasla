@@ -550,9 +550,9 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                                                                && x.TripTimeTable.StartTime >= DateTime.Now && x.CustomerId == customerId)
                                                .ToListAsync();
 
-            var last3Trips = x.DistinctBy(x => x.TriptimeTableId).Take(10).Select(x => x.TripTimeTable).ToList();
+            var lastTrips = x.DistinctBy(x => x.TriptimeTableId).Take(10).Select(x => x.TripTimeTable).ToList();
 
-            if (last3Trips.Count < 15)
+            if (lastTrips.Count < 15)
             {
                 var first3AvailableTrips = await _context.TripTimeTables.Where(x => x.StartTime >= DateTime.Now)
                     .Select(x => new SuggestionTripsDto()
@@ -566,13 +566,13 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                         Id = x.Id,
                         price = (x.Trip != null) ? x.Trip.Price : 0,
                         ImageUrl = x.Trip.Organization.LogoUrl
-                    }).Take(3).ToListAsync();
+                    }).Take(10).ToListAsync();
 
                 _response.Data = first3AvailableTrips;
                 return _response;
             }
 
-            var suggestionsTrips = last3Trips.Select(x => new SuggestionTripsDto()
+            var suggestionsTrips = lastTrips.Select(x => new SuggestionTripsDto()
             {
                 ComapnyName = x!.Trip.Organization.Name,
                 CompanyRating = x.Trip.Organization.Rates.Average(t => t.Rate),
