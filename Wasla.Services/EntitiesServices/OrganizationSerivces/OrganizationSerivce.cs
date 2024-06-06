@@ -956,5 +956,15 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             _response.Data = employee;
             return _response;
         }
+
+        public async Task<BaseResponse>GetDriverById(string id)
+        {
+            var entity = await _context.Drivers.FindAsync(id);
+
+            var driver = _mapper.Map<GetDriverForOrganizationById>(entity);
+
+            _response.Data = driver;
+            return _response;
+        }
     }
 }

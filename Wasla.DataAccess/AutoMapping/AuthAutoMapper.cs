@@ -145,6 +145,8 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<Vehicle, GetVehicleByIdDto>();
             CreateMap<Employee, GetEmployeeByIdDto>()
                 .ForMember(dest => dest.FullName, src => src.MapFrom(src => src.FirstName + ' ' + src.LastName));
+            CreateMap<Driver, GetDriverForOrganizationById>()
+                .ForMember(dest => dest.FullName, src => src.MapFrom(src => src.FirstName + ' ' + src.LastName));
         }
     }
 }

@@ -79,5 +79,6 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         Task<BaseResponse> GetPackagesRequestAsync(string orgId);
         Task<BaseResponse> ReviewPackagesRequest(int packageId, PackageStatus status);
         #endregion
+        Task<BaseResponse> GetDriverById(string id);
     }
 }
