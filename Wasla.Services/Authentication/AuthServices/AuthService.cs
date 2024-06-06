@@ -418,13 +418,12 @@ namespace Wasla.Services.Authentication.AuthServices
 			user.RefreshTokens.Remove(refreshToken);
 			await _userManager.UpdateAsync(user);
 			return true;
+
 		}
 		private RefreshToken GenerateRefreshToken()
 		{
 			var randomNumber = new byte[32];
-
 			using var generator = new RNGCryptoServiceProvider();
-
 			generator.GetBytes(randomNumber);
 			return new RefreshToken
 			{
@@ -432,6 +431,8 @@ namespace Wasla.Services.Authentication.AuthServices
 				ExpiresOn = DateTime.UtcNow.AddDays(20),
 				CreatedOn = DateTime.UtcNow
 			};
+
+
 		}
     }
 }
