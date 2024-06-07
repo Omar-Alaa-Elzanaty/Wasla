@@ -113,41 +113,23 @@ namespace Wasla.Services.HlepServices.MediaSerivces
         }
         public async Task<string> UpdateAsync(string oldUrl, IFormFile newMedia)
         {
-            ServicesResponse<string> response = new ServicesResponse<string>();
-            string? newMediaUrl = null;
-            StringBuilder mainPath = _defaultPath;
-            string file = Guid.NewGuid().ToString();
-            string Extension = Path.GetExtension(newMedia.FileName);
-            if (ImageConstrains(newMedia))
+            if (oldUrl == null && newMedia == null)
             {
-                newMediaUrl = mainPath.Replace("FOLDER", "Image").ToString();
-            }
-            else if (VideoConstrains(newMedia))
-            {
-                newMediaUrl = mainPath.Replace("FOLDER", "Records").ToString();
+                return "";
             }
 
-            if (newMediaUrl is null)
-            {
-                throw new BadRequestException(_localization["NotFoundMedia"].Value);
-            }
-            newMediaUrl += file + Extension;
-            if (oldUrl == newMediaUrl)
+            if (newMedia == null)
             {
                 return oldUrl;
             }
-            var addResult = await AddAsync(newMedia);
 
-            try
+            if (oldUrl == null)
             {
-                await DeleteAsync(oldUrl);
+                return await AddAsync(newMedia)!;
             }
-            catch
-            {
-                await DeleteAsync(addResult);
-                throw;
-            }
-            return addResult;
+
+            await DeleteAsync(oldUrl);
+            return await AddAsync(newMedia)!;
         }
     }
 }

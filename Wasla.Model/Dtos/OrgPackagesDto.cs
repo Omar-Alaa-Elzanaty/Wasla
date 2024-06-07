@@ -34,5 +34,6 @@ namespace Wasla.Model.Dtos
         public bool IsStart { get; set; }
 
         public string  Status { get; set; }
+        public bool IsPublic => false;
     }
 }

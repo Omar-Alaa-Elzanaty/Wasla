@@ -20,5 +20,6 @@ namespace Wasla.Model.Dtos
         public string To { get; set; }
         public string DriverName { get; set; }
         public string Status { get; set; }
+        public bool IsPublic => true;
     }
 }
