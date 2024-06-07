@@ -6,7 +6,7 @@ namespace Wasla.Api.Controllers
 {
     [Route("api/passanger")]
     [ApiController]
-    [Authorize]
+    [Authorize("")]
     public class PassengerController : ControllerBase
     {
         private readonly IPassangerService _passangerService;
@@ -112,7 +112,7 @@ namespace Wasla.Api.Controllers
             return Ok(await _passangerService.GetEndedReservations(userId));
         }
         [HttpGet("tripsSuggestions")]
-        public async Task<IActionResult> First3TripsSuggestion()
+        public async Task<IActionResult> FirstTripsSuggestion()
         {
             var userId = User.FindFirst("uid").Value;
 

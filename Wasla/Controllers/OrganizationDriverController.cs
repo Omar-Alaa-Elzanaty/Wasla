@@ -44,5 +44,17 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _orgDriver.GetTripTimeTableLocationAsync(tripTimeTableId));
         }
+        [HttpGet("currentTrip")]
+        public async Task<IActionResult> CurrentTrip()
+        {
+            var userId = User.FindFirst("uid").Value;
+
+            if (userId is null)
+            {
+                return Unauthorized();
+            }
+
+            return Ok(await _orgDriver.GetCurrentTrip(userId));
+        }
     }
 }

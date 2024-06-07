@@ -1,4 +1,6 @@
-﻿namespace Wasla.Model.Dtos
+﻿using System.Numerics;
+
+namespace Wasla.Model.Dtos
 {
 	public class SeatInfo
 	{
@@ -9,6 +11,8 @@
 	public class ReservationDto
 	{
 		public int TripId { get; set; }
-		public List<SeatInfo> seats { get; set; }
+		public bool OnRoad { get; set; }
+		public string LocationDescription { get; set; }
+        public List<SeatInfo> seats { get; set; }
 	}
 }

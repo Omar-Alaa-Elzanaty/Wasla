@@ -14,7 +14,7 @@ namespace Wasla.Model.Dtos
         public string Name { get; set; }
         public string Description { get; set; }
         public string SenderId { get; set; }
-        public  IFormFile ImageFile { get; set; }
+        public  IFormFile? ImageFile { get; set; }
         public float Price { get; set; }
         public float Weight { get; set; }
         public string? ReciverUserName { get; set; }

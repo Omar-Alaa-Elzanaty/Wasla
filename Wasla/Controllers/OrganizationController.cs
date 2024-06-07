@@ -6,6 +6,7 @@ using Wasla.Model.Helpers.Enums;
 using Wasla.Model.Models;
 using Wasla.Services.Authentication.AuthServices;
 using Wasla.Services.EntitiesServices.OrganizationSerivces;
+using Wasla.Services.EntitiesServices.VehicleSerivces;
 
 
 
@@ -19,12 +20,17 @@ namespace Wasla.Api.Controllers
         private readonly IOrganizationService _orgService;
         private readonly UserManager<Account> _userManager;
         private readonly IAuthService _authservice;
-        public OrganizationController(IOrganizationService organizationService, UserManager<Account> userManager, IAuthService authService)
+        private readonly IVehicleSrivces _vehicleSrivces;
+        public OrganizationController(
+            IOrganizationService organizationService,
+            UserManager<Account> userManager,
+            IAuthService authService,
+            IVehicleSrivces vehicleSrivces)
         {
             _orgService = organizationService;
             _userManager = userManager;
             _authservice = authService;
-
+            _vehicleSrivces = vehicleSrivces;
         }
         [HttpPost("role/create")]
         //[OrgPermissionAuthorize("OrgPermissions.Role.Create.1")]
@@ -101,7 +107,7 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _orgService.DeleteEmployeeAsync(empId));
         }
-        [HttpGet("{orgId}/drviers")]
+        [HttpGet("{orgId}/drivers")]
         public async Task<IActionResult> GetAllDrivers(string orgId)
         {
             return Ok(await _orgService.GetAllDrivers(orgId));
@@ -335,6 +341,24 @@ namespace Wasla.Api.Controllers
             var userId = User.FindFirst("uid").Value;
 
             return Ok(await _orgService.UpdateCurrentOrgTripLocationAsync(userId, tripLocationUpdate));
+        }
+
+        [HttpGet("employee/{id}")]
+        public async Task<IActionResult>GetEmployeeById(string id)
+        {
+            return Ok(await _orgService.GetEmployeeById(id));
+        }
+
+        [HttpGet("vehicle/{id}")]
+        public async Task<IActionResult> GetVehicleBydId(int id)
+        {
+            return Ok(await _vehicleSrivces.GetVehicleById(id));
+        }
+
+        [HttpGet("driver/{id}")]
+        public async Task<IActionResult>GetDriverById(string id)
+        {
+            return Ok(await _orgService.GetDriverById(id));
         }
     }
 }

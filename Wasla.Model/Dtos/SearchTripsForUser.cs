@@ -8,7 +8,7 @@ namespace Wasla.Model.Dtos
 {
     public class SearchTripsForUser:TripForOrgDriverDays
     {
-        public string ImgUrl { get; set; }
+        public string ?ImgUrl { get; set; }
 
     }
 }

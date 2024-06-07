@@ -19,7 +19,7 @@ namespace Wasla.Model.Dtos
           public float AvailablePackageSpace { get; set; }*/
         public int Id { get; set; }
         public string OrganizationId { get; set; }
-        public virtual Line Line { get; set; }=new Line();
+        public virtual Line Line { get; set; }
         public float Price { get; set; }
         public TimeSpan Duration { get; set; }
         public int Points { get; set; }

@@ -5,6 +5,7 @@ using Wasla.Model.Dtos;
 using Wasla.Model.Helpers.Enums;
 using Wasla.Model.Models;
 using Wasla.Services.EntitiesServices.PublicDriverServices;
+using Wasla.Services.EntitiesServices.VehicleSerivces;
 
 namespace Wasla.Api.Controllers
 {
@@ -13,9 +14,13 @@ namespace Wasla.Api.Controllers
     public class PublicDriverController : ControllerBase
     {
         private readonly IDriverServices _driverService;
-        public PublicDriverController(IDriverServices driverService)
+        private readonly IVehicleSrivces _vehicleSrivces;
+        public PublicDriverController(
+            IDriverServices driverService,
+            IVehicleSrivces vehicleSrivces)
         {
             _driverService = driverService;
+            _vehicleSrivces = vehicleSrivces;
         }
         [HttpGet("packages/{driverId}")]
         public async Task<IActionResult> GetDriverPackagesAsync([FromRoute] string driverId)
@@ -100,6 +105,23 @@ namespace Wasla.Api.Controllers
             var driverId = User.FindFirst("uid").Value;
 
             return Ok(await _driverService.UpdatePublicTripsStatus(driverId));
+        }
+        [HttpGet("currentTrip")]
+        public async Task<IActionResult> CurrentTrip()
+        {
+            var userId = User.FindFirst("uid").Value;
+
+            if(userId is null)
+            {
+                return Unauthorized();
+            }
+
+            return Ok(await _driverService.GetCurrentTrip(userId));
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            return Ok(await _vehicleSrivces.GetVehicleById(id));
         }
     }
 }

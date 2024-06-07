@@ -18,7 +18,7 @@ namespace Wasla.Model.Models
 		}
 		public string Name { get; set; }
 		public string Address { get; set; }
-		public string LogoUrl { get; set; }
+		public string? LogoUrl { get; set; }
 		public float MaxWeight { get; set; }
 		public float MinWeight { get; set; }
 		public string? WebsiteLink { get; set; }

@@ -18,10 +18,10 @@ namespace Wasla.Model.Dtos
 		public string FirstName { get; set; }
 		public string LastName { get; set; }
 		public string NationalId { get; set; }
-		public IFormFile ImageFile { get; set; }
+		public IFormFile? ImageFile { get; set; }
 		public Gender Gender { get; set; }		
 		public DateTime BirthDate { get; set; }		
-		public IFormFile LicenseImageFile { get; set; }
+		public IFormFile? LicenseImageFile { get; set; }
 		public string LicenseNumber { get; set; }
 		public string PhoneNumber { get; set; }
 	}

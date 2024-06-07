@@ -10,6 +10,8 @@ namespace Wasla.Model.Models
     {
         public int Id { get; set; }
         public string CustomerId { get; set; }
+        public bool OnRoad { get; set; }
+        public string LocationDescription { get; set; }
         public virtual Customer Customer { get; set; }
         public int PublicDriverTripId { get; set; }
         public virtual PublicDriverTrip PublicDriverTrip { get; set; }

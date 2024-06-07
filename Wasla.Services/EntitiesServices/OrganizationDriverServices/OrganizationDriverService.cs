@@ -131,7 +131,9 @@ namespace Wasla.Services.EntitiesServices.OrganizationDriverServices
                 FullName = x.Customer.FirstName + x.Customer.LastName,
                 UserName = x.Customer.UserName,
                 IsRide = x.IsRide,
-                PhotoUrl = x.Customer.PhotoUrl
+                PhotoUrl = x.Customer.PhotoUrl,
+                LocationDescription=x.LocationDescription,
+                OnRoad=x.OnRoad
             });
 
             _response.Data= reservations;
@@ -164,6 +166,16 @@ namespace Wasla.Services.EntitiesServices.OrganizationDriverServices
                           .ToListAsync();
 
             _response.Data = packages;
+            return _response;
+        }
+        public async Task<BaseResponse>GetCurrentTrip(string userId)
+        {
+            var entity = await _context.TripTimeTables
+                      .SingleOrDefaultAsync(x => x.DriverId == userId && x.StartTime <= DateTime.Now && x.ArriveTime >= DateTime.Now);
+
+            var trip = _mapper.Map<CurrentOrganizationDriverTrip>(entity);
+
+            _response.Data = trip;
             return _response;
         }
 

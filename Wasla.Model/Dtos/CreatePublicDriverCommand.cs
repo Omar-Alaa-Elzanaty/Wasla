@@ -12,7 +12,5 @@ namespace Wasla.Model.Dtos
         public int EndStationId { get; set;}
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        
-
     }
 }

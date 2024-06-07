@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Crypto.Fpe;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
@@ -49,7 +50,14 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                 v.Id,
                 v.LicenseWord,
                 v.LicenseNumber,
-                v.ImageUrl
+                v.ImageUrl,
+                v.Category,
+                v.PackageCapcity,
+                v.OrganizationId,
+                v.AdsSidesNumber,
+                v.Brand,
+                v.Capcity,
+                v.PublicDriverId
             }).ToListAsync();
 
             return _response;
@@ -277,6 +285,15 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             {
                 d.Id,
                 Name = d.FirstName + ' ' + d.LastName,
+                d.Birthdate,
+                d.UserName,
+                d.PhotoUrl,
+                d.PhoneNumber,
+                d.LicenseImageUrl,
+                d.NationalId,
+                d.Email,
+                d.Gender,
+                d.OrganizationId,
             }).ToListAsync();
 
             _response.Data = driver;
@@ -920,6 +937,33 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             var advertisments = _mapper.Map<List<GetOrganizationAds>>(entities);
 
             _response.Data = advertisments;
+            return _response;
+        }
+
+        public async Task<BaseResponse> GetEmployeeById(string id)
+        {
+            var entity = await _context.Employees.FindAsync(id);
+
+            if(entity is null)
+            {
+                _response.IsSuccess = false;
+                _response.Message = _localization["ObjectNotFound"].Value;
+                return _response;
+            }
+
+            var employee=_mapper.Map<GetEmployeeByIdDto>(entity);
+
+            _response.Data = employee;
+            return _response;
+        }
+
+        public async Task<BaseResponse>GetDriverById(string id)
+        {
+            var entity = await _context.Drivers.FindAsync(id);
+
+            var driver = _mapper.Map<GetDriverForOrganizationById>(entity);
+
+            _response.Data = driver;
             return _response;
         }
     }
