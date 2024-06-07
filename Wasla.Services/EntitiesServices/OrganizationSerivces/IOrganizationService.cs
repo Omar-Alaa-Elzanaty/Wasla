@@ -80,5 +80,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         Task<BaseResponse> ReviewPackagesRequest(int packageId, PackageStatus status);
         #endregion
         Task<BaseResponse> GetDriverById(string id);
+        Task<BaseResponse> UpdateDriverProfile(UpdateOrgDriverInfoDto model);
+        Task<BaseResponse> DeleteDriverById(string driverId);
     }
 }
