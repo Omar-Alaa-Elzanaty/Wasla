@@ -100,7 +100,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                             CustomerId = customerId,
                             ReservationDate = DateTime.Now,
                             TriptimeTableId = order.TripId,
-                            LocationDescription=order.LocationDescription,
+                            LocationDescription = order.LocationDescription,
                             QrCodeUrl = "Qr Code file Uri",//await _mediaSerivce.AddAsync(set.QrCodeFile)
                             CompnayName = tripTimeTable!.Trip.Organization.Name,
                             StartTime = tripTimeTable.StartTime,
@@ -614,7 +614,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         private async Task<BaseResponse> GetFirstReservationOnMatchDate(Func<Reservation, bool> match, Customer customer)
         {
             var inComingTrips = customer.Reservations.Where(match)
-                .Where(x => x.TriptimeTableId != null).OrderBy(x=>x.TripTimeTable.StartTime)
+                .Where(x => x.TriptimeTableId != null).OrderBy(x => x.TripTimeTable.StartTime)
             .Select(x => new CustomerTicket()
             {
                 StartStation = x.TripTimeTable.Trip.Line.Start.Name,
@@ -669,8 +669,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, "this request not exist");
             var follow = new UserFollow()
             {
-                CustomerId=senderId,
-                FollowerId=userId
+                CustomerId = senderId,
+                FollowerId = userId
             };
             using (var trans = await _context.Database.BeginTransactionAsync())
             {
@@ -691,7 +691,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             return _response;
         }
 
-        public async Task<BaseResponse> DeleteFollowRequestAsync(string userId,string senderId)
+        public async Task<BaseResponse> DeleteFollowRequestAsync(string userId, string senderId)
         {
             var request = await _context.FollowRequests.SingleOrDefaultAsync(f => f.SenderId == senderId && f.FollowerId == userId);
             if (request is null)
@@ -827,19 +827,19 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
         public async Task<BaseResponse> GetTripsForUserAsync(string orgId, string lineName)
         {
-            var trips = await _context.TripTimeTables.Where(t => t.Trip.OrganizationId == orgId && 
-            (t.Trip.Line.Start.Name.StartsWith(lineName) || 
-            t.Trip.Line.End.Name.StartsWith(lineName))).Select(t=>new TripForUserDto
+            var trips = await _context.TripTimeTables.Where(t => t.Trip.OrganizationId == orgId &&
+            (t.Trip.Line.Start.Name.StartsWith(lineName) ||
+            t.Trip.Line.End.Name.StartsWith(lineName))).Select(t => new TripForUserDto
             {
-                Price=t.Trip.Price,
-                From=t.Trip.Line.Start.Name,
-                To=t.Trip.Line.End.Name,
-                orgName=t.Trip.Organization.Name,
-                AvailablePackageSpace=t.AvailablePackageSpace,
-                AvailableSets=t.RecervedSeats.Count()
-                
+                Price = t.Trip.Price,
+                From = t.Trip.Line.Start.Name,
+                To = t.Trip.Line.End.Name,
+                orgName = t.Trip.Organization.Name,
+                AvailablePackageSpace = t.AvailablePackageSpace,
+                AvailableSets = t.RecervedSeats.Count()
+
             }).ToListAsync();
-          //  var tripRes = _mapper.Map<List<TripForUserDto>>(trips);
+            //  var tripRes = _mapper.Map<List<TripForUserDto>>(trips);
             _response.Data = trips;
             return _response;
         }
@@ -929,33 +929,33 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         public async Task<BaseResponse> SearchTripsForUserAsync(string from, string to, DateTime? date)
         {
             var today = DateTime.Today;
-           List<SearchOrgTripsForUser> orgTrips =await _context.TripTimeTables
-                .Where(tt =>
-                    ((tt.Trip.Line.Start.Name == from && tt.Trip.Line.End.Name == to && tt.IsStart) ||
-                     (tt.Trip.Line.Start.Name == to && tt.Trip.Line.End.Name == from && !tt.IsStart))
-                     && (date.HasValue ? tt.StartTime.Date == date.Value.Date : tt.StartTime.Date >= today)
+            List<SearchOrgTripsForUser> orgTrips = await _context.TripTimeTables
+                 .Where(tt =>
+                     ((tt.Trip.Line.Start.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()) && tt.Trip.Line.End.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) && tt.IsStart) ||
+                      (tt.Trip.Line.Start.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) && tt.Trip.Line.End.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()) && !tt.IsStart))
+                      && (date.HasValue ? tt.StartTime.Date == date.Value.Date : tt.StartTime.Date >= today)
 
-                    ).OrderBy(t => t.StartTime)
-                .Select(t => new SearchOrgTripsForUser
-                {
-                    TripId = t.Id,
-                    TripDate = t.StartTime.ToString("MM/dd/yyyy"),
-                    TripDay = t.StartTime.ToString("dddd"),
-                    TripStartTime = t.StartTime.ToString("h:mm tt"),
-                    StartStation = t.Trip.Line.Start.Name,
-                    EndStation = t.Trip.Line.End.Name,
-                    ImgUrl=t.Trip.Organization.LogoUrl,
-                    Price=t.Trip.Price,
-                    OrgName=t.Trip.Organization.Name,
-                    Rates=t.Trip.Organization.Rates
+                     ).OrderBy(t => t.StartTime)
+                 .Select(t => new SearchOrgTripsForUser
+                 {
+                     TripId = t.Id,
+                     TripDate = t.StartTime.ToString("MM/dd/yyyy"),
+                     TripDay = t.StartTime.ToString("dddd"),
+                     TripStartTime = t.StartTime.ToString("h:mm tt"),
+                     StartStation = t.Trip.Line.Start.Name,
+                     EndStation = t.Trip.Line.End.Name,
+                     ImgUrl = t.Trip.Organization.LogoUrl,
+                     Price = t.Trip.Price,
+                     OrgName = t.Trip.Organization.Name,
+                     Rates = t.Trip.Organization.Rates
 
-                }).ToListAsync();
+                 }).ToListAsync();
             List<SearchTripsForUser> publicTrips = await _context.PublicDriverTrips
                .Where(tt =>
-                   ((tt.StartStation.Name == from && tt.EndStation.Name == to && tt.IsStart) ||
-                    (tt.StartStation.Name == to && tt.EndStation.Name == from && !tt.IsStart))
-                   && (date.HasValue ? tt.StartDate.Date == date.Value.Date : tt.StartDate.Date >= today)&&
-                   tt.IsActive==true
+                   ((tt.StartStation.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()) && tt.EndStation.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) && tt.IsStart) ||
+                    (tt.StartStation.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) && tt.EndStation.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()) && !tt.IsStart))
+                   && (date.HasValue ? tt.StartDate.Date == date.Value.Date : tt.StartDate.Date >= today) &&
+                   tt.IsActive == true
 
                    ).OrderBy(t => t.StartDate)
                .Select(t => new SearchTripsForUser
@@ -970,7 +970,17 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
                }).ToListAsync();
 
-            _response.Data = new {orgTrips,publicTrips};
+            _response.Data = new { orgTrips, publicTrips };
+            return _response;
+        }
+        public async Task<BaseResponse> RequestPublicTrip(PassengerPublicTripRequestDto model, string userId)
+        {
+            var request = _mapper.Map<PublicDriverTripRequest>(model);
+            request.CustomerId = userId;
+
+            await _context.AddAsync(request);
+            await _context.SaveChangesAsync();
+
             return _response;
         }
     }

@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Wasla.DataAccess;
@@ -288,6 +289,32 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
                 _response.Message = "fail update";
                 return _response;
             }
+        }
+
+        public async Task<BaseResponse>AcceptPassengerReqeust(int id)
+        {
+            var entity = await _context.PublicDriverTripRequests.FindAsync(id);
+
+            if (entity == null)
+            {
+                _response.IsSuccess = false;
+                _response.Status = System.Net.HttpStatusCode.NotFound;
+                return _response;
+            }
+
+            var ticket = new PublicDriverTripReservation()
+            {
+                CustomerId = entity.CustomerId,
+                LocationDescription = entity.LocationDescription,
+                OnRoad = entity.OnRoad,
+                PublicDriverTripId = entity.PublicDriverTripId,
+            };
+
+            await _context.AddAsync(ticket);
+            _context.Remove(entity);
+            await _context.SaveChangesAsync();
+
+            return _response;
         }
     }
 }
