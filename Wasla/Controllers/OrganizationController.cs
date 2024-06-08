@@ -173,7 +173,7 @@ namespace Wasla.Api.Controllers
             return Ok(await _orgService.UpdateAdsAsync(adsId, model));
         }
         [HttpPut("ads/update1/{adsId}")]
-        public async Task<IActionResult> UpdateAdsWithoutImage(int adsId, [FromForm] AdsDto model)
+        public async Task<IActionResult> UpdateAdsWithoutImage(int adsId, [FromBody] AdsDto model)
         {
             return Ok(await _orgService.UpdateAdsAsync(adsId, model));
         }
