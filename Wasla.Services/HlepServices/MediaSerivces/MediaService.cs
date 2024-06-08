@@ -88,6 +88,11 @@ namespace Wasla.Services.HlepServices.MediaSerivces
         }
         public async Task DeleteAsync(string url)
         {
+            if(url== "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg")
+            {
+                return;
+            }
+
             if(url== MediaStandar.StandarProfileImage)
             {
                 return;
@@ -96,10 +101,10 @@ namespace Wasla.Services.HlepServices.MediaSerivces
             var mediaNameToDelete = Path.GetFileNameWithoutExtension(url);
             var EXT = Path.GetExtension(url);
             string? oldPath = "";
+            if (IsImageExtension(EXT))
+                oldPath = $@"{RootPath}\Images\{mediaNameToDelete}{EXT}";
             if (IsVideoExtension(EXT))
                 oldPath = $@"{RootPath}\Videos\{mediaNameToDelete}{EXT}";
-            else if (IsImageExtension(EXT))
-                oldPath = $@"{RootPath}\Images\{mediaNameToDelete}{EXT}";
             else
             {
                 throw new BadRequestException(_localization["DeleteMediaFail"].Value);
@@ -113,41 +118,23 @@ namespace Wasla.Services.HlepServices.MediaSerivces
         }
         public async Task<string> UpdateAsync(string oldUrl, IFormFile newMedia)
         {
-            ServicesResponse<string> response = new ServicesResponse<string>();
-            string? newMediaUrl = null;
-            StringBuilder mainPath = _defaultPath;
-            string file = Guid.NewGuid().ToString();
-            string Extension = Path.GetExtension(newMedia.FileName);
-            if (ImageConstrains(newMedia))
+            if (oldUrl == null && newMedia == null)
             {
-                newMediaUrl = mainPath.Replace("FOLDER", "Image").ToString();
-            }
-            else if (VideoConstrains(newMedia))
-            {
-                newMediaUrl = mainPath.Replace("FOLDER", "Records").ToString();
+                return "";
             }
 
-            if (newMediaUrl is null)
-            {
-                throw new BadRequestException(_localization["NotFoundMedia"].Value);
-            }
-            newMediaUrl += file + Extension;
-            if (oldUrl == newMediaUrl)
+            if (newMedia == null)
             {
                 return oldUrl;
             }
-            var addResult = await AddAsync(newMedia);
 
-            try
+            if (oldUrl == null)
             {
-                await DeleteAsync(oldUrl);
+                return await AddAsync(newMedia)!;
             }
-            catch
-            {
-                await DeleteAsync(addResult);
-                throw;
-            }
-            return addResult;
+
+            await DeleteAsync(oldUrl);
+            return await AddAsync(newMedia)!;
         }
     }
 }
