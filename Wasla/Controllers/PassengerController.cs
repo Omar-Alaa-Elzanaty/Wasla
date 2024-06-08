@@ -246,6 +246,19 @@ namespace Wasla.Api.Controllers
 
             return Ok(await _passangerService.EditProfile(userId,model));
         }
+
+        [HttpPost("reqeustPublicTrip")]
+        public async Task<IActionResult>RequestPublicTrip(PassengerPublicTripRequestDto model)
+        {
+            var userId = User.FindFirst("uid")?.Value;
+
+            if (userId is null)
+            {
+                return BadRequest("user not found");
+            }
+
+            return Ok(await _passangerService.RequestPublicTrip(model, userId));
+        }
     }
 
 }

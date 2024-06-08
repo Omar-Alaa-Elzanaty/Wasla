@@ -360,5 +360,16 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _orgService.GetDriverById(id));
         }
+
+        [HttpPut("UpdateDriverInfo")]
+        public async Task<IActionResult>UpdateDriverInfo([FromForm]UpdateOrgDriverInfoDto model)
+        {
+            return Ok(await _orgService.UpdateDriverProfile(model));
+        }
+        [HttpDelete("Driver/{id}")]
+        public async Task<IActionResult>DeleteDriverById(string id)
+        {
+            return Ok(await _orgService.DeleteDriverById(id));
+        }
     }
 }

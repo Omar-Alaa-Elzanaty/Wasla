@@ -123,5 +123,18 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _vehicleSrivces.GetVehicleById(id));
         }
+        [HttpPut("endCurrentTrip")]
+        public async Task<IActionResult> UpdatePublicTripsStatus()
+        {
+            var driverId = User.FindFirst("uid").Value;
+
+            return Ok(await _driverService.UpdatePublicTripsStatus(driverId));
+        }
+
+        [HttpPut("acceptPassengerReqeust/{publicTripId}")]
+        public async Task<IActionResult>AcceptPassengerReqeust(int publicTripId)
+        {
+            return Ok(await _driverService.AcceptPassengerReqeust(publicTripId));
+        }
     }
 }

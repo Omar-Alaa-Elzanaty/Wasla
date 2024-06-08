@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.IdentityModel.Tokens;
-using Org.BouncyCastle.Crypto.Fpe;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
@@ -651,13 +650,13 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         }
         public async Task<BaseResponse> AddTripTimeAsync(AddTripTimeDto model)
         {
-           /*  var tripExist = await _context.TripTimeTables.AnyAsync(t => t.TripId == model.TripId &&
-             t.StartTime == model.StartTime&&t.VehicleId==t.VehicleId&&t.DriverId==model.DriverId);
-             if (tripExist)
-                throw new BadRequestException(_localization["TripAlreadyExist"].Value);*/
-              var trip = _mapper.Map<TripTimeTable>(model);
-              await _context.TripTimeTables.AddAsync(trip);
-             await _context.SaveChangesAsync();
+            /*  var tripExist = await _context.TripTimeTables.AnyAsync(t => t.TripId == model.TripId &&
+              t.StartTime == model.StartTime&&t.VehicleId==t.VehicleId&&t.DriverId==model.DriverId);
+              if (tripExist)
+                 throw new BadRequestException(_localization["TripAlreadyExist"].Value);*/
+            var trip = _mapper.Map<TripTimeTable>(model);
+            await _context.TripTimeTables.AddAsync(trip);
+            await _context.SaveChangesAsync();
             _response.Message = _localization["addTripSuccess"].Value;
             return _response;
         }
@@ -944,20 +943,20 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         {
             var entity = await _context.Employees.FindAsync(id);
 
-            if(entity is null)
+            if (entity is null)
             {
                 _response.IsSuccess = false;
                 _response.Message = _localization["ObjectNotFound"].Value;
                 return _response;
             }
 
-            var employee=_mapper.Map<GetEmployeeByIdDto>(entity);
+            var employee = _mapper.Map<GetEmployeeByIdDto>(entity);
 
             _response.Data = employee;
             return _response;
         }
 
-        public async Task<BaseResponse>GetDriverById(string id)
+        public async Task<BaseResponse> GetDriverById(string id)
         {
             var entity = await _context.Drivers.FindAsync(id);
 
@@ -965,6 +964,61 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
 
             _response.Data = driver;
             return _response;
+        }
+
+        public async Task<BaseResponse> UpdateDriverProfile(UpdateOrgDriverInfoDto model)
+        {
+            var entity = await _context.Drivers.SingleAsync(x => x.Id == model.Id);
+
+            if (entity is null)
+            {
+                _response.IsSuccess = false;
+                _response.Status = System.Net.HttpStatusCode.NotFound;
+                return _response;
+            }
+
+            entity.UserName = model.UserName;
+            entity.PhoneNumber = model.PhoneNumber;
+            entity.Gender = model.Gender;
+            entity.NationalId = model.NationalId;
+            entity.LicenseNum = model.LicenseNum;
+            entity.Email = model.Email;
+            entity.Birthdate = model.BirthDate;
+            entity.FirstName = model.FirstName;
+            entity.LastName = model.LastName;
+
+            if (model.LicenseImage is not null)
+                entity.LicenseImageUrl = await _mediaSerivce.UpdateAsync(entity.LicenseImageUrl, model.LicenseImage);
+            else if (model.LicenseImage is not null)
+                entity.LicenseImageUrl = await _mediaSerivce.AddAsync(model.LicenseImage);
+
+            if (model.Photo is not null && entity.PhotoUrl is not null)
+                entity.PhotoUrl = await _mediaSerivce.UpdateAsync(entity.PhotoUrl, model.Photo);
+            else if (model.Photo is not null)
+                entity.PhotoUrl = await _mediaSerivce.AddAsync(model.Photo);
+
+            _context.Update(entity);
+            await _context.SaveChangesAsync();
+
+            return _response;
+        }
+
+        public async Task<BaseResponse>DeleteDriverById(string driverId)
+        {
+            var entitiy = await _context.Drivers.FindAsync(driverId);
+
+            if(entitiy is null)
+            {
+                _response.IsSuccess = false;
+                _response.Status = System.Net.HttpStatusCode.NotFound;
+                return _response;
+            }
+
+            _context.Remove(entitiy);
+            await _context.SaveChangesAsync();
+
+            return _response;
+
         }
     }
 }

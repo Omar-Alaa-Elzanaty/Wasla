@@ -150,6 +150,7 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<Driver, GetDriverForOrganizationById>()
                 .ForMember(dest => dest.FullName, src => src.MapFrom(src => src.FirstName + ' ' + src.LastName));
 
+            CreateMap<PassengerPublicTripRequestDto, PublicDriverTripRequest>();
         }
     }
 }
