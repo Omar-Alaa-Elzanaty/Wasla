@@ -71,10 +71,19 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _orgService.AddVehicleAsync(model, orgId));
         }
+        [HttpPost("{orgId}/vehicle1/add")]
+        public async Task<IActionResult> AddVehicleWithoutImage([FromRoute] string orgId, [FromBody] VehicleDto model)
+        {
+            return Ok(await _orgService.AddVehicleAsync(model, orgId));
+        }
         [HttpPut("vehicle/update/{vehicleId}")]
         public async Task<IActionResult> UpdateVehicle(int vehicleId, [FromForm] VehicleDto model)
         {
-
+            return Ok(await _orgService.UpdateVehicleAsync(model, vehicleId));
+        }
+        [HttpPut("vehicle/update1/{vehicleId}")]
+        public async Task<IActionResult> UpdateVehicleWithOutImage(int vehicleId,[FromBody] VehicleDto model)
+        {
             return Ok(await _orgService.UpdateVehicleAsync(model, vehicleId));
         }
         [HttpDelete("vehicle/delete/{vehicleId}")]
@@ -84,6 +93,11 @@ namespace Wasla.Api.Controllers
         }
         [HttpPost("{orgId}/driver/add")]
         public async Task<IActionResult> AddDriver([FromRoute] string orgId, [FromForm] OrgDriverDto model)
+        {
+            return Ok(await _orgService.AddDriverAsync(model, orgId));
+        }
+        [HttpPost("{orgId}/driver1/add")]
+        public async Task<IActionResult> AddDriverWithoutImage([FromRoute] string orgId, [FromBody] OrgDriverDto model)
         {
             return Ok(await _orgService.AddDriverAsync(model, orgId));
         }
@@ -99,6 +113,11 @@ namespace Wasla.Api.Controllers
         }
         [HttpPost("{orgId}/employee/add")]
         public async Task<IActionResult> AddEmployee([FromForm] EmployeeRegisterDto model, string orgId)
+        {
+            return Ok(await _orgService.AddEmployeeAsync(model, orgId));
+        }
+        [HttpPost("{orgId}/employee1/add")]
+        public async Task<IActionResult> AddEmployeeWithoutImage([FromBody] EmployeeRegisterDto model, string orgId)
         {
             return Ok(await _orgService.AddEmployeeAsync(model, orgId));
         }
@@ -122,6 +141,16 @@ namespace Wasla.Api.Controllers
         public async Task<IActionResult> AddAds([FromForm] AdsDto model, string orgId)
         {
             return Ok(await _orgService.AddAdsAsync(model, orgId));
+        }
+        [HttpGet("{orgId}/ads/reqeusts")]
+        public async Task<IActionResult>AdsRequests(string orgId)
+        {
+            return Ok(await _orgService.GetAdsRequest(orgId));
+        }
+        [HttpPut("AddAdsToVehicles")]
+        public async Task<IActionResult>AddAdsToVehicles(AddAdsToVehiclesDto model)
+        {
+            return Ok(await _orgService.AddAdsToVehicles(model));
         }
         [HttpPost("vehicle/{vehicleId}/ads/add/{adsId}")]
         public async Task<IActionResult> AddVehicleAds(int adsId, int vehicleId)
@@ -363,6 +392,11 @@ namespace Wasla.Api.Controllers
 
         [HttpPut("UpdateDriverInfo")]
         public async Task<IActionResult>UpdateDriverInfo([FromForm]UpdateOrgDriverInfoDto model)
+        {
+            return Ok(await _orgService.UpdateDriverProfile(model));
+        }
+        [HttpPut("UpdateDriverInfo1")]
+        public async Task<IActionResult>UpdateDriverInfoWithoutImage([FromBody]UpdateOrgDriverInfoDto model)
         {
             return Ok(await _orgService.UpdateDriverProfile(model));
         }

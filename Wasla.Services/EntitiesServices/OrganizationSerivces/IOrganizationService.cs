@@ -18,7 +18,9 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         #region Ads
         Task<BaseResponse>GetAllAds(string orgId);
         Task<BaseResponse> AddAdsAsync(AdsDto model, string orgId);
+        Task<BaseResponse> GetAdsRequest(string orgId);
         Task<BaseResponse> AddAdsToVehicleAsync(int adsId, int vehicleId);
+        Task<BaseResponse> AddAdsToVehicles(AddAdsToVehiclesDto model);
         Task<BaseResponse> RemoveAdsFromVehicleAsync(int adsId, int vehicleId);
         Task<BaseResponse> UpdateAdsAsync(int adsId, AdsDto model);
         Task<BaseResponse> DeleteAdsAsync(int adsId);

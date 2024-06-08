@@ -151,6 +151,7 @@ namespace Wasla.DataAccess.AutoMapping
                 .ForMember(dest => dest.FullName, src => src.MapFrom(src => src.FirstName + ' ' + src.LastName));
 
             CreateMap<PassengerPublicTripRequestDto, PublicDriverTripRequest>();
+            CreateMap<Advertisment, GetAdsRequestDto>();
         }
     }
 }

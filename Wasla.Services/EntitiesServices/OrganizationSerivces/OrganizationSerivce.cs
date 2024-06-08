@@ -159,7 +159,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                 throw new BadRequestException(_localization["AccountExist"].Value);
             }
 
-            var newDriver = new Driver()
+            var newDriver = new Driver
             {
                 OrganizationId = orgId,
                 Email = model.Email,
@@ -170,10 +170,10 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                 LicenseNum = model.LicenseNumber,
                 NationalId = model.NationalId,
                 PhoneNumber = model.PhoneNumber,
-                UserName = model.UserName
+                UserName = model.UserName,
+                LicenseImageUrl = await _mediaSerivce.AddAsync(model.LicenseImageFile),
+                PhotoUrl = await _mediaSerivce.AddAsync(model.ImageFile)
             };
-            newDriver.LicenseImageUrl = await _mediaSerivce.AddAsync(model.LicenseImageFile);
-            newDriver.PhotoUrl = await _mediaSerivce.AddAsync(model.ImageFile);
 
             using (var trans = await _context.Database.BeginTransactionAsync())
             {
@@ -335,6 +335,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             {
                 throw new BadRequestException(_localization["ReachToLimit"].Value);
             }
+            ads.Status = AdsStatus.Approved;
 
             vehicle.Advertisment.Add(ads);
 
@@ -814,7 +815,8 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         }
         public async Task<BaseResponse> GetPackagesTripAsync(int tripId)
         {
-            var package = await _context.Packages.Where(p => p.TripId == tripId).ToListAsync();
+            var package = await _context.Packages.Where(p => p.TripId == tripId && p.Status == PackageStatus.Approved)
+                           .ToListAsync();
             var resault = _mapper.Map<List<OrgPackagesDto>>(package);
             _response.Data = resault;
             _response.Message = _localization["getPackageSuccess"].Value;
@@ -841,7 +843,10 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         public async Task<BaseResponse> GetPackagesRequestAsync(string orgId)
         {
 
-            var packages = await _context.Packages.Where(p => p.TripId != null && p.Trip.Trip.OrganizationId == orgId && p.Status == 0).ToListAsync();
+            var packages = await _context.Packages
+                          .Where(p => p.TripId != null && p.Trip.Trip.OrganizationId == orgId && p.Status == PackageStatus.UnderConfirm)
+                          .ToListAsync();
+
             var res = _mapper.Map<OrgPackagesDto>(packages);
             _response.Data = res;
             return _response;
@@ -939,6 +944,30 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             return _response;
         }
 
+        public async Task<BaseResponse>GetAdsRequest(string orgId)
+        {
+            var entities = await _context.Advertisments.Where(x => x.organizationId == orgId && x.Status == AdsStatus.UnderConfirm)
+                            .ToListAsync();
+
+            var requests=_mapper.Map<List<GetAdsRequestDto>>(entities);
+
+            _response.Data = requests;
+            return _response;
+        }
+
+        public async Task<BaseResponse>AddAdsToVehicles(AddAdsToVehiclesDto model)
+        {
+            var ads = await _context.Advertisments.FindAsync(model.AdsId);
+
+            var vehicles = await _context.Vehicles.Where(x => model.Buses.Contains(x.Id))
+                        .ToListAsync();
+            ads.Busses = vehicles;
+            ads.Status = AdsStatus.Approved;
+            _context.Update(ads);
+            await _context.SaveChangesAsync();
+
+            return _response;
+        }
         public async Task<BaseResponse> GetEmployeeById(string id)
         {
             var entity = await _context.Employees.FindAsync(id);
