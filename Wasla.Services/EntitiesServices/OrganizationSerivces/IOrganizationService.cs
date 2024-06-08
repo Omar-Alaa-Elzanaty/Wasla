@@ -13,6 +13,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         Task<BaseResponse> UpdateVehicleAsync(VehicleDto model, int vehicleId);
         Task<BaseResponse> DeleteVehicleAsync(int vehicleId);
         Task<BaseResponse> AddDriverAsync(OrgDriverDto model, string orgId);
+        Task<BaseResponse> AddDriverBase64Async(AddOrganizationDriverDto model, string orgId);
         Task<BaseResponse> DeleteEmployeeAsync(string employeeId);
         Task<BaseResponse> GetAllDrivers(string orgId);
         #region Ads

@@ -97,9 +97,9 @@ namespace Wasla.Api.Controllers
             return Ok(await _orgService.AddDriverAsync(model, orgId));
         }
         [HttpPost("{orgId}/driver1/add")]
-        public async Task<IActionResult> AddDriverWithoutImage([FromRoute] string orgId, [FromBody] OrgDriverDto model)
+        public async Task<IActionResult> AddDriverBase64([FromRoute] string orgId, [FromBody] AddOrganizationDriverDto model)
         {
-            return Ok(await _orgService.AddDriverAsync(model, orgId));
+            return Ok(await _orgService.AddDriverBase64Async(model, orgId));
         }
         [HttpGet("{orgId}/vehicle/vehicle-analysis")]
         public async Task<IActionResult> VehicleAnalysis(string orgId)

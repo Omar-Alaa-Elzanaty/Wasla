@@ -204,6 +204,61 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             }
             return _response;
         }
+        public async Task<BaseResponse> AddDriverBase64Async(AddOrganizationDriverDto model, string orgId)
+        {
+            if (await _context.Drivers.AnyAsync(od => (od.NationalId == model.NationalId
+                                    || od.PhoneNumber == model.PhoneNumber
+                                    || od.LicenseNum == model.LicenseNumber
+                                    || model.Email != null && od.Email == model.Email) && od.OrganizationId == orgId))
+            {
+                throw new BadRequestException(_localization["AccountExist"].Value);
+            }
+
+            var newDriver = new Driver
+            {
+                OrganizationId = orgId,
+                Email = model.Email,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Birthdate = model.BirthDate,
+                Gender = model.Gender,
+                LicenseNum = model.LicenseNumber,
+                NationalId = model.NationalId,
+                PhoneNumber = model.PhoneNumber,
+                UserName = model.UserName,
+                LicenseImageUrl = await _mediaSerivce.AddAsync(model.LicenseImageFile),
+                PhotoUrl = await _mediaSerivce.AddAsync(model.ImageFile)
+            };
+
+            using (var trans = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    var result = await _userManager.CreateAsync(newDriver, model.Password);
+                    if (result is null || !result.Succeeded)
+                    {
+                        throw new BadRequestException(HelperServices.CollectIdentityResultErrors(result));
+                    }
+                    result = await _userManager.AddToRoleAsync(newDriver, Roles.Role_OrgDriver);
+
+                    if (result is null || !result.Succeeded)
+                    {
+                        throw new BadRequestException(HelperServices.CollectIdentityResultErrors(result));
+                    }
+
+                    await trans.CommitAsync();
+                }
+                catch (Exception)
+                {
+                    await trans.RollbackAsync();
+
+                    if (!newDriver.LicenseImageUrl.IsNullOrEmpty()) await _mediaSerivce.DeleteAsync(newDriver.LicenseImageUrl);
+
+                    if (!newDriver.PhotoUrl.IsNullOrEmpty()) await _mediaSerivce.DeleteAsync(newDriver.PhotoUrl);
+                }
+            }
+            return _response;
+        }
         public async Task<BaseResponse> GetEmployees(string orgId)
         {
             var entities = await _context.Employees.Where(x => x.OrgId == orgId)
