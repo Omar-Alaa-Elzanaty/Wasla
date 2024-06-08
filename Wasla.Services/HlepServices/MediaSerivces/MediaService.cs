@@ -88,6 +88,11 @@ namespace Wasla.Services.HlepServices.MediaSerivces
         }
         public async Task DeleteAsync(string url)
         {
+            if(url== "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg")
+            {
+                return;
+            }
+
             if(url== MediaStandar.StandarProfileImage)
             {
                 return;
@@ -96,10 +101,10 @@ namespace Wasla.Services.HlepServices.MediaSerivces
             var mediaNameToDelete = Path.GetFileNameWithoutExtension(url);
             var EXT = Path.GetExtension(url);
             string? oldPath = "";
+            if (IsImageExtension(EXT))
+                oldPath = $@"{RootPath}\Images\{mediaNameToDelete}{EXT}";
             if (IsVideoExtension(EXT))
                 oldPath = $@"{RootPath}\Videos\{mediaNameToDelete}{EXT}";
-            else if (IsImageExtension(EXT))
-                oldPath = $@"{RootPath}\Images\{mediaNameToDelete}{EXT}";
             else
             {
                 throw new BadRequestException(_localization["DeleteMediaFail"].Value);
