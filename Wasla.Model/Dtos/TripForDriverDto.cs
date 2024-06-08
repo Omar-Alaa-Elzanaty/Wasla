@@ -22,7 +22,7 @@ namespace Wasla.Model.Dtos
         public string Brand { get; set; }
         public float PackageCapcity { get; set; }
         public int AdsSidesNumber { get; set; }
-        public string ImageUrl { get; set; }
+        public string? ImageUrl { get; set; }
         public string? OrganizationId { get; set; }
     }
 }

@@ -7,9 +7,9 @@ namespace Wasla.Model.Dtos
 {
 	public class DriverRegisterDto:RegisterHelp
 	{
-		[Required(ErrorMessage = "ProfileImageFileRequire")]
+		//[Required(ErrorMessage = "ProfileImageFileRequire")]
 		public IFormFile? ProfileImageFile { get; set; }
-        [Required(ErrorMessage = "LicenseImageFileRequire")]
+      //  [Required(ErrorMessage = "LicenseImageFileRequire")]
 
         public IFormFile? LicenseImageFile { get; set; }
         [Required(ErrorMessage = "LicenseNumRequire")]

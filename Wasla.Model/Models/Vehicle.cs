@@ -24,7 +24,7 @@ namespace Wasla.Model.Models
 		public string Brand { get; set; }
 		public float PackageCapcity { get; set; }
 		public int AdsSidesNumber { get; set; }
-		public string ImageUrl { get; set; }
+		public string ?ImageUrl { get; set; }
 		public string? PublicDriverId { get; set; }
 		public virtual PublicDriver PublicDriver { get; set; }
 		public string? OrganizationId { get; set; }

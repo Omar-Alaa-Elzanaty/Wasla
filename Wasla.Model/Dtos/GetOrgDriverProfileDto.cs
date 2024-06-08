@@ -10,7 +10,7 @@ namespace Wasla.Model.Dtos
     public class GetOrgDriverProfileDto
     {
         public string Id { get; set; }
-        public string LicenseImageUrl { get; set; }
+        public string? LicenseImageUrl { get; set; }
         public string LicenseNum { get; set; }
         public string? NationalId { get; set; }
         public string? OrganizationId { get; set; }
