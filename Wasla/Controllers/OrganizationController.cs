@@ -142,6 +142,11 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _orgService.AddAdsAsync(model, orgId));
         }
+        [HttpPost("{orgId}/ads1/add")]
+        public async Task<IActionResult> AddAdsWithoutImage([FromBody] AdsDto model, string orgId)
+        {
+            return Ok(await _orgService.AddAdsAsync(model, orgId));
+        }
         [HttpGet("{orgId}/ads/reqeusts")]
         public async Task<IActionResult>AdsRequests(string orgId)
         {
@@ -164,6 +169,11 @@ namespace Wasla.Api.Controllers
         }
         [HttpPut("ads/update/{adsId}")]
         public async Task<IActionResult> UpdateAds(int adsId, [FromForm] AdsDto model)
+        {
+            return Ok(await _orgService.UpdateAdsAsync(adsId, model));
+        }
+        [HttpPut("ads/update1/{adsId}")]
+        public async Task<IActionResult> UpdateAdsWithoutImage(int adsId, [FromForm] AdsDto model)
         {
             return Ok(await _orgService.UpdateAdsAsync(adsId, model));
         }
