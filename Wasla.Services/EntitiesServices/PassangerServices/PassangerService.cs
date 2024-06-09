@@ -940,8 +940,6 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             return _response;
         }
 
-
-
         public async Task<BaseResponse> SearchTripsForUserAsync(string from, string to, DateTime? date)
         {
             var today = DateTime.Today;

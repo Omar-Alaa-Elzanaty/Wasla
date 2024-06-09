@@ -8,6 +8,7 @@ namespace Wasla.Model.Dtos
 {
     public class PublicPackagesDto
     {
+        public int Id { get; set; }
         public string Name { get; set; }
         public string SenderId { get; set; }
         public string ImageUrl { get; set; }
