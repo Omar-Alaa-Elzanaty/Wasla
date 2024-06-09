@@ -244,7 +244,9 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
         public async Task<BaseResponse> GetCurrentTrip(string userId)
         {
             var entity = await _context.PublicDriverTrips
-                      .SingleOrDefaultAsync(x => x.PublicDriverId == userId && (x.IsActive == true || x.IsStart == true));
+                       .Where(x=>x.PublicDriverId==userId)
+                       .OrderByDescending(x=>x.StartDate)
+                      .FirstOrDefaultAsync();
 
             var trip = _mapper.Map<CurrentPublicDriverTripDto>(entity);
             var Packages = await _context.Packages.Where(x => x.DriverId == userId && x.Status == PackageStatus.UnderConfirm)
