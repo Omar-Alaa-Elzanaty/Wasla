@@ -64,5 +64,11 @@ namespace Wasla.Api.Controllers
 
             return Ok(await _orgDriver.UpdateCurrentOrgTripLocationAsync(userId, tripLocationUpdate));
         }
+
+        [HttpPut("trip/takeBreak")]
+        public async Task<IActionResult> TaxkeBreak(int tripId)
+        {
+            return Ok(await _orgDriver.TakeBreakAsync(tripId));
+        }
     }
 }

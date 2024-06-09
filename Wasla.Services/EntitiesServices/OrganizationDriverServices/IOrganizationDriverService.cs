@@ -18,5 +18,6 @@ namespace Wasla.Services.EntitiesServices.OrganizationDriverServices
         Task<BaseResponse> UpdateCurrentOrgTripLocationAsync(string driverId, TripLocationUpdateDto tripDto);
         Task<BaseResponse> GetTripTimeTableLocationAsync(int tripTimeTableId);
         Task<BaseResponse> GetCurrentTrip(string userId);
+        Task<BaseResponse> TakeBreakAsync(int id);
     }
 }

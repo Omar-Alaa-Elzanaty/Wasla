@@ -66,7 +66,6 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
 
         Task<BaseResponse> AddTripTimeAsync(AddTripTimeDto model);
         Task<BaseResponse> UpdateTripTimeAsync(UpdateTripTimeDto model, int id);
-        Task<BaseResponse> TakeBreakAsync(int id);
 
         Task<BaseResponse> GetTripsTimeAsync(string orgId);
         Task<BaseResponse> GetTripTimeAsync(int id);

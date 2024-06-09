@@ -739,18 +739,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             _response.Message = _localization["updateTripSuccess"].Value;
             return _response;
         }
-        public async Task<BaseResponse> TakeBreakAsync(int id)
-        {
-            var tripCheck = await _context.TripTimeTables.FirstOrDefaultAsync(v => v.Id == id);
-            if (tripCheck is null)
-                return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, _localization["tripNotFound"].Value);
-
-            tripCheck.Status = TripStatus.TakeBreak;
-            var result = _context.TripTimeTables.Update(tripCheck);
-            await _context.SaveChangesAsync();
-            _response.Message = _localization["updateTripSuccess"].Value;
-            return _response;
-        }
+      
         public async Task<BaseResponse> DeleteTripTimeAsync(int id)
         {
             var trip = await _context.TripTimeTables.FirstOrDefaultAsync(t => t.Id == id);

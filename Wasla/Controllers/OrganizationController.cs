@@ -357,11 +357,6 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _orgService.GetPackagesRequestAsync(orgId));
         }
-        [HttpPut("trip/takeBreak")]
-        public async Task<IActionResult> TaxkeBreak(int tripId)
-        {
-            return Ok(await _orgService.TakeBreakAsync(tripId));
-        }
         [HttpPut("Package/{packageId}/{status}")]
         public async Task<IActionResult> ReviewPackagesRequest(int packageId, PackageStatus status)
         {
