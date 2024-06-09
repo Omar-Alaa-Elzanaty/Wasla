@@ -636,6 +636,11 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         public async Task<BaseResponse> CreateFollowRequestAsync(string senderId, FollowDto followDto)
         {
             var requestExist = _context.FollowRequests.Any(f => f.SenderId == senderId && f.FollowerId == followDto.FollowerId);
+
+            if (senderId == followDto.FollowerId)
+            {
+                return BaseResponse.GetErrorException(System.Net.HttpStatusCode.BadRequest, "user can not follow his/her self.");
+            }
             if (requestExist)
                 return BaseResponse.GetErrorException(HttpStatusErrorCode.BadRequest, "this request already exist");
             var req = new FollowRequests()

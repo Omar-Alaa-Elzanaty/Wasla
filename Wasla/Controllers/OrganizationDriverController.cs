@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Cors.Infrastructure;
+using Microsoft.AspNetCore.Mvc;
 using Wasla.Model.Dtos;
 using Wasla.Services.EntitiesServices.OrganizationDriverServices;
 
@@ -55,6 +56,13 @@ namespace Wasla.Api.Controllers
             }
 
             return Ok(await _orgDriver.GetCurrentTrip(userId));
+        }
+        [HttpPut("trip/updateLocation")]
+        public async Task<IActionResult> TripLocation(TripLocationUpdateDto tripLocationUpdate)
+        {
+            var userId = User.FindFirst("uid").Value;
+
+            return Ok(await _orgDriver.UpdateCurrentOrgTripLocationAsync(userId, tripLocationUpdate));
         }
     }
 }

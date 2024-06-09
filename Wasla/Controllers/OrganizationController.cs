@@ -374,14 +374,6 @@ namespace Wasla.Api.Controllers
             return Ok(await _orgService.IncreaseTripSeats(tripSeat));
 
         }
-        [HttpPut("trip/updateLocation")]
-        public async Task<IActionResult> TripLocation(TripLocationUpdateDto tripLocationUpdate)
-        {
-            var userId = User.FindFirst("uid").Value;
-
-            return Ok(await _orgService.UpdateCurrentOrgTripLocationAsync(userId, tripLocationUpdate));
-        }
-
         [HttpGet("employee/{id}")]
         public async Task<IActionResult>GetEmployeeById(string id)
         {

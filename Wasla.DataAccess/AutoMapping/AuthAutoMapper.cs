@@ -66,17 +66,20 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<Line, LinePackagesReverseDto>().ForMember(dest => dest.StartStation, opt => opt.MapFrom(src => src.End.Name))
                 .ForMember(dest => dest.EndStation, opt => opt.MapFrom(src => src.Start.Name));
 
-          
+
 
             //***********************************
 
             //trip
 
-            CreateMap<TripTimeTable, TripTimeDto>().ForMember(dest => dest.Points, opt => opt.MapFrom(src => src.Trip.Points))
+            CreateMap<TripTimeTable, TripTimeDto>()
+                .ForMember(dest => dest.Points, opt => opt.MapFrom(src => src.Trip.Points))
             .ForMember(dest => dest.Price, opt => opt.MapFrom(src => src.Trip.Price))
             .ForMember(dest => dest.Line, opt => opt.MapFrom(src => src.Trip.Line))
-            .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.Trip.Duration)); 
-
+            .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.Trip.Duration))
+            .ForMember(dest => dest.Category, opt => opt.MapFrom(src => src.Vehicle.Category))
+            .ForMember(dest => dest.Brand, opt => opt.MapFrom(src => src.Vehicle.Brand))
+            .ForMember(dest => dest.DriverName, opt => opt.MapFrom(src => src.Driver.FirstName + ' ' + src.Driver.LastName));
             //************************
 
             //Trip Time
