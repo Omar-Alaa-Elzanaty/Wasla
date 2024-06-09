@@ -24,6 +24,5 @@ namespace Wasla.Model.Dtos
         public string? DriverId { get; set; }
         public bool isPublic { get; set; } = false;
 
-
     }
 }

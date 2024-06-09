@@ -288,15 +288,20 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         }
         public async Task<BaseResponse> AddPackagesAsync(PackagesRequestDto model)
         {
-            if (model.isPublic == false && model.TripId == 0)
-                throw new BadRequestException(_localization["EnterTripInfo"]);
+            if (model.isPublic == false && model.TripId == null)
+                throw new BadRequestException(_localization["EnterTripInfo"].Value);
             if (model.isPublic == true && model.DriverId == null)
-                throw new BadRequestException(_localization["EnterDriverInfo"]);
+                throw new BadRequestException(_localization["EnterDriverInfo"].Value);
 
             /* if (await _context.Packages.AnyAsync(p => p.Name == model.Name && p.SenderId == model.SenderId&& (p.DriverId))
              {
                  throw new BadRequestException(_localization["PackagesExist"]);
              }*/
+            if(model.ReciverUserName is not null&&!await _context.Customers.AnyAsync(x=>x.UserName==model.ReciverUserName))
+            {
+                throw new BadRequestException(_localization["ReciverUserNameInCorrect"].Value);
+            }
+
 
             Package package = _mapper.Map<Package>(model);
             package.Status = PackageStatus.UnderConfirm;
@@ -325,10 +330,16 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             }
             else
             {
-                var trip = await _context.Trips.FindAsync(model.TripId);
+                var trip = await _context.TripTimeTables.FindAsync(model.TripId);
+
+                if(trip is null)
+                {
+                    return BaseResponse.GetErrorException(System.Net.HttpStatusCode.BadRequest, _localization["ObjectNotFound"].Value);
+                }
+
                 await _context.Notifications.AddAsync(new Notification()
                 {
-                    AccountId = trip.Organization.Id,
+                    AccountId = trip.Trip.Organization.Id,
                     Title = _localization["DriverNewPackageRequestTopic"].Value,
                     Description = _localization["DriverNewPackageRequestDescrption"].Value.Replace("Name", $"{sender.FirstName + ' ' + sender.LastName}"),
                     Type = NotificationType.PackageRequest

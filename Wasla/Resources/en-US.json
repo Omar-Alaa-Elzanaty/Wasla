@@ -58,6 +58,7 @@
   "PackagesExist": "Package is already Exit",
   "AdsExist": "Ads may be exist",
   "NoActiveTrip": "No trip available for now",
+  "ReciverUserNameInCorrect": "Reciver username is not correct.",
   //success
   "PhoneNumberValid": "Phone number is valid",
   "EmailValid": "Email valid to use",
