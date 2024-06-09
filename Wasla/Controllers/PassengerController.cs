@@ -32,7 +32,7 @@ namespace Wasla.Api.Controllers
             var userId = User.FindFirst("uid").Value;
             return Ok(await _passangerService.OrganizationRateAsync(model, userId));
         }
-        [HttpDelete("organization/rate/remove")]
+        [HttpDelete("organization/rate/remove")]    
         public async Task<IActionResult> RemoveOrganizationRate(string orgainzationId)
         {
             var userId = User.FindFirst("uid").Value;
@@ -133,11 +133,11 @@ namespace Wasla.Api.Controllers
             return Ok(await _passangerService.ConfirmFollowRequestAsync(userId,senderId));
         }
         [HttpDelete("rejectFollowRequest")]
-        public async Task<IActionResult> DeleteFollowRequest([FromBody]string senderId)
+        public async Task<IActionResult> DeleteFollowRequest([FromBody] DeleteFollowRequestDto followRequest)
         {
             var userId = User.FindFirst("uid").Value;
 
-            return Ok(await _passangerService.DeleteFollowRequestAsync(userId,senderId));
+            return Ok(await _passangerService.DeleteFollowRequestAsync(userId,followRequest.SenderId));
         }
         [HttpDelete("deleteFollower")]
         public async Task<IActionResult> DeleteFollower(FollowDto followDto)

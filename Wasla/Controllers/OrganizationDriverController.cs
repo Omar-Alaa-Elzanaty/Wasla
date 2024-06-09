@@ -35,13 +35,13 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _orgDriver.UpdateTripStatusAsync(command));
         }
-        [HttpGet("reservations")]
-        public async Task<IActionResult> GeAllReservation([FromBody]int tripTimeTable)
+        [HttpGet("reservations/{tripTimeTableID}")]  
+        public async Task<IActionResult> GeAllReservation([FromRoute]int tripTimeTableID)
         {
-            return Ok(await _orgDriver.GeAllReservationAsync(tripTimeTable));
+            return Ok(await _orgDriver.GeAllReservationAsync(tripTimeTableID));
         }
-        [HttpGet("getLocation")]
-        public async Task<IActionResult> GetTripTimeTableLocation([FromBody]int tripTimeTableId)
+        [HttpGet("getLocation/{tripTimeTableId}")]
+        public async Task<IActionResult> GetTripTimeTableLocation([FromRoute]int tripTimeTableId)
         {
             return Ok(await _orgDriver.GetTripTimeTableLocationAsync(tripTimeTableId));
         }
