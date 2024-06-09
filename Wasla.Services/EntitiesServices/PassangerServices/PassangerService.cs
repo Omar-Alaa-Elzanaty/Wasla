@@ -297,7 +297,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
              {
                  throw new BadRequestException(_localization["PackagesExist"]);
              }*/
-            if(model.ReciverUserName is not null&&!await _context.Customers.AnyAsync(x=>x.UserName==model.ReciverUserName))
+            if (model.ReciverUserName is not null && !await _context.Customers.AnyAsync(x => x.UserName == model.ReciverUserName))
             {
                 throw new BadRequestException(_localization["ReciverUserNameInCorrect"].Value);
             }
@@ -332,7 +332,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             {
                 var trip = await _context.TripTimeTables.FindAsync(model.TripId);
 
-                if(trip is null)
+                if (trip is null)
                 {
                     return BaseResponse.GetErrorException(System.Net.HttpStatusCode.BadRequest, _localization["ObjectNotFound"].Value);
                 }
@@ -515,7 +515,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 return BaseResponse.GetErrorException(System.Net.HttpStatusCode.NotFound, _localization["UserNameNotFound"].Value);
             }
 
-            return await GetReservationOnMatchDate(x => x.ReservationDate > DateTime.UtcNow&&x.TripTimeTable.StartTime>DateTime.UtcNow, user);
+            return await GetReservationOnMatchDate(x => x.ReservationDate > DateTime.UtcNow && x.TripTimeTable.StartTime > DateTime.UtcNow, user);
         }
         public async Task<BaseResponse> GetFirstInComingReservations(string customerId)
         {
@@ -931,7 +931,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                                    Name = x.Name,
                                    ReciverName = x.ReciverName,
                                    ReciverUserName = x.ReciverUserName,
-                                   Description=x.Description,
+                                   Description = x.Description,
                                    Langtitude = x.Trip.Langtitude,
                                    Latitude = x.Trip.Latitude
                                }).ToListAsync();
@@ -945,10 +945,9 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             var today = DateTime.Today;
             List<SearchOrgTripsForUser> orgTrips = await _context.TripTimeTables
                  .Where(tt =>
-                     ((tt.Trip.Line.Start.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()) && tt.Trip.Line.End.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) && tt.IsStart) ||
-                      (tt.Trip.Line.Start.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) && tt.Trip.Line.End.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()) && !tt.IsStart))
+                     ((tt.Trip.Line.Start.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()) && tt.Trip.Line.End.Name.Trim().ToLower().StartsWith(to.Trim().ToLower())) ||
+                      (tt.Trip.Line.Start.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) && tt.Trip.Line.End.Name.Trim().ToLower().StartsWith(from.Trim().ToLower())))
                       && (date.HasValue ? tt.StartTime.Date == date.Value.Date : tt.StartTime.Date >= today)
-
                      ).OrderBy(t => t.StartTime)
                  .Select(t => new SearchOrgTripsForUser
                  {
@@ -961,15 +960,16 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                      ImgUrl = t.Trip.Organization.LogoUrl,
                      Price = t.Trip.Price,
                      OrgName = t.Trip.Organization.Name,
-                     Rates = t.Trip.Organization.Rates
+                     Rates = t.Trip.Organization.Rates,
+                     IsStart = t.IsStart
 
                  }).ToListAsync();
             List<SearchTripsForUser> publicTrips = await _context.PublicDriverTrips
                .Where(tt =>
-                   ((tt.StartStation.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()) && tt.EndStation.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) && tt.IsStart) ||
-                    (tt.StartStation.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) && tt.EndStation.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()) && !tt.IsStart))
+                   ((tt.StartStation.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()) && tt.EndStation.Name.Trim().ToLower().StartsWith(to.Trim().ToLower())) ||
+                    (tt.StartStation.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) && tt.EndStation.Name.Trim().ToLower().StartsWith(from.Trim().ToLower())))
                    && (date.HasValue ? tt.StartDate.Date == date.Value.Date : tt.StartDate.Date >= today) &&
-                   tt.IsActive == true
+                   (tt.IsActive == true)
 
                    ).OrderBy(t => t.StartDate)
                .Select(t => new SearchTripsForUser
@@ -981,6 +981,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                    StartStation = t.StartStation.Name,
                    EndStation = t.EndStation.Name,
                    ImgUrl = t.PublicDriver.PhotoUrl,
+                   IsStart = t.IsStart
 
                }).ToListAsync();
 

@@ -14,5 +14,6 @@ namespace Wasla.Model.Dtos
         public string TripDate { get; set;}
         public string StartStation { get; set;}
         public string EndStation { get; set;}
+        public bool IsStart { get; set; }
     }
 }
