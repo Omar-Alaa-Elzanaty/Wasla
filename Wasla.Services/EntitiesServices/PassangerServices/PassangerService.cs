@@ -378,7 +378,6 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
             var res = _context.Packages.Update(package);
             _ = await _context.SaveChangesAsync();
-            _response.Data = res;
             _response.Message = _localization["PackageUpdateSuccess"].Value;
             return _response;
         }
