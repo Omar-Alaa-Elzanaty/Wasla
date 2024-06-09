@@ -515,7 +515,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 return BaseResponse.GetErrorException(System.Net.HttpStatusCode.NotFound, _localization["UserNameNotFound"].Value);
             }
 
-            return await GetReservationOnMatchDate(x => x.ReservationDate > DateTime.UtcNow, user);
+            return await GetReservationOnMatchDate(x => x.ReservationDate > DateTime.UtcNow&&x.TripTimeTable.StartTime>DateTime.UtcNow, user);
         }
         public async Task<BaseResponse> GetFirstInComingReservations(string customerId)
         {
@@ -533,7 +533,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 return BaseResponse.GetErrorException(System.Net.HttpStatusCode.NotFound, _localization["UserNameNotFound"].Value);
             }
 
-            return await GetFirstReservationOnMatchDate(x => x.ReservationDate > DateTime.UtcNow, user);
+            return await GetFirstReservationOnMatchDate(x => x.ReservationDate > DateTime.UtcNow && x.TripTimeTable.StartTime > DateTime.UtcNow, user);
         }
         public async Task<BaseResponse> GetEndedReservations(string customerId)
         {

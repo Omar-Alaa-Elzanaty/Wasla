@@ -317,6 +317,31 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
 
             return _response;
         }
+
+
+
+        public async Task<BaseResponse> GetTripsHistoryForPublicDriverAsync(string DriverId, DateTime currentDate)
+        {
+
+            var trips = await _context.PublicDriverTrips.
+                Where(t=>
+                t.PublicDriverId == DriverId &&
+                 t.StartDate < currentDate &&
+               t.Status == TripStatus.Arrived).OrderBy(t => t.StartDate)
+                .Select(t => new TripForOrgDriverDays
+                {
+                    TripId = t.Id,
+                    TripDate = t.StartDate.ToString("MM/dd/yyyy"),
+                    TripDay = t.StartDate.ToString("dddd"),
+                    TripStartTime = t.StartDate.ToString("h:mm tt"),
+                    StartStation = t.StartStation.Name,
+                    EndStation = t.EndStation.Name
+
+                }).ToListAsync();
+            _response.Data = trips;
+            return _response;
+        }
+
     }
 }
 

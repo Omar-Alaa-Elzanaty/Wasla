@@ -118,7 +118,7 @@ namespace Wasla.Api.Controllers
 
             return Ok(await _driverService.GetCurrentTrip(userId));
         }
-        [HttpGet("{id}")]
+        [HttpGet("vehicle/{id}")]
         public async Task<IActionResult> GetById(int id)
         {
             return Ok(await _vehicleSrivces.GetVehicleById(id));
@@ -135,6 +135,17 @@ namespace Wasla.Api.Controllers
         public async Task<IActionResult>AcceptPassengerReqeust(int publicTripId)
         {
             return Ok(await _driverService.AcceptPassengerReqeust(publicTripId));
+        }
+        [HttpGet("publicTrips/history/{dateTime}")]
+        public async Task<IActionResult> GetTripsHistoryForPublicDriverAsync(DateTime dateTime)
+        {
+           var driverId = User.FindFirst("uid").Value;
+            if (driverId is null)
+            {
+                return Unauthorized();
+            }
+
+            return Ok(await _driverService.GetTripsHistoryForPublicDriverAsync(driverId,dateTime));
         }
     }
 }
