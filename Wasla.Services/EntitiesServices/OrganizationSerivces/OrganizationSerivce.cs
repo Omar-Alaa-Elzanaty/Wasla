@@ -159,7 +159,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                 throw new BadRequestException(_localization["AccountExist"].Value);
             }
 
-            var newDriver = new Driver()
+            var newDriver = new Driver
             {
                 OrganizationId = orgId,
                 Email = model.Email,
@@ -170,10 +170,65 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                 LicenseNum = model.LicenseNumber,
                 NationalId = model.NationalId,
                 PhoneNumber = model.PhoneNumber,
-                UserName = model.UserName
+                UserName = model.UserName,
+                LicenseImageUrl = await _mediaSerivce.AddAsync(model.LicenseImageFile),
+                PhotoUrl = await _mediaSerivce.AddAsync(model.ImageFile)
             };
-            newDriver.LicenseImageUrl = await _mediaSerivce.AddAsync(model.LicenseImageFile);
-            newDriver.PhotoUrl = await _mediaSerivce.AddAsync(model.ImageFile);
+
+            using (var trans = await _context.Database.BeginTransactionAsync())
+            {
+                try
+                {
+                    var result = await _userManager.CreateAsync(newDriver, model.Password);
+                    if (result is null || !result.Succeeded)
+                    {
+                        throw new BadRequestException(HelperServices.CollectIdentityResultErrors(result));
+                    }
+                    result = await _userManager.AddToRoleAsync(newDriver, Roles.Role_OrgDriver);
+
+                    if (result is null || !result.Succeeded)
+                    {
+                        throw new BadRequestException(HelperServices.CollectIdentityResultErrors(result));
+                    }
+
+                    await trans.CommitAsync();
+                }
+                catch (Exception)
+                {
+                    await trans.RollbackAsync();
+
+                    if (!newDriver.LicenseImageUrl.IsNullOrEmpty()) await _mediaSerivce.DeleteAsync(newDriver.LicenseImageUrl);
+
+                    if (!newDriver.PhotoUrl.IsNullOrEmpty()) await _mediaSerivce.DeleteAsync(newDriver.PhotoUrl);
+                }
+            }
+            return _response;
+        }
+        public async Task<BaseResponse> AddDriverBase64Async(AddOrganizationDriverDto model, string orgId)
+        {
+            if (await _context.Drivers.AnyAsync(od => (od.NationalId == model.NationalId
+                                    || od.PhoneNumber == model.PhoneNumber
+                                    || od.LicenseNum == model.LicenseNumber
+                                    || model.Email != null && od.Email == model.Email) && od.OrganizationId == orgId))
+            {
+                throw new BadRequestException(_localization["AccountExist"].Value);
+            }
+
+            var newDriver = new Driver
+            {
+                OrganizationId = orgId,
+                Email = model.Email,
+                FirstName = model.FirstName,
+                LastName = model.LastName,
+                Birthdate = model.BirthDate,
+                Gender = model.Gender,
+                LicenseNum = model.LicenseNumber,
+                NationalId = model.NationalId,
+                PhoneNumber = model.PhoneNumber,
+                UserName = model.UserName,
+                LicenseImageUrl = await _mediaSerivce.AddAsync(model.LicenseImageFile),
+                PhotoUrl = await _mediaSerivce.AddAsync(model.ImageFile)
+            };
 
             using (var trans = await _context.Database.BeginTransactionAsync())
             {
@@ -335,6 +390,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             {
                 throw new BadRequestException(_localization["ReachToLimit"].Value);
             }
+            ads.Status = AdsStatus.Approved;
 
             vehicle.Advertisment.Add(ads);
 
@@ -632,22 +688,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             return _response;
         }
         #endregion
-        public async Task<BaseResponse> UpdateCurrentOrgTripLocationAsync(string driverId, TripLocationUpdateDto tripDto)
-        {
-            DateTime currentData = DateTime.Now;
-            var trip = await _context.TripTimeTables.
-                FirstOrDefaultAsync(t => t.DriverId == driverId &&
-                t.StartTime <= currentData &&
-                (t.Status == TripStatus.OnRoad || t.Status == TripStatus.TakeBreak));
-            if (trip == null)
-                return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, _localization["ObjectNotFound"].Value);
-            trip.Langtitude = tripDto.Langtitude;
-            trip.Latitude = tripDto.Latitude;
-            _context.TripTimeTables.Update(trip);
-            await _context.SaveChangesAsync();
-            _response.Message = _localization["UpdateSuccess"].Value;
-            return _response;
-        }
+        
         public async Task<BaseResponse> AddTripTimeAsync(AddTripTimeDto model)
         {
             /*  var tripExist = await _context.TripTimeTables.AnyAsync(t => t.TripId == model.TripId &&
@@ -698,18 +739,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             _response.Message = _localization["updateTripSuccess"].Value;
             return _response;
         }
-        public async Task<BaseResponse> TakeBreakAsync(int id)
-        {
-            var tripCheck = await _context.TripTimeTables.FirstOrDefaultAsync(v => v.Id == id);
-            if (tripCheck is null)
-                return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, _localization["tripNotFound"].Value);
-
-            tripCheck.Status = TripStatus.TakeBreak;
-            var result = _context.TripTimeTables.Update(tripCheck);
-            await _context.SaveChangesAsync();
-            _response.Message = _localization["updateTripSuccess"].Value;
-            return _response;
-        }
+      
         public async Task<BaseResponse> DeleteTripTimeAsync(int id)
         {
             var trip = await _context.TripTimeTables.FirstOrDefaultAsync(t => t.Id == id);
@@ -814,7 +844,8 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         }
         public async Task<BaseResponse> GetPackagesTripAsync(int tripId)
         {
-            var package = await _context.Packages.Where(p => p.TripId == tripId).ToListAsync();
+            var package = await _context.Packages.Where(p => p.TripId == tripId && p.Status == PackageStatus.Approved)
+                           .ToListAsync();
             var resault = _mapper.Map<List<OrgPackagesDto>>(package);
             _response.Data = resault;
             _response.Message = _localization["getPackageSuccess"].Value;
@@ -841,8 +872,11 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         public async Task<BaseResponse> GetPackagesRequestAsync(string orgId)
         {
 
-            var packages = await _context.Packages.Where(p => p.TripId != null && p.Trip.Trip.OrganizationId == orgId && p.Status == 0).ToListAsync();
-            var res = _mapper.Map<OrgPackagesDto>(packages);
+            var packages = await _context.Packages
+                          .Where(p => p.TripId != null && p.Trip.Trip.OrganizationId == orgId && p.Status == PackageStatus.UnderConfirm)
+                          .ToListAsync();
+
+            var res = _mapper.Map<List<OrgPackagesDto>>(packages);
             _response.Data = res;
             return _response;
         }
@@ -939,6 +973,30 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             return _response;
         }
 
+        public async Task<BaseResponse>GetAdsRequest(string orgId)
+        {
+            var entities = await _context.Advertisments.Where(x => x.organizationId == orgId && x.Status == AdsStatus.UnderConfirm)
+                            .ToListAsync();
+
+            var requests=_mapper.Map<List<GetAdsRequestDto>>(entities);
+
+            _response.Data = requests;
+            return _response;
+        }
+
+        public async Task<BaseResponse>AddAdsToVehicles(AddAdsToVehiclesDto model)
+        {
+            var ads = await _context.Advertisments.FindAsync(model.AdsId);
+
+            var vehicles = await _context.Vehicles.Where(x => model.Buses.Contains(x.Id))
+                        .ToListAsync();
+            ads.Busses = vehicles;
+            ads.Status = AdsStatus.Approved;
+            _context.Update(ads);
+            await _context.SaveChangesAsync();
+
+            return _response;
+        }
         public async Task<BaseResponse> GetEmployeeById(string id)
         {
             var entity = await _context.Employees.FindAsync(id);

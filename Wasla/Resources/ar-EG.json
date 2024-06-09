@@ -60,7 +60,7 @@
   "endIdRequired": "نقطه النهايه مطلوبه",
   "PackagesExist": "هذه الشحنه موجوده بالفعل",
   "NoActiveTrip": ".لا توجد اى رحلة لك فى الوقت الحالى",
-
+  "ReciverUserNameInCorrect": "اسم المستخدم للمستلم غير صحيح",
   "AdsExist": "ربما الاعلان موجود مسبقا ",
   //success
 

@@ -288,15 +288,20 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         }
         public async Task<BaseResponse> AddPackagesAsync(PackagesRequestDto model)
         {
-            if (model.isPublic == false && model.TripId == 0)
-                throw new BadRequestException(_localization["EnterTripInfo"]);
+            if (model.isPublic == false && model.TripId == null)
+                throw new BadRequestException(_localization["EnterTripInfo"].Value);
             if (model.isPublic == true && model.DriverId == null)
-                throw new BadRequestException(_localization["EnterDriverInfo"]);
+                throw new BadRequestException(_localization["EnterDriverInfo"].Value);
 
             /* if (await _context.Packages.AnyAsync(p => p.Name == model.Name && p.SenderId == model.SenderId&& (p.DriverId))
              {
                  throw new BadRequestException(_localization["PackagesExist"]);
              }*/
+            if (model.ReciverUserName is not null && !await _context.Customers.AnyAsync(x => x.UserName == model.ReciverUserName))
+            {
+                throw new BadRequestException(_localization["ReciverUserNameInCorrect"].Value);
+            }
+
 
             Package package = _mapper.Map<Package>(model);
             package.Status = PackageStatus.UnderConfirm;
@@ -325,10 +330,16 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             }
             else
             {
-                var trip = await _context.Trips.FindAsync(model.TripId);
+                var trip = await _context.TripTimeTables.FindAsync(model.TripId);
+
+                if (trip is null)
+                {
+                    return BaseResponse.GetErrorException(System.Net.HttpStatusCode.BadRequest, _localization["ObjectNotFound"].Value);
+                }
+
                 await _context.Notifications.AddAsync(new Notification()
                 {
-                    AccountId = trip.Organization.Id,
+                    AccountId = trip.Trip.Organization.Id,
                     Title = _localization["DriverNewPackageRequestTopic"].Value,
                     Description = _localization["DriverNewPackageRequestDescrption"].Value.Replace("Name", $"{sender.FirstName + ' ' + sender.LastName}"),
                     Type = NotificationType.PackageRequest
@@ -367,7 +378,6 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
             var res = _context.Packages.Update(package);
             _ = await _context.SaveChangesAsync();
-            _response.Data = res;
             _response.Message = _localization["PackageUpdateSuccess"].Value;
             return _response;
         }
@@ -391,8 +401,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             {
                 throw new BadRequestException(_localization["Unauthorized"].Value);
             }
-            var packages = await _context.Packages.Where(p => p.SenderId == customerId && p.TripId != 0).ToListAsync();
-            var res = _mapper.Map<OrgPackagesDto>(packages);
+            var packages = await _context.Packages.Where(p => p.SenderId == customerId && p.TripId != null).ToListAsync();
+            var res = _mapper.Map<List<OrgPackagesDto>>(packages);
             _response.Data = res;
             return _response;
         }
@@ -426,7 +436,9 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 .Select(x => new Follow()
                 {
                     Id = x.FollowerId,
-                    Name = x.Follower.FirstName + ' ' + x.Follower.LastName
+                    Name = x.Follower.FirstName + ' ' + x.Follower.LastName,
+                    PhotoUrl=x.Follower.PhotoUrl,
+                    UserName=x.Follower.UserName
                 }));
 
             customer.Following.TryAdd(
@@ -434,7 +446,9 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 .Select(x => new Follow()
                 {
                     Id = x.CustomerId,
-                    Name = x.Customer.FirstName + " " + x.Customer.LastName
+                    Name = x.Customer.FirstName + " " + x.Customer.LastName,
+                    PhotoUrl=x.Customer.PhotoUrl,
+                    UserName=x.Customer.UserName
                 }));
 
             _response.Data = customer;
@@ -505,7 +519,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 return BaseResponse.GetErrorException(System.Net.HttpStatusCode.NotFound, _localization["UserNameNotFound"].Value);
             }
 
-            return await GetReservationOnMatchDate(x => x.ReservationDate > DateTime.UtcNow&&x.TripTimeTable.StartTime>DateTime.UtcNow, user);
+            return await GetReservationOnMatchDate(x => x.ReservationDate > DateTime.UtcNow && x.TripTimeTable.StartTime > DateTime.UtcNow, user);
         }
         public async Task<BaseResponse> GetFirstInComingReservations(string customerId)
         {
@@ -636,6 +650,11 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         public async Task<BaseResponse> CreateFollowRequestAsync(string senderId, FollowDto followDto)
         {
             var requestExist = _context.FollowRequests.Any(f => f.SenderId == senderId && f.FollowerId == followDto.FollowerId);
+
+            if (senderId == followDto.FollowerId)
+            {
+                return BaseResponse.GetErrorException(System.Net.HttpStatusCode.BadRequest, "user can not follow his/her self.");
+            }
             if (requestExist)
                 return BaseResponse.GetErrorException(HttpStatusErrorCode.BadRequest, "this request already exist");
             var req = new FollowRequests()
@@ -916,6 +935,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                                    Name = x.Name,
                                    ReciverName = x.ReciverName,
                                    ReciverUserName = x.ReciverUserName,
+                                   Description = x.Description,
                                    Langtitude = x.Trip.Langtitude,
                                    Latitude = x.Trip.Latitude
                                }).ToListAsync();
@@ -924,17 +944,14 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             return _response;
         }
 
-
-
         public async Task<BaseResponse> SearchTripsForUserAsync(string from, string to, DateTime? date)
         {
             var today = DateTime.Today;
             List<SearchOrgTripsForUser> orgTrips = await _context.TripTimeTables
                  .Where(tt =>
-                     ((tt.Trip.Line.Start.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()) && tt.Trip.Line.End.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) && tt.IsStart) ||
-                      (tt.Trip.Line.Start.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) && tt.Trip.Line.End.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()) && !tt.IsStart))
+                     ((tt.Trip.Line.Start.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()) && tt.Trip.Line.End.Name.Trim().ToLower().StartsWith(to.Trim().ToLower())) ||
+                      (tt.Trip.Line.Start.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) && tt.Trip.Line.End.Name.Trim().ToLower().StartsWith(from.Trim().ToLower())))
                       && (date.HasValue ? tt.StartTime.Date == date.Value.Date : tt.StartTime.Date >= today)
-
                      ).OrderBy(t => t.StartTime)
                  .Select(t => new SearchOrgTripsForUser
                  {
@@ -947,15 +964,16 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                      ImgUrl = t.Trip.Organization.LogoUrl,
                      Price = t.Trip.Price,
                      OrgName = t.Trip.Organization.Name,
-                     Rates = t.Trip.Organization.Rates
+                     Rates = t.Trip.Organization.Rates,
+                     IsStart = t.IsStart
 
                  }).ToListAsync();
             List<SearchTripsForUser> publicTrips = await _context.PublicDriverTrips
                .Where(tt =>
-                   ((tt.StartStation.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()) && tt.EndStation.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) && tt.IsStart) ||
-                    (tt.StartStation.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) && tt.EndStation.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()) && !tt.IsStart))
+                   ((tt.StartStation.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()) && tt.EndStation.Name.Trim().ToLower().StartsWith(to.Trim().ToLower())) ||
+                    (tt.StartStation.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) && tt.EndStation.Name.Trim().ToLower().StartsWith(from.Trim().ToLower())))
                    && (date.HasValue ? tt.StartDate.Date == date.Value.Date : tt.StartDate.Date >= today) &&
-                   tt.IsActive == true
+                   (tt.IsActive == true)
 
                    ).OrderBy(t => t.StartDate)
                .Select(t => new SearchTripsForUser
@@ -967,6 +985,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                    StartStation = t.StartStation.Name,
                    EndStation = t.EndStation.Name,
                    ImgUrl = t.PublicDriver.PhotoUrl,
+                   IsStart = t.IsStart
 
                }).ToListAsync();
 

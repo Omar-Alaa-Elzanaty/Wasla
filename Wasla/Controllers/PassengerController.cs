@@ -58,13 +58,13 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _passangerService.RemovePackageAsync(id));
         }
-        [HttpGet("packages")]
+        [HttpGet("publicPackages")]
         public async Task<IActionResult> GetUserPublicPackagesAsync()
         {
             var userId = User.FindFirst("uid").Value;
             return Ok(await _passangerService.GetUserPublicPackagesAsync(userId));
         }
-        [HttpGet("packages/organization/{userName}")]
+        [HttpGet("organiationPackages")]
         public async Task<IActionResult> GetUserOrgPackagesAsync()
         {
             var userId = User.FindFirst("uid").Value;

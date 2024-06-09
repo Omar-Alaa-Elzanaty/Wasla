@@ -7,6 +7,8 @@ using Microsoft.Extensions.Localization;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
+using Wasla.Model.Helpers.Enums;
+using Wasla.Model.Helpers.Statics;
 using Wasla.Model.Models;
 using Wasla.Services.HlepServices.MediaSerivces;
 
@@ -176,5 +178,34 @@ namespace Wasla.Services.EntitiesServices.OrganizationDriverServices
             return _response;
         }
 
+        public async Task<BaseResponse> UpdateCurrentOrgTripLocationAsync(string driverId, TripLocationUpdateDto tripDto)
+        {
+            DateTime currentData = DateTime.Now;
+            var trip = await _context.TripTimeTables.
+                FirstOrDefaultAsync(t => t.DriverId == driverId &&
+                t.StartTime <= currentData &&
+                (t.Status == TripStatus.OnRoad || t.Status == TripStatus.TakeBreak));
+            if (trip == null)
+                return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, _localization["ObjectNotFound"].Value);
+            trip.Langtitude = tripDto.Langtitude;
+            trip.Latitude = tripDto.Latitude;
+            _context.TripTimeTables.Update(trip);
+            await _context.SaveChangesAsync();
+            _response.Message = _localization["UpdateSuccess"].Value;
+            return _response;
+        }
+
+        public async Task<BaseResponse> TakeBreakAsync(int id)
+        {
+            var tripCheck = await _context.TripTimeTables.FirstOrDefaultAsync(v => v.Id == id);
+            if (tripCheck is null)
+                return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, _localization["tripNotFound"].Value);
+
+            tripCheck.Status = TripStatus.TakeBreak;
+            var result = _context.TripTimeTables.Update(tripCheck);
+            await _context.SaveChangesAsync();
+            _response.Message = _localization["updateTripSuccess"].Value;
+            return _response;
+        }
     }
 }
