@@ -267,7 +267,7 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             try
             {
                 var trips = await _context.PublicDriverTrips
-                   .Where(t => t.PublicDriverId == driverId && t.IsActive)
+                   .Where(t => t.PublicDriverId == driverId && t.IsStart)
                    .ToListAsync();
 
                 trips.ForEach(trip =>
