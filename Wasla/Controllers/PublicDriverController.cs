@@ -140,5 +140,12 @@ namespace Wasla.Api.Controllers
 
             return Ok(await _driverService.GetTripsHistoryForPublicDriverAsync(driverId,dateTime));
         }
+
+        [HttpGet("tripsHistory")]
+        public async Task<IActionResult> TripsHistory()
+        {
+            var userId = User.FindFirst("uid").Value;
+            return Ok(await _driverService.TripsHistory(userId));
+        }
     }
 }

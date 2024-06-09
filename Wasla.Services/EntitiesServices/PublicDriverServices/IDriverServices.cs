@@ -27,5 +27,6 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
         Task<BaseResponse> GetCurrentTrip(string userId);
         Task<BaseResponse> UpdatePublicTripsStatus(string driverId);
         Task<BaseResponse> AcceptPassengerReqeust(int id);
+        Task<BaseResponse> TripsHistory(string userId);
     }
 }

@@ -347,6 +347,17 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             return _response;
         }
 
+        public async Task<BaseResponse> TripsHistory(string userId)
+        {
+            var entities = await _context.PublicDriverTrips.Where(x => x.PublicDriverId == userId && !x.IsStart && !x.IsActive)
+                            .ToListAsync();
+
+            var tripsHistory = _mapper.Map<PublicDriverTripHIstory>(entities);
+
+            _response.Data = tripsHistory;
+            return _response;
+        }
+
     }
 }
 
