@@ -112,11 +112,11 @@ namespace Wasla.DataAccess.AutoMapping
            .ForMember(dest => dest.TripStartTime, opt => opt.MapFrom(src => src.Trip.StartTime))
            .ForMember(dest => dest.TripArriveTime, opt => opt.MapFrom(src => src.Trip.ArriveTime))
            .ForMember(dest => dest.Duration, opt => opt.MapFrom(src => src.Trip.Trip.Duration))
-                       .ForMember(dest => dest.From, opt => opt.MapFrom(src => src.Trip.Trip.Line.Start.Name))
-                       .ForMember(dest => dest.To, opt => opt.MapFrom(src => src.Trip.Trip.Line.End.Name)).
-                       ForMember(dest => dest.DriverName, opt => opt.MapFrom(src => src.Trip.Driver.FirstName)).
-                       ForMember(dest => dest.VehicleBrand, opt => opt.MapFrom(src => src.Trip.Vehicle.Brand)).
-                       ForMember(dest => dest.VehicleCategory, opt => opt.MapFrom(src => src.Trip.Vehicle.Category));
+           .ForMember(dest => dest.From, opt => opt.MapFrom(src => src.Trip.Trip.Line.Start.Name))
+           .ForMember(dest => dest.To, opt => opt.MapFrom(src => src.Trip.Trip.Line.End.Name))
+           .ForMember(dest => dest.DriverName, opt => opt.MapFrom(src => src.Trip.Driver.FirstName))
+           .ForMember(dest => dest.VehicleBrand, opt => opt.MapFrom(src => src.Trip.Vehicle.Brand))
+           .ForMember(dest => dest.VehicleCategory, opt => opt.MapFrom(src => src.Trip.Vehicle.Category));
             CreateMap<Package, DriverPackagesDto>().ReverseMap();
             CreateMap<PublicDriverTrip, PublicTripDto>().ForMember(dest => dest.StartStation, opt => opt.MapFrom(src => src.StartStation.Name))
                 .ForMember(dest => dest.EndStation, opt => opt.MapFrom(src => src.EndStation.Name))

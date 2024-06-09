@@ -876,7 +876,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                           .Where(p => p.TripId != null && p.Trip.Trip.OrganizationId == orgId && p.Status == PackageStatus.UnderConfirm)
                           .ToListAsync();
 
-            var res = _mapper.Map<OrgPackagesDto>(packages);
+            var res = _mapper.Map<List<OrgPackagesDto>>(packages);
             _response.Data = res;
             return _response;
         }

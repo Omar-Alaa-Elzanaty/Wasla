@@ -402,8 +402,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             {
                 throw new BadRequestException(_localization["Unauthorized"].Value);
             }
-            var packages = await _context.Packages.Where(p => p.SenderId == customerId && p.TripId != 0).ToListAsync();
-            var res = _mapper.Map<OrgPackagesDto>(packages);
+            var packages = await _context.Packages.Where(p => p.SenderId == customerId && p.TripId != null).ToListAsync();
+            var res = _mapper.Map<List<OrgPackagesDto>>(packages);
             _response.Data = res;
             return _response;
         }
