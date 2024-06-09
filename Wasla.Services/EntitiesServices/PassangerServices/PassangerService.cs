@@ -373,7 +373,10 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
             if (model.ImageFile is not null)
             {
-                package.ImageUrl = await _mediaSerivce.UpdateAsync(package.ImageUrl, model.ImageFile);
+                if (package.ImageUrl != null)
+                    package.ImageUrl = await _mediaSerivce.UpdateAsync(package.ImageUrl, model.ImageFile);
+                else
+                    package.ImageUrl = await _mediaSerivce.AddAsync(model.ImageFile);
             }
 
             var res = _context.Packages.Update(package);
