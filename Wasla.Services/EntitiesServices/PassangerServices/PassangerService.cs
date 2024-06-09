@@ -436,7 +436,9 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 .Select(x => new Follow()
                 {
                     Id = x.FollowerId,
-                    Name = x.Follower.FirstName + ' ' + x.Follower.LastName
+                    Name = x.Follower.FirstName + ' ' + x.Follower.LastName,
+                    PhotoUrl=x.Follower.PhotoUrl,
+                    UserName=x.Follower.UserName
                 }));
 
             customer.Following.TryAdd(
@@ -444,7 +446,9 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 .Select(x => new Follow()
                 {
                     Id = x.CustomerId,
-                    Name = x.Customer.FirstName + " " + x.Customer.LastName
+                    Name = x.Customer.FirstName + " " + x.Customer.LastName,
+                    PhotoUrl=x.Customer.PhotoUrl,
+                    UserName=x.Customer.UserName
                 }));
 
             _response.Data = customer;
