@@ -151,22 +151,6 @@ namespace Wasla.Services.HlepServices.MediaSerivces
         }
         public async Task<string> UpdateAsync(string oldUrl, IFormFile newMedia)
         {
-            if (oldUrl == null && newMedia == null)
-            {
-                return "";
-            }
-
-            if (newMedia == null)
-            {
-                return oldUrl;
-            }
-
-            if (oldUrl == null)
-            {
-                return await AddAsync(newMedia)!;
-            }
-
-            await DeleteAsync(oldUrl);
             return await AddAsync(newMedia)!;
         }
         public async Task<string>UpdateAsync(string oldUrl,MediaFile newMedia)

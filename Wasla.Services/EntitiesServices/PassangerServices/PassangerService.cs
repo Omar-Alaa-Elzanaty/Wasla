@@ -373,10 +373,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
             if (model.ImageFile is not null)
             {
-                if (package.ImageUrl != null)
-                    package.ImageUrl = await _mediaSerivce.UpdateAsync(package.ImageUrl, model.ImageFile);
-                else
-                    package.ImageUrl = await _mediaSerivce.AddAsync(model.ImageFile);
+                package.ImageUrl = await _mediaSerivce.UpdateAsync(package.ImageUrl, model.ImageFile);
             }
 
             var res = _context.Packages.Update(package);
@@ -934,6 +931,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                                    Name = x.Name,
                                    ReciverName = x.ReciverName,
                                    ReciverUserName = x.ReciverUserName,
+                                   Description=x.Description,
                                    Langtitude = x.Trip.Langtitude,
                                    Latitude = x.Trip.Latitude
                                }).ToListAsync();
