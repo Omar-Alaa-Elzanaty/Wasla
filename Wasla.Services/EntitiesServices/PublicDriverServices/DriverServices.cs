@@ -364,6 +364,20 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             return _response;
         }
 
+        public async Task<BaseResponse>TripRequest(int tripId)
+        {
+            var reservations = await _context.PublicDriverTripRequests.Where(t => t.PublicDriverTripId == tripId && t.OnRoad == false)
+            .Select(t => new PublicTriptReservationRequestDto
+            {
+                TripTime = t.PublicDriverTrip.StartDate.ToString(@"hh\:mm\:ss"),
+                customerName = t.Customer.FirstName+' '+t.Customer.LastName,
+                StartStation = t.PublicDriverTrip.StartStation.Name,
+                EndStation = t.PublicDriverTrip.EndStation.Name,
+            }).ToListAsync();
+
+            _response.Data = reservations;
+            return _response;
+        }
     }
 }
 
