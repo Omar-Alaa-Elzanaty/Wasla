@@ -1,15 +1,7 @@
-﻿using Microsoft.AspNetCore.Hosting;
+﻿using System.Text;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.Extensions.Localization;
-using Microsoft.Identity.Client;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Twilio.TwiML.Messaging;
-using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
 using Wasla.Model.Helpers.Statics;
 using Wasla.Services.Exceptions;
@@ -32,11 +24,12 @@ namespace Wasla.Services.HlepServices.MediaSerivces
             return true;
         }
         //TODO: 
-        bool IsImageExtension(string ext) { 
-            
+        bool IsImageExtension(string ext)
+        {
+
             ext = ext.ToLower();
 
-            return true/*ext == ".png" || ext == ".jpg" || ext == ".jfif"*/; 
+            return true/*ext == ".png" || ext == ".jpg" || ext == ".jfif"*/;
         }
         bool IsVideoExtension(string ext) => ext == "d" || ext == "dd";
 
@@ -58,22 +51,10 @@ namespace Wasla.Services.HlepServices.MediaSerivces
             StringBuilder mainPath = _defaultPath;
             string MediaFolderPath = "";
             string path = "";
-            if (IsImageExtension(Extension))
-            {
-                MediaFolderPath = Path.Combine(RootPath, "Images");
-                path += mainPath.Replace("FOLDER", "Images");
-            }
-            else if (IsVideoExtension(Extension))
-            {
-                MediaFolderPath = Path.Combine(RootPath, "Videos");
-                path += mainPath.Replace("FOLDER", "Videos");
-            }
-            else
-            {
-                throw new BadRequestException(_localization["UploadMediaFail"].Value);
-            }
+            MediaFolderPath = Path.Combine(RootPath, "Images");
+            path += mainPath.Replace("FOLDER", "Images");
 
-            if(!Directory.Exists(MediaFolderPath))
+            if (!Directory.Exists(MediaFolderPath))
             {
                 Directory.CreateDirectory(MediaFolderPath);
             }
@@ -83,11 +64,12 @@ namespace Wasla.Services.HlepServices.MediaSerivces
                 media.CopyTo(fileStreams);
                 fileStreams.Flush();
                 fileStreams.Dispose();
+                fileStreams.Close();
             }
 
             return path + file + Extension;
         }
-        public async Task<string>AddAsync(MediaFile media)
+        public async Task<string> AddAsync(MediaFile media)
         {
             if (media is null) return null;
             string RootPath = _host.WebRootPath;
@@ -121,12 +103,12 @@ namespace Wasla.Services.HlepServices.MediaSerivces
         }
         public async Task DeleteAsync(string url)
         {
-            if(url== "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg")
+            if (url == "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg")
             {
                 return;
             }
 
-            if(url== MediaStandar.StandarProfileImage)
+            if (url == MediaStandar.StandarProfileImage)
             {
                 return;
             }
@@ -134,26 +116,35 @@ namespace Wasla.Services.HlepServices.MediaSerivces
             var mediaNameToDelete = Path.GetFileNameWithoutExtension(url);
             var EXT = Path.GetExtension(url);
             string? oldPath = "";
-            if (IsImageExtension(EXT))
-                oldPath = $@"{RootPath}\Images\{mediaNameToDelete}{EXT}";
-            if (IsVideoExtension(EXT))
-                oldPath = $@"{RootPath}\Videos\{mediaNameToDelete}{EXT}";
-            else
-            {
-                throw new BadRequestException(_localization["DeleteMediaFail"].Value);
-            }
+            oldPath = $@"{RootPath}\Images\{mediaNameToDelete}{EXT}";
+
             if (File.Exists(oldPath))
             {
                 File.Delete(oldPath);
-                return;
             }
-            throw new BadRequestException(_localization["NotFoundMedia"].Value);
+            return;
         }
         public async Task<string> UpdateAsync(string oldUrl, IFormFile newMedia)
         {
+            if (oldUrl == null && newMedia == null)
+            {
+                return "";
+            }
+
+            if (newMedia == null)
+            {
+                return oldUrl;
+            }
+
+            if (oldUrl == null)
+            {
+                return await AddAsync(newMedia)!;
+            }
+
+            await DeleteAsync(oldUrl);
             return await AddAsync(newMedia)!;
         }
-        public async Task<string>UpdateAsync(string oldUrl,MediaFile newMedia)
+        public async Task<string> UpdateAsync(string oldUrl, MediaFile newMedia)
         {
             if (oldUrl == null && newMedia == null)
             {
