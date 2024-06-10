@@ -934,7 +934,6 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             var followersInTrips = await _context.Reservations
                             .Where(x => followers.Contains(x.CustomerId) && x.TripTimeTable != null &&
                             x.StartTime <= DateTime.Now && x.EndTime >= DateTime.Now)
-                            .DistinctBy(x => x.CustomerId)
                             .Select(x => new FollowerCurrentTripDto()
                             {
                                 Id = x.CustomerId,
@@ -943,7 +942,11 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                                 Latitude = x.TripTimeTable.Latitude,
                                 UserName = x.Customer.UserName,
                                 CustomerImageUrl = x.Customer.PhotoUrl,
-                                CompanyImageUrl = x.TripTimeTable.Trip.Organization.LogoUrl
+                                CompanyImageUrl = x.TripTimeTable.Trip.Organization.LogoUrl,
+                                EndLangtitude = x.TripTimeTable.Trip.Line.End.Langtitude,
+                                EndLatitude = x.TripTimeTable.Trip.Line.End.Latitude,
+                                StartLangtitude = x.TripTimeTable.Trip.Line.Start.Langtitude,
+                                StartLatitude = x.TripTimeTable.Trip.Line.Start.Latitude
                             }).ToListAsync();
 
             followersInTrips.AddRange(await _context.PublicDriverTripReservation

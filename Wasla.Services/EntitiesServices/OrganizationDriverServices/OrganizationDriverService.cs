@@ -127,7 +127,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationDriverServices
 
             var reservations = tripTimeTable.Reservations.Select(x => new GetAllOrgTripReservationDto()
             {
-                FullName = x.Customer.FirstName + x.Customer.LastName,
+                FullName = x.Customer.FirstName +' '+ x.Customer.LastName,
                 UserName = x.Customer.UserName,
                 IsRide = x.IsRide,
                 PhotoUrl = x.Customer.PhotoUrl,
