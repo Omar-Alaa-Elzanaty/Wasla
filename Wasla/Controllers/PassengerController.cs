@@ -20,6 +20,12 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _passangerService.SeatsRecordsAsync(tripId));
         }
+        [HttpPost("trip/reserve")]
+        public async Task<IActionResult> ReserveTicketAsync([FromBody] ReservationDto order)
+        {
+            var userId = User.FindFirst("uid").Value;
+            return Ok(await _passangerService.ReservationAsync(order, userId));
+        }
         [HttpPost("/trip/reserve")]
         public async Task<IActionResult> ReserveTicket([FromBody] ReservationDto order)
         {

@@ -32,7 +32,7 @@ namespace Wasla.Api.Controllers
             _authservice = authService;
             _vehicleSrivces = vehicleSrivces;
         }
-        [HttpGet("/profile/{orgId}")]
+        [HttpGet("profile/{orgId}")]
         public async Task<IActionResult> OrganizationProfile([FromRoute] string orgId)
         {
             return Ok(await _orgService.GetOrgProfile(orgId));
