@@ -1,5 +1,6 @@
 ﻿using System.Security.Claims;
 using AutoMapper.Configuration.Conventions;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Wasla.Model.Dtos;
@@ -159,6 +160,11 @@ namespace Wasla.Api.Controllers
         public async Task<IActionResult> CreateVehicle([FromForm] CreatePublicDriverVehicleDto model)
         {
             return Ok(await _driverService.CreateVehicle(model));
+        }
+        [HttpPut("UpdateDriverInfo")]
+        public async Task<IActionResult> UpdateDriverInfo([FromForm] UpdateOrgDriverInfoDto model)
+        {
+            return Ok(await _driverService.UpdatePublicDriverProfile(model));
         }
     }
 }
