@@ -32,6 +32,11 @@ namespace Wasla.Api.Controllers
             _authservice = authService;
             _vehicleSrivces = vehicleSrivces;
         }
+        [HttpGet("/profile/{orgId}")]
+        public async Task<IActionResult> OrganizationProfile([FromRoute] string orgId)
+        {
+            return Ok(await _orgService.GetOrgProfile(orgId));
+        }
         [HttpPost("role/create")]
         //[OrgPermissionAuthorize("OrgPermissions.Role.Create.1")]
         public async Task<IActionResult> CreateOrgRole(AddOrgAdmRole addRole)
@@ -80,6 +85,11 @@ namespace Wasla.Api.Controllers
         public async Task<IActionResult> UpdateVehicle(int vehicleId, [FromForm] VehicleDto model)
         {
             return Ok(await _orgService.UpdateVehicleAsync(model, vehicleId));
+        }
+        [HttpPut("update/profile/{orgId}")]
+        public async Task<IActionResult> UpdateVehicle(string orgId, [FromForm] UpdateOrgProfileDto model)
+        {
+            return Ok(await _orgService.UpdateOrgProfile(orgId,model));
         }
         [HttpPut("vehicle/update1/{vehicleId}")]
         public async Task<IActionResult> UpdateVehicleWithOutImage(int vehicleId,[FromBody] VehicleDto model)

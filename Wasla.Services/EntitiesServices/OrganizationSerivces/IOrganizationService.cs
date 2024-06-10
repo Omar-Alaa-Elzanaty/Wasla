@@ -7,6 +7,8 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
 {
     public interface IOrganizationService
     {
+        Task<BaseResponse> GetOrgProfile(string orgId);
+        Task<BaseResponse> UpdateOrgProfile(string orgId, UpdateOrgProfileDto profileDto);
         Task<BaseResponse> DisplayVehicles(string orgId);
         Task<BaseResponse> AddVehicleAsync(VehicleDto vehicleModel, string orgId);
         Task<BaseResponse> VehicleAnalysisAsync(string orgId);

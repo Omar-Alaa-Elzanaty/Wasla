@@ -41,6 +41,51 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             _mediaSerivce = mediaSerivce;
             _userManager = userManager;
             _roleManager = roleManager;
+
+        }
+        public async Task<BaseResponse> UpdateOrgProfile(string orgId,UpdateOrgProfileDto profileDto)
+        {
+            var org = await _context.Organizations.FirstOrDefaultAsync(g => g.Id == orgId);
+            if (org == null)
+                return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, "not found Organization");
+
+            org.Name = profileDto.Name;
+            org.Address = profileDto.Address;
+            org.Email = profileDto.Email;
+            org.PhoneNumber = profileDto.PhoneNumber;
+            org.UserName = profileDto.UserName;
+            org.MaxWeight = profileDto.MaxWeight;
+            org.MinWeight = profileDto.MinWeight;
+            org.WebsiteLink = profileDto.WebsiteLink;
+            if (profileDto.Logo is not null)
+            {
+                org.LogoUrl = await _mediaSerivce.UpdateAsync(org.LogoUrl, profileDto.Logo);
+            }
+
+            _context.Update(org);
+            _ = await _context.SaveChangesAsync();
+            _response.Message = "Update Organization success";
+            return _response;
+
+        }
+        public async Task<BaseResponse> GetOrgProfile(string orgId)
+        {
+            _response.Data= await _context.Organizations.Where(g => g.Id == orgId).Select(g => new
+           {
+                g.Id,
+                g.Name,
+                g.Address,
+                g.Email,
+                g.LogoUrl,
+                g.PhoneNumber,
+                g.UserName,
+                g.MaxWeight,
+                g.MinWeight,
+                g.WebsiteLink,
+                g.Rates
+            }).FirstOrDefaultAsync();
+            return _response;
+
         }
         public async Task<BaseResponse> DisplayVehicles(string orgId)
         {
