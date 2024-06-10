@@ -157,6 +157,7 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<Advertisment, GetAdsRequestDto>();
             CreateMap<PublicDriverTrip, PublicDriverTripHIstory>();
             CreateMap<CreatePublicDriverVehicleDto, Vehicle>();
+            CreateMap<Customer, PublicTripCustomerInfoDto>();
         }
     }
 }
