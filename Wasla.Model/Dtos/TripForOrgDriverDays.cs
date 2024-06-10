@@ -10,6 +10,7 @@ namespace Wasla.Model.Dtos
     {
         public int TripId { get; set; }
         public string TripStartTime { get; set; }
+        public string TripEndTime { get; set; }
         public string TripDay { get; set;}
         public string TripDate { get; set;}
         public string StartStation { get; set;}
