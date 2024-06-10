@@ -472,6 +472,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             customer.Email = model.Email;
             customer.PhoneNumber = model.PhoneNumber;
             customer.UserName = model.UserName;
+            customer.NormalizedUserName = model.UserName.ToUpper();
+            customer.NormalizedEmail = model.Email.ToUpper();
 
             if (model.Photo is null && customer.PhotoUrl != null)
             {

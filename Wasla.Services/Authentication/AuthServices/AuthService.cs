@@ -79,7 +79,8 @@ namespace Wasla.Services.Authentication.AuthServices
 		_ = await CheckUserName(input.UserName);
 
 			var user = _mapper.Map<Customer>(input);
-			var result = await _userManager.CreateAsync(user, input.Password);
+           
+            var result = await _userManager.CreateAsync(user, input.Password);
 			var role = Roles.Role_Passenger;
 			if (!result.Succeeded)
 			{
@@ -144,6 +145,7 @@ namespace Wasla.Services.Authentication.AuthServices
 			}
 
 			var user = _mapper.Map<PublicDriver>(model);
+
 			user.LicenseImageUrl = await _mediaServices.AddAsync(model.LicenseImageFile);
 			user.PhotoUrl = await _mediaServices.AddAsync(model.ProfileImageFile);
 			var role = Roles.Role_PublicDriver;

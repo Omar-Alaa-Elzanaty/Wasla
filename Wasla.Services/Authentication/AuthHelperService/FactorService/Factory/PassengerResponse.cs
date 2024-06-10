@@ -21,6 +21,7 @@ namespace Wasla.Services.Authentication.AuthHelperService.FactorService.Factory
             passengerResponse.ConnectionData.Email = passenger.Email ?? null;
             passengerResponse.UserId = responseHelp.userId;
             passengerResponse.UserName = passenger.UserName;
+
             passengerResponse.ConnectionData.phone = passenger.PhoneNumber;
             passengerResponse.ConnectionData.EmailConfirmed = passenger.EmailConfirmed;
             passengerResponse.ConnectionData.PhoneConfirmed = passenger.PhoneNumberConfirmed;

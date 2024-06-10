@@ -5,7 +5,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Microsoft.IdentityModel.Tokens;
-using Org.BouncyCastle.Asn1.Esf;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
@@ -59,6 +58,8 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             org.MaxWeight = profileDto.MaxWeight;
             org.MinWeight = profileDto.MinWeight;
             org.WebsiteLink = profileDto.WebsiteLink;
+            org.NormalizedUserName = profileDto.UserName.ToUpper();
+            org.NormalizedEmail = profileDto.Email.ToUpper();
             if (profileDto.Logo is not null)
             {
                 org.LogoUrl = await _mediaSerivce.UpdateAsync(org.LogoUrl, profileDto.Logo);
@@ -219,7 +220,9 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                 PhoneNumber = model.PhoneNumber,
                 UserName = model.UserName,
                 LicenseImageUrl = await _mediaSerivce.AddAsync(model.LicenseImageFile),
-                PhotoUrl = await _mediaSerivce.AddAsync(model.ImageFile)
+                PhotoUrl = await _mediaSerivce.AddAsync(model.ImageFile),
+                
+                
             };
 
             using (var trans = await _context.Database.BeginTransactionAsync())
@@ -1093,7 +1096,8 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
             entity.Birthdate = model.BirthDate;
             entity.FirstName = model.FirstName;
             entity.LastName = model.LastName;
-
+            entity.NormalizedUserName = model.UserName.ToUpper();
+            entity.NormalizedEmail = model.Email.ToUpper();
             if (model.LicenseImage is not null)
                 entity.LicenseImageUrl = await _mediaSerivce.UpdateAsync(entity.LicenseImageUrl, model.LicenseImage);
             else if (model.LicenseImage is not null)
