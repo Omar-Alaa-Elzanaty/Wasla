@@ -30,5 +30,7 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
         Task<BaseResponse> TripsHistory(string userId);
         Task<BaseResponse> TripRequest(int tripId);
         Task<BaseResponse> CreateVehicle(CreatePublicDriverVehicleDto model);
+        Task<BaseResponse> UpdatePublicDriverProfile(UpdateOrgDriverInfoDto model);
+
     }
 }

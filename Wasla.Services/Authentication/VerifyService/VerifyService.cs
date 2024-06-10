@@ -178,6 +178,7 @@ namespace Wasla.Services.Authentication.VerifyService
              var user=await _authVerifyService.getUserByToken(email.Reftoken);
               await _authVerifyService.CheckEmail(email.Email);
               user.Email=email.Email;
+            user.NormalizedEmail = email.Email.ToUpper();
             await _userManager.UpdateAsync(user);
             _response.Message = _localization["EmailEditSuccess"].Value;
             return _response;

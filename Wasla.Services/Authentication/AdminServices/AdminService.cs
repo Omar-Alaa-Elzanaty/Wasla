@@ -67,6 +67,7 @@ namespace Wasla.Services.Authentication.AdminServices
 
             var organization = _mapper.Map<Organization>(request);
             organization.UserName = request.Email;
+          
 
             using (var transaction = await _context.Database.BeginTransactionAsync())
             {

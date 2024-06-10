@@ -404,6 +404,45 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
 
             return _response;
         }
+        public async Task<BaseResponse> UpdatePublicDriverProfile(UpdateOrgDriverInfoDto model)
+        {
+            var entity = await _context.PublicDrivers.SingleAsync(x => x.Id == model.Id);
+
+            if (entity is null)
+            {
+                _response.IsSuccess = false;
+                _response.Status = System.Net.HttpStatusCode.NotFound;
+                return _response;
+            }
+
+            entity.UserName = model.UserName;
+            entity.PhoneNumber = model.PhoneNumber;
+            entity.Gender = model.Gender;
+            entity.NationalId = model.NationalId;
+            entity.LicenseNum = model.LicenseNum;
+            entity.Email = model.Email;
+            entity.Birthdate = model.BirthDate;
+            entity.FirstName = model.FirstName;
+            entity.LastName = model.LastName;
+            entity.NormalizedUserName = model.UserName.ToUpper();
+            entity.NormalizedEmail = model.Email.ToUpper();
+            if (model.LicenseImage is not null)
+                entity.LicenseImageUrl = await _mediaSerivce.UpdateAsync(entity.LicenseImageUrl, model.LicenseImage);
+            else if (model.LicenseImage is not null)
+                entity.LicenseImageUrl = await _mediaSerivce.AddAsync(model.LicenseImage);
+
+            if (model.Photo is not null && entity.PhotoUrl is not null)
+                entity.PhotoUrl = await _mediaSerivce.UpdateAsync(entity.PhotoUrl, model.Photo);
+            else if (model.Photo is not null)
+                entity.PhotoUrl = await _mediaSerivce.AddAsync(model.Photo);
+
+            _context.Update(entity);
+            await _context.SaveChangesAsync();
+
+            return _response;
+        }
+
+       
     }
 }
 
