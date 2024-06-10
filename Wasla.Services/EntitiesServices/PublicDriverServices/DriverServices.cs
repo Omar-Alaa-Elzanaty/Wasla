@@ -1,7 +1,4 @@
-﻿using System.Globalization;
-using AutoMapper;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
+﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
 using Wasla.DataAccess;
@@ -12,6 +9,7 @@ using Wasla.Model.Helpers.Statics;
 using Wasla.Model.Models;
 using Wasla.Services.EntitiesServices.OrganizationSerivces;
 using Wasla.Services.Exceptions;
+using Wasla.Services.HlepServices.MediaSerivces;
 
 namespace Wasla.Services.EntitiesServices.PublicDriverServices
 {
@@ -21,15 +19,18 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
         private readonly BaseResponse _response;
         private readonly IStringLocalizer<OrganizationSerivce> _localization;
         private readonly IMapper _mapper;
+        private readonly IMediaSerivce _mediaSerivce;
         public DriverServices(
             WaslaDb context,
             IStringLocalizer<OrganizationSerivce> localization,
-            IMapper mapper)
+            IMapper mapper,
+            IMediaSerivce mediaSerivce)
         {
             _context = context;
             _response = new();
             _localization = localization;
             _mapper = mapper;
+            _mediaSerivce = mediaSerivce;
         }
         public async Task<BaseResponse> GetPublicPackagesRequestAsync(string driverId)
         {
@@ -77,7 +78,7 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
         }
         public async Task<BaseResponse> GetTripStatus(string userId)
         {
-            var trip = await _context.PublicDriverTrips.SingleOrDefaultAsync(x => x.PublicDriverId == userId && x.IsActive == true);
+            var trip = await _context.PublicDriverTrips.SingleOrDefaultAsync(x => x.PublicDriverId == userId && (x.IsActive == true || x.IsStart == true));
 
             if (trip is null)
             {
@@ -88,7 +89,7 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             {
                 Status = trip.Status,
                 ReserverdSeats = trip.ReservedSeats,
-                TotalTripSeats = _context.Vehicles.First(x => x.PublicDriverId == userId).Capcity
+                TotalTripSeats = _context.Vehicles.FirstOrDefaultAsync(x => x.PublicDriverId == userId).Result?.Capcity ?? 0
             };
 
             return _response;
@@ -119,6 +120,8 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             }
 
             trip.Status = status;
+            _context.Update(trip);
+            await _context.SaveChangesAsync();
 
             return _response;
         }
@@ -135,6 +138,15 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             publicDriverTrip.AcceptPackages = publicDriverTrip.AcceptRequests = true;
             publicDriverTrip.Status = TripStatus.preparing;
 
+            var trips = await _context.PublicDriverTrips.Where(x => x.PublicDriverId == userId).ToListAsync();
+
+            foreach (var trip in trips)
+            {
+                trip.IsStart = false;
+                trip.IsActive = false;
+            }
+
+            _context.AddRange(trips);
             await _context.AddAsync(publicDriverTrip);
             await _context.SaveChangesAsync();
 
@@ -244,7 +256,9 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
         public async Task<BaseResponse> GetCurrentTrip(string userId)
         {
             var entity = await _context.PublicDriverTrips
-                      .SingleOrDefaultAsync(x => x.PublicDriverId == userId && (x.IsActive == true || x.IsStart == true));
+                       .Where(x => x.PublicDriverId == userId)
+                       .OrderByDescending(x => x.StartDate)
+                      .FirstOrDefaultAsync();
 
             var trip = _mapper.Map<CurrentPublicDriverTripDto>(entity);
             var Packages = await _context.Packages.Where(x => x.DriverId == userId && x.Status == PackageStatus.UnderConfirm)
@@ -262,7 +276,7 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             try
             {
                 var trips = await _context.PublicDriverTrips
-                   .Where(t => t.PublicDriverId == driverId && t.IsActive)
+                   .Where(t => t.PublicDriverId == driverId)
                    .ToListAsync();
 
                 trips.ForEach(trip =>
@@ -274,6 +288,7 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
                     trip.AcceptPackages = false;
                 });
 
+                _context.UpdateRange(trips);
                 await _context.SaveChangesAsync();
 
                 await _context.Packages
@@ -324,7 +339,7 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
         {
 
             var trips = await _context.PublicDriverTrips.
-                Where(t=>
+                Where(t =>
                 t.PublicDriverId == DriverId &&
                  t.StartDate < currentDate &&
                t.Status == TripStatus.Arrived).OrderBy(t => t.StartDate)
@@ -342,6 +357,44 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             return _response;
         }
 
+        public async Task<BaseResponse> TripsHistory(string userId)
+        {
+            var entities = await _context.PublicDriverTrips.Where(x => x.PublicDriverId == userId && !x.IsStart && !x.IsActive)
+                            .ToListAsync();
+
+            var tripsHistory = _mapper.Map<List<PublicDriverTripHIstory>>(entities);
+
+            _response.Data = tripsHistory;
+            return _response;
+        }
+
+        public async Task<BaseResponse> TripRequest(int tripId)
+        {
+            var reservations = await _context.PublicDriverTripRequests.Where(t => t.PublicDriverTripId == tripId && t.OnRoad == false)
+            .Select(t => new PublicTriptReservationRequestDto
+            {
+                TripTime = t.PublicDriverTrip.StartDate.ToString(@"hh\:mm\:ss"),
+                customerName = t.Customer.FirstName + ' ' + t.Customer.LastName,
+                StartStation = t.PublicDriverTrip.StartStation.Name,
+                EndStation = t.PublicDriverTrip.EndStation.Name,
+                CustomerReservationId = t.Id
+            }).ToListAsync();
+
+            _response.Data = reservations;
+            return _response;
+        }
+
+        public async Task<BaseResponse>CreateVehicle(CreatePublicDriverVehicleDto model)
+        {
+            var vehicle=_mapper.Map<Vehicle>(model);
+
+            vehicle.ImageUrl = await _mediaSerivce.AddAsync(model.Image);
+
+            _context.Update(vehicle);
+            await _context.SaveChangesAsync();
+
+            return _response;
+        }
     }
 }
 

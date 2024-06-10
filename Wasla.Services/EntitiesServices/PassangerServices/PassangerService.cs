@@ -1,5 +1,7 @@
-﻿using AutoMapper;
+﻿using System.Text.RegularExpressions;
+using AutoMapper;
 using AutoMapper.Internal;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -519,7 +521,26 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 return BaseResponse.GetErrorException(System.Net.HttpStatusCode.NotFound, _localization["UserNameNotFound"].Value);
             }
 
-            return await GetReservationOnMatchDate(x => x.ReservationDate > DateTime.UtcNow && x.TripTimeTable.StartTime > DateTime.UtcNow, user);
+            var inComingTrips = GetReservationOnMatchDate(x => x.ReservationDate > DateTime.UtcNow && x.TripTimeTable.StartTime > DateTime.UtcNow, user).Result.Data as List<CustomerTicket>;
+
+            if (inComingTrips.IsNullOrEmpty())
+            {
+                inComingTrips = await _context.PublicDriverTripReservation.Where(x => x.PublicDriverTrip.StartDate > DateTime.Now && customerId == x.CustomerId)
+                                .Select(x => new CustomerTicket()
+                                {
+                                    EndStation = x.PublicDriverTrip.EndStation.Name,
+                                    StartStation = x.PublicDriverTrip.StartStation.Name,
+                                    IsPublic = true,
+                                    Price = 10,
+                                    StartTime = x.PublicDriverTrip.StartDate,
+                                    EndTime = x.PublicDriverTrip.EndDate,
+                                    TripId = x.PublicDriverTrip.Id
+                                })
+                                .ToListAsync();
+            }
+
+            _response.Data = inComingTrips;
+            return _response;
         }
         public async Task<BaseResponse> GetFirstInComingReservations(string customerId)
         {
@@ -617,7 +638,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 PassengerName = x.PassengerName,
                 Price = x.TripTimeTable.Trip.Price,
                 SeatNumber = x.SetNum,
-                TripTimeTableId = (int)x.TriptimeTableId!
+                TripId = (int)x.TriptimeTableId!,
+                IsPublic=false
             }).ToList();
 
             await Task.CompletedTask;
@@ -638,7 +660,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 PassengerName = x.PassengerName,
                 Price = x.TripTimeTable.Trip.Price,
                 SeatNumber = x.SetNum,
-                TripTimeTableId = (int)x.TriptimeTableId!
+                TripId = (int)x.TriptimeTableId!
             }).FirstOrDefault();
 
             await Task.CompletedTask;

@@ -1,4 +1,5 @@
 ﻿using System.Security.Claims;
+using AutoMapper.Configuration.Conventions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Wasla.Model.Dtos;
@@ -99,13 +100,6 @@ namespace Wasla.Api.Controllers
 
             return Ok(await _driverService.UpdateCurrentPublicTripLocationAsync(userId, tripLocationUpdate));
         }
-        [HttpPut("trips/status")]
-        public async Task<IActionResult> UpdatePublicTripStatus()
-        {
-            var driverId = User.FindFirst("uid").Value;
-
-            return Ok(await _driverService.UpdatePublicTripsStatus(driverId));
-        }
         [HttpGet("currentTrip")]
         public async Task<IActionResult> CurrentTrip()
         {
@@ -131,10 +125,10 @@ namespace Wasla.Api.Controllers
             return Ok(await _driverService.UpdatePublicTripsStatus(driverId));
         }
 
-        [HttpPut("acceptPassengerReqeust/{publicTripId}")]
-        public async Task<IActionResult>AcceptPassengerReqeust(int publicTripId)
+        [HttpPut("acceptPassengerReqeust/{reqeustId}")]
+        public async Task<IActionResult>AcceptPassengerReqeust(int reqeustId)
         {
-            return Ok(await _driverService.AcceptPassengerReqeust(publicTripId));
+            return Ok(await _driverService.AcceptPassengerReqeust(reqeustId));
         }
         [HttpGet("publicTrips/history/{dateTime}")]
         public async Task<IActionResult> GetTripsHistoryForPublicDriverAsync(DateTime dateTime)
@@ -146,6 +140,25 @@ namespace Wasla.Api.Controllers
             }
 
             return Ok(await _driverService.GetTripsHistoryForPublicDriverAsync(driverId,dateTime));
+        }
+
+        [HttpGet("tripsHistory")]
+        public async Task<IActionResult> TripsHistory()
+        {
+            var userId = User.FindFirst("uid").Value;
+            return Ok(await _driverService.TripsHistory(userId));
+        }
+
+        [HttpGet("tripNormalRequest")]
+        public async Task<IActionResult>StationTripRequest([FromQuery]int tripId)
+        {
+            return Ok(await _driverService.TripRequest(tripId));
+        }
+
+        [HttpGet("CreateVehicle")]
+        public async Task<IActionResult> CreateVehicle([FromForm] CreatePublicDriverVehicleDto model)
+        {
+            return Ok(await _driverService.CreateVehicle(model));
         }
     }
 }
