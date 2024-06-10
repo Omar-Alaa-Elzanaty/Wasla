@@ -42,9 +42,9 @@ namespace Wasla.Services.EntitiesServices.OrganizationDriverServices
             _httpContext = httpContext;
         }
 
-        public async Task<BaseResponse> GetProfileAsync()
+        public async Task<BaseResponse> GetProfileAsync(string userId)
         {
-            var user = await _userManager.GetUserAsync(_httpContext.HttpContext!.User);
+            var user = await _userManager.FindByIdAsync(userId);
 
             if (user is null)
             {
@@ -170,7 +170,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationDriverServices
         public async Task<BaseResponse> GetCurrentTrip(string userId)
         {
             var entity = await _context.TripTimeTables
-                      .SingleOrDefaultAsync(x => x.DriverId == userId && x.StartTime <= DateTime.Now && x.ArriveTime >= DateTime.Now);
+                      .FirstOrDefaultAsync(x => x.DriverId == userId && x.StartTime <= DateTime.Now && x.ArriveTime >= DateTime.Now && x.Status != TripStatus.Arrived);
 
             var trip = _mapper.Map<CurrentOrganizationDriverTrip>(entity);
 

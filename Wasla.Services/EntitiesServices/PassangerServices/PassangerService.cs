@@ -82,7 +82,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 throw new BadRequestException(_localization["Unauthorized"].Value);
             }
 
-            if (await _context.Seats.AnyAsync(x => x.TripTimeTableId == order.TripId && order.seats.Select(x=>x.SeatNum).Contains(x.setNum)))
+            if (await _context.Seats.AnyAsync(x => x.TripTimeTableId == order.TripId && order.seats.Select(x => x.SeatNum).Contains(x.setNum)))
             {
                 return BaseResponse.GetErrorException(HttpStatusErrorCode.BadRequest, _localization["ErrorInReverse"].Value);
             }
@@ -94,7 +94,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 {
                     foreach (var set in order.seats)
                     {
-                        
+
                         _context.Seats.Add(new Seat() { setNum = set.SeatNum, TripTimeTableId = order.TripId });
                         _context.SaveChanges();
                         completeReserve.Add(new Reservation()
@@ -526,7 +526,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 return BaseResponse.GetErrorException(System.Net.HttpStatusCode.NotFound, _localization["UserNameNotFound"].Value);
             }
 
-            var inComingTrips = GetReservationOnMatchDate(x => x.TripTimeTable.StartTime.Date > DateTime.Now.Date, user).Result.Data as List<CustomerTicket>;
+            var inComingTrips = GetReservationOnMatchDate(x => x.TripTimeTable.StartTime > DateTime.Now, user).Result.Data as List<CustomerTicket>;
 
             var publicIncoming = await _context.PublicDriverTripReservation.Where(x => x.PublicDriverTrip.StartDate > DateTime.Now && customerId == x.CustomerId)
                                .Select(x => new CustomerTicket()
@@ -537,7 +537,13 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                                    Price = 10,
                                    StartTime = x.PublicDriverTrip.StartDate,
                                    EndTime = x.PublicDriverTrip.EndDate,
-                                   TripId = x.PublicDriverTrip.Id
+                                   TripId = x.PublicDriverTrip.Id,
+                                   PassengerName = x.Customer.FirstName + ' ' + x.Customer.LastName,
+                                   PublicDriver = new()
+                                   {
+                                       FullName = x.PublicDriverTrip.PublicDriver.FirstName + ' ' + x.PublicDriverTrip.PublicDriver.LastName,
+                                       PhotoUrl = x.PublicDriverTrip.PublicDriver.PhotoUrl
+                                   }
                                })
                                .ToListAsync();
             if (!publicIncoming.IsNullOrEmpty() && !inComingTrips.IsNullOrEmpty())
@@ -566,7 +572,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 return BaseResponse.GetErrorException(System.Net.HttpStatusCode.NotFound, _localization["UserNameNotFound"].Value);
             }
 
-            return await GetFirstReservationOnMatchDate(x => x.ReservationDate > DateTime.UtcNow && x.TripTimeTable.StartTime > DateTime.UtcNow, user);
+            return await GetFirstReservationOnMatchDate(x => x.ReservationDate > DateTime.Now && x.TripTimeTable.StartTime > DateTime.UtcNow, user);
         }
         public async Task<BaseResponse> GetEndedReservations(string customerId)
         {
@@ -646,7 +652,13 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 Price = x.TripTimeTable.Trip.Price,
                 SeatNumber = x.SetNum,
                 TripId = (int)x.TriptimeTableId!,
-                IsPublic = false
+                IsPublic = false,
+                Organization = new()
+                {
+                    Name = x.TripTimeTable.Trip.Organization.Name,
+                    LogoUrl = x.TripTimeTable.Trip.Organization.LogoUrl,
+                    Points = x.TripTimeTable.Trip.Points
+                }
             }).ToList();
 
             await Task.CompletedTask;
@@ -980,10 +992,14 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             List<SearchOrgTripsForUser> orgTrips = await _context.TripTimeTables
                  .Where(tt =>
                      ((tt.Trip.Line.Start.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()) && tt.Trip.Line.End.Name.Trim().ToLower().StartsWith(to.Trim().ToLower())) ||
+                     (tt.Trip.Line.Start.Name.Trim().ToLower().Contains(from.Trim().ToLower()) && tt.Trip.Line.End.Name.Trim().ToLower().Contains(to.Trim().ToLower())) ||
                       (tt.Trip.Line.Start.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) && tt.Trip.Line.End.Name.Trim().ToLower().StartsWith(from.Trim().ToLower())) ||
+                      (tt.Trip.Line.Start.Name.Trim().ToLower().Contains(to.Trim().ToLower()) && tt.Trip.Line.End.Name.Trim().ToLower().Contains(from.Trim().ToLower())) ||
                       tt.Trip.Line.Start.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()))
-                      && (date.HasValue ? tt.StartTime.Date == date.Value.Date : tt.StartTime.Date >= today)
-                     ).OrderBy(t => t.StartTime)
+                      && (date.HasValue ? tt.StartTime == date.Value : tt.StartTime >= today)
+                     )
+                 .Where(tt => tt.Status != TripStatus.Arrived)
+                 .OrderBy(t => t.StartTime)
                  .Select(t => new SearchOrgTripsForUser
                  {
                      TripId = t.Id,
@@ -1004,9 +1020,11 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             List<SearchTripsForUser> publicTrips = await _context.PublicDriverTrips
                .Where(tt =>
                    ((tt.StartStation.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()) && tt.EndStation.Name.Trim().ToLower().StartsWith(to.Trim().ToLower())) ||
+                   (tt.StartStation.Name.Trim().ToLower().Contains(from.Trim().ToLower()) && tt.EndStation.Name.Trim().ToLower().Contains(to.Trim().ToLower())) ||
                     (tt.StartStation.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) && tt.EndStation.Name.Trim().ToLower().StartsWith(from.Trim().ToLower())) ||
+                    (tt.StartStation.Name.Trim().ToLower().Contains(to.Trim().ToLower()) && tt.EndStation.Name.Trim().ToLower().Contains(from.Trim().ToLower())) ||
                     tt.StartStation.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()))
-                   && (date.HasValue ? tt.StartDate.Date == date.Value.Date : tt.StartDate.Date >= today) &&
+                   && (date.HasValue ? tt.StartDate == date.Value : tt.StartDate >= today) &&
                    (tt.IsActive == true)
 
                    ).OrderBy(t => t.StartDate)

@@ -10,7 +10,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationDriverServices
 {
     public interface IOrganizationDriverService
     {
-        Task<BaseResponse> GetProfileAsync();
+        Task<BaseResponse> GetProfileAsync(string userId);
         Task<BaseResponse> DecreaseSeatByOneAsync(DecreaseOrgTripByOneCommnad command);
         Task<BaseResponse> UpdateArriveTimeAsync(UpdateTripArriveTimeCommand command);
         Task<BaseResponse> UpdateTripStatusAsync(UpdateOrgTripStatusCommand command);

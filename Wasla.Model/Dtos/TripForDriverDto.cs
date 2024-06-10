@@ -10,6 +10,8 @@ namespace Wasla.Model.Dtos
         public TimeSpan Duration { get; set; }
         public string From { get; set; }
         public string To { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime ArriveTime { get; set; }
         public int AvailableSets { get; set; }
     }
     public class TripForDriverVehicleDto

@@ -333,7 +333,7 @@ namespace Wasla.Services.Authentication.AuthServices
 			{
 				if (org)
 					throw new NotFoundException(_localization["UserNameNotFound"].Value);
-				user = await getByUserName(login.UserName);
+                user = await getByUserName(login.UserName);
 			}
 			if (!await _userManager.CheckPasswordAsync(user, login.Password))
 			{
