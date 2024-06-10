@@ -596,7 +596,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                         ComapnyName = x.Trip.Organization.Name,
                         CompanyRating = (x.Trip.Organization.Rates.Count != 0) ? x.Trip.Organization.Rates.Average(t => t.Rate) : 0,
                         From = x.IsStart == true ? x.Trip.Line.Start.Name : x.Trip.Line.End.Name,
-                        To = x.IsStart == true ? x.Trip.Line.Start.Name : x.Trip.Line.End.Name,
+                        To = x.IsStart == true ? x.Trip.Line.End.Name : x.Trip.Line.Start.Name,
                         ArrivalTime = x.ArriveTime,
                         StartTime = x.StartTime,
                         Id = x.Id,

@@ -26,6 +26,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         private readonly IMediaSerivce _mediaSerivce;
         private readonly UserManager<Account> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+
         public OrganizationSerivce(
             WaslaDb context,
             IStringLocalizer<OrganizationSerivce> localization,
