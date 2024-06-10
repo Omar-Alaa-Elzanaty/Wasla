@@ -82,6 +82,11 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 throw new BadRequestException(_localization["Unauthorized"].Value);
             }
 
+            if (await _context.Seats.AnyAsync(x => x.TripTimeTableId == order.TripId && order.seats.Select(x=>x.SeatNum).Contains(x.setNum)))
+            {
+                return BaseResponse.GetErrorException(HttpStatusErrorCode.BadRequest, _localization["ErrorInReverse"].Value);
+            }
+
             var tripTimeTable = await _context.TripTimeTables.FindAsync(order.TripId);
             using (var trans = await _context.Database.BeginTransactionAsync())
             {
