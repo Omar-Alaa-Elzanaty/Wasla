@@ -256,7 +256,7 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
         public async Task<BaseResponse> GetCurrentTrip(string userId)
         {
             var entity = await _context.PublicDriverTrips
-                       .Where(x => x.PublicDriverId == userId)
+                       .Where(x => x.PublicDriverId == userId && (x.IsActive == true || x.IsStart == true))
                        .OrderByDescending(x => x.StartDate)
                       .FirstOrDefaultAsync();
 
@@ -384,9 +384,9 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             return _response;
         }
 
-        public async Task<BaseResponse>CreateVehicle(CreatePublicDriverVehicleDto model)
+        public async Task<BaseResponse> CreateVehicle(CreatePublicDriverVehicleDto model)
         {
-            var vehicle=_mapper.Map<Vehicle>(model);
+            var vehicle = _mapper.Map<Vehicle>(model);
 
             vehicle.ImageUrl = await _mediaSerivce.AddAsync(model.Image);
 
