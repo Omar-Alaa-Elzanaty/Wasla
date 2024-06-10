@@ -89,6 +89,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 {
                     foreach (var set in order.seats)
                     {
+                        
                         _context.Seats.Add(new Seat() { setNum = set.SeatNum, TripTimeTableId = order.TripId });
                         _context.SaveChanges();
                         completeReserve.Add(new Reservation()
@@ -127,6 +128,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 catch (KeynotFoundException)
                 {
                     await trans.RollbackAsync();
+                    return BaseResponse.GetErrorException(HttpStatusErrorCode.BadRequest, _localization["ErrorInReverse"].Value);
                     throw;
                 }
                 catch

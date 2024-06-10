@@ -15,6 +15,7 @@
   "LicenseNumRequire": "رقم الرخصه مطلوب",
   "NotPublicTripInDate": "لا يوجد رحلات في هذا البوم",
   //errors
+  "ErrorInReverse":"حدثه مشكله في عمليه الحجز بارجاء التاكد من المعلومات المدخله او رقم المقعد المحجوز",
   "AccountExist": "المستخدم موجود مسبقا",
   "phoneNumberExist": "رقم الهاتف موجود مسبقا",
   "userNameExist": "اسم المستخدم موجود مسبقا",
