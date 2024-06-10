@@ -144,7 +144,7 @@ namespace Wasla.DataAccess.AutoMapping
 
             CreateMap<Notification, GetAllNotificationsDto>();
             CreateMap<PublicDriverTrip, CurrentPublicDriverTripDto>();
-            CreateMap<Package,PublicTripReservationDto>();
+            CreateMap<Package, PublicTripPackagesRequestDto>();
             CreateMap<PublicDriverTripRequest, PublicTripReservationDto>();
             CreateMap<TripTimeTable, CurrentOrganizationDriverTrip>();
             CreateMap<Vehicle, GetVehicleByIdDto>();
