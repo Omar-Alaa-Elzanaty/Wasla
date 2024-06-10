@@ -341,7 +341,7 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             var trips = await _context.PublicDriverTrips.
                 Where(t =>
                 t.PublicDriverId == DriverId &&
-                 t.StartDate < currentDate &&
+                 t.StartDate.Date == currentDate.Date &&
                t.Status == TripStatus.Arrived).OrderBy(t => t.StartDate)
                 .Select(t => new TripForOrgDriverDays
                 {
