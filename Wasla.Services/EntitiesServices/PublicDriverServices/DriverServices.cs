@@ -9,6 +9,7 @@ using Wasla.Model.Helpers.Statics;
 using Wasla.Model.Models;
 using Wasla.Services.EntitiesServices.OrganizationSerivces;
 using Wasla.Services.Exceptions;
+using Wasla.Services.HlepServices.MediaSerivces;
 
 namespace Wasla.Services.EntitiesServices.PublicDriverServices
 {
@@ -18,15 +19,18 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
         private readonly BaseResponse _response;
         private readonly IStringLocalizer<OrganizationSerivce> _localization;
         private readonly IMapper _mapper;
+        private readonly IMediaSerivce _mediaSerivce;
         public DriverServices(
             WaslaDb context,
             IStringLocalizer<OrganizationSerivce> localization,
-            IMapper mapper)
+            IMapper mapper,
+            IMediaSerivce mediaSerivce)
         {
             _context = context;
             _response = new();
             _localization = localization;
             _mapper = mapper;
+            _mediaSerivce = mediaSerivce;
         }
         public async Task<BaseResponse> GetPublicPackagesRequestAsync(string driverId)
         {
@@ -85,7 +89,7 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             {
                 Status = trip.Status,
                 ReserverdSeats = trip.ReservedSeats,
-                TotalTripSeats = _context.Vehicles.First(x => x.PublicDriverId == userId).Capcity
+                TotalTripSeats = _context.Vehicles.FirstOrDefaultAsync(x => x.PublicDriverId == userId).Result?.Capcity ?? 0
             };
 
             return _response;
@@ -116,6 +120,8 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             }
 
             trip.Status = status;
+            _context.Update(trip);
+            await _context.SaveChangesAsync();
 
             return _response;
         }
@@ -282,6 +288,7 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
                     trip.AcceptPackages = false;
                 });
 
+                _context.UpdateRange(trips);
                 await _context.SaveChangesAsync();
 
                 await _context.Packages
@@ -370,10 +377,22 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
                 customerName = t.Customer.FirstName + ' ' + t.Customer.LastName,
                 StartStation = t.PublicDriverTrip.StartStation.Name,
                 EndStation = t.PublicDriverTrip.EndStation.Name,
-                CustomerReservationId=t.Id
+                CustomerReservationId = t.Id
             }).ToListAsync();
 
             _response.Data = reservations;
+            return _response;
+        }
+
+        public async Task<BaseResponse>CreateVehicle(CreatePublicDriverVehicleDto model)
+        {
+            var vehicle=_mapper.Map<Vehicle>(model);
+
+            vehicle.ImageUrl = await _mediaSerivce.AddAsync(model.Image);
+
+            _context.Update(vehicle);
+            await _context.SaveChangesAsync();
+
             return _response;
         }
     }

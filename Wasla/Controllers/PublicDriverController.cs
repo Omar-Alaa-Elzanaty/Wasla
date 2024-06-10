@@ -154,5 +154,11 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _driverService.TripRequest(tripId));
         }
+
+        [HttpGet("CreateVehicle")]
+        public async Task<IActionResult> CreateVehicle([FromForm] CreatePublicDriverVehicleDto model)
+        {
+            return Ok(await _driverService.CreateVehicle(model));
+        }
     }
 }
