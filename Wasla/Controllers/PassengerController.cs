@@ -241,7 +241,7 @@ namespace Wasla.Api.Controllers
             return Ok(await _passangerService.SearchByUserName(userName));
         }
         [HttpPut("EditProflie")]
-        public async Task<IActionResult>UpdateProfile(EditCustomerProfileDto model)
+        public async Task<IActionResult>UpdateProfile([FromForm]EditCustomerProfileDto model)
         {
             var userId = User.FindFirst("uid")?.Value;
 

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Cors.Infrastructure;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.Mvc;
 using Wasla.Model.Dtos;
 using Wasla.Services.EntitiesServices.OrganizationDriverServices;
@@ -7,6 +8,7 @@ namespace Wasla.Api.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class OrganizationDriverController : ControllerBase
     {
         private readonly IOrganizationDriverService _orgDriver;
@@ -18,7 +20,13 @@ namespace Wasla.Api.Controllers
         [HttpGet("profile")]
         public async Task<IActionResult> GetProfile()
         {
-            return Ok(await _orgDriver.GetProfileAsync());
+            var userId = User.FindFirst("uid")?.Value;
+
+            if (userId is null)
+            {
+                return BadRequest("user not found");
+            }
+            return Ok(await _orgDriver.GetProfileAsync(userId));
         }
         [HttpDelete("decreaseTripSeat")]
         public async Task<IActionResult> DecreaseSeatByOne(DecreaseOrgTripByOneCommnad command)

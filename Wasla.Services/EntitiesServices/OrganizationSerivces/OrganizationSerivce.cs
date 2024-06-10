@@ -243,7 +243,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
 
                     await trans.CommitAsync();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
                     await trans.RollbackAsync();
 
@@ -252,6 +252,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                     if (!newDriver.PhotoUrl.IsNullOrEmpty()) await _mediaSerivce.DeleteAsync(newDriver.PhotoUrl);
                 }
             }
+            await _context.SaveChangesAsync();
             return _response;
         }
         public async Task<BaseResponse> AddDriverBase64Async(AddOrganizationDriverDto model, string orgId)
@@ -559,7 +560,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         }
         public async Task<BaseResponse> UpdateStationAsync(StationDto stationDto, string orgId, int stationId)
         {
-            var station = await _context.Stations.FirstOrDefaultAsync(v => v.StationId == stationId && v.OrganizationId == orgId);
+            var station = await _context.Stations.FirstOrDefaultAsync(v => v.StationId == stationId);
 
             if (station is null)
                 throw new NotFoundException(_localization["StationNotFound"].Value);
@@ -825,6 +826,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                     TripDate = t.StartTime.ToString("MM/dd/yyyy"),
                     TripDay = t.StartTime.ToString("dddd"),
                     TripStartTime = t.StartTime.ToString("h:mm tt"),
+                    TripEndTime=t.ArriveTime.ToString("h:mm tt"),
                     StartStation = t.Trip.Line.Start.Name,
                     EndStation = t.Trip.Line.End.Name
 

@@ -12,6 +12,9 @@ namespace Wasla.Model.Dtos
         public float Price { get; set; }
         public string From { get; set; }
         public string To { get; set; }
+        public DateTime StartTime { get; set; }
+        public DateTime ArriveTime { get; set; }
+        public int Points { get; set; }
         public int AvailableSets { get; set; }
         public float AvailablePackageSpace { get; set; }
         public string orgName { get; set; }

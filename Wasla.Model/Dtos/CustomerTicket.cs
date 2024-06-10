@@ -17,5 +17,18 @@ namespace Wasla.Model.Dtos
         public int? SeatNumber { get; set; }
         public string PassengerName { get; set; }
         public bool IsPublic { get; set; }
+        public CompanyDetails Organization { get; set; }
+        public PublicDriverDetails PublicDriver { get; set; }
+    }
+    public class CompanyDetails
+    {
+        public string Name { get; set; }
+        public string? LogoUrl { get; set; }
+        public int Points { get; set; }
+    }
+    public class PublicDriverDetails
+    {
+        public string FullName { get; set; }
+        public string? PhotoUrl { get; set; }
     }
 }

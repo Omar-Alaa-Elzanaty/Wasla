@@ -32,6 +32,7 @@ namespace Wasla.Model.Dtos
     {
         public int Id { get; set; }
         public bool OnRoad { get; set; }
+        public string LocationDescription { get; set; }
         public PublicTripCustomerInfoDto Customer { get; set; }
     }
     public class PublicTripCustomerInfoDto
