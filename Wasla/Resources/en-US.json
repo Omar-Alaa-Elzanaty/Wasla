@@ -60,6 +60,7 @@
   "NoActiveTrip": "No trip available for now",
   "ReciverUserNameInCorrect": "Reciver username is not correct.",
   //success
+  "ErrorInReverse":"Reversation Failed,Pleace Check Your Information or the number Of Seat",
   "PhoneNumberValid": "Phone number is valid",
   "EmailValid": "Email valid to use",
   "RegisterSucccess": "Register Success",

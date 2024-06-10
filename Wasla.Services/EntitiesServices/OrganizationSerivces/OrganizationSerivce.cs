@@ -992,6 +992,8 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                     TripDate = trip.StartTime.ToString("MM/dd/yyyy"),
                     TripDay = trip.StartTime.ToString("dddd"),
                     TripStartTime = trip.StartTime.ToString("h:mm tt"),
+                    TripEndTime = trip.ArriveTime.ToString("h:mm tt"),
+
                     StartStation = trip.Trip.Line.Start.Name,
                     EndStation = trip.Trip.Line.End.Name
                 };
