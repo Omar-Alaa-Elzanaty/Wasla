@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,6 +12,7 @@ namespace Wasla.Model.Dtos
     {
         public float Price { get; set; }
         public string OrgName { get; set; }
+        public int Points { get; set; }
 
         public ICollection<OrganizationRate> Rates { get; set; }
     }

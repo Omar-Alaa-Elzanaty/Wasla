@@ -973,28 +973,32 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             List<SearchOrgTripsForUser> orgTrips = await _context.TripTimeTables
                  .Where(tt =>
                      ((tt.Trip.Line.Start.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()) && tt.Trip.Line.End.Name.Trim().ToLower().StartsWith(to.Trim().ToLower())) ||
-                      (tt.Trip.Line.Start.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) && tt.Trip.Line.End.Name.Trim().ToLower().StartsWith(from.Trim().ToLower())))
+                      (tt.Trip.Line.Start.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) && tt.Trip.Line.End.Name.Trim().ToLower().StartsWith(from.Trim().ToLower())) ||
+                      tt.Trip.Line.Start.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()))
                       && (date.HasValue ? tt.StartTime.Date == date.Value.Date : tt.StartTime.Date >= today)
                      ).OrderBy(t => t.StartTime)
                  .Select(t => new SearchOrgTripsForUser
                  {
                      TripId = t.Id,
-                     TripDate = t.StartTime.ToString("MM/dd/yyyy"),
+                     TripDate = t.StartTime.ToString("MMM d"),
                      TripDay = t.StartTime.ToString("dddd"),
                      TripStartTime = t.StartTime.ToString("h:mm tt"),
+                     TripEndTime = t.ArriveTime.ToString("h:mm tt"),
                      StartStation = t.Trip.Line.Start.Name,
                      EndStation = t.Trip.Line.End.Name,
                      ImgUrl = t.Trip.Organization.LogoUrl,
                      Price = t.Trip.Price,
                      OrgName = t.Trip.Organization.Name,
                      Rates = t.Trip.Organization.Rates,
-                     IsStart = t.IsStart
+                     IsStart = t.IsStart,
+                     Points = t.Trip.Points
 
                  }).ToListAsync();
             List<SearchTripsForUser> publicTrips = await _context.PublicDriverTrips
                .Where(tt =>
                    ((tt.StartStation.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()) && tt.EndStation.Name.Trim().ToLower().StartsWith(to.Trim().ToLower())) ||
-                    (tt.StartStation.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) && tt.EndStation.Name.Trim().ToLower().StartsWith(from.Trim().ToLower())))
+                    (tt.StartStation.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) && tt.EndStation.Name.Trim().ToLower().StartsWith(from.Trim().ToLower())) ||
+                    tt.StartStation.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()))
                    && (date.HasValue ? tt.StartDate.Date == date.Value.Date : tt.StartDate.Date >= today) &&
                    (tt.IsActive == true)
 
@@ -1002,9 +1006,10 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                .Select(t => new SearchTripsForUser
                {
                    TripId = t.Id,
-                   TripDate = t.StartDate.ToString("MM/dd/yyyy"),
+                   TripDate = t.StartDate.ToString("MMM d"),
                    TripDay = t.StartDate.ToString("dddd"),
                    TripStartTime = t.StartDate.ToString("h:mm tt"),
+                   TripEndTime = t.EndDate.ToString("hh:mm tt"),
                    StartStation = t.StartStation.Name,
                    EndStation = t.EndStation.Name,
                    ImgUrl = t.PublicDriver.PhotoUrl,
