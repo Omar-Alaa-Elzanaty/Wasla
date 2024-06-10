@@ -140,13 +140,16 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
 
             var trips = await _context.PublicDriverTrips.Where(x => x.PublicDriverId == userId).ToListAsync();
 
-            foreach (var trip in trips)
+            if (trips is not null)
             {
-                trip.IsStart = false;
-                trip.IsActive = false;
-            }
+                foreach (var trip in trips)
+                {
+                    trip.IsStart = false;
+                    trip.IsActive = false;
+                }
 
-            _context.AddRange(trips);
+                _context.UpdateRange(trips);
+            }
             await _context.AddAsync(publicDriverTrip);
             await _context.SaveChangesAsync();
 
@@ -259,12 +262,16 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
                        .Where(x => x.PublicDriverId == userId && (x.IsActive == true || x.IsStart == true))
                        .OrderByDescending(x => x.StartDate)
                       .FirstOrDefaultAsync();
+            if (entity is not null)
+            {
+                var trip = _mapper.Map<CurrentPublicDriverTripDto>(entity);
+                trip.Reservations = _mapper.Map<List<PublicTripReservationDto>>(entity.Requests);
+                var Packages = await _context.Packages.Where(x => x.DriverId == userId && x.Status == PackageStatus.UnderConfirm)
+                              .ToListAsync();
+                trip.PackagesRequests = _mapper.Map<List<PublicTripPackagesRequestDto>>(Packages);
+                _response.Data = trip;
+            }
 
-            var trip = _mapper.Map<CurrentPublicDriverTripDto>(entity);
-            var Packages = await _context.Packages.Where(x => x.DriverId == userId && x.Status == PackageStatus.UnderConfirm)
-                          .ToListAsync();
-            trip.PackagesRequests = _mapper.Map<List<PublicTripPackagesRequestDto>>(Packages);
-            _response.Data = trip;
             return _response;
         }
 
@@ -325,6 +332,8 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
                 OnRoad = entity.OnRoad,
                 PublicDriverTripId = entity.PublicDriverTripId,
             };
+
+            entity.PublicDriverTrip.ReservedSeats++;
 
             await _context.AddAsync(ticket);
             _context.Remove(entity);

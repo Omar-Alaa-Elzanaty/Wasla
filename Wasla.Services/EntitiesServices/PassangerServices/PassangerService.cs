@@ -1,7 +1,5 @@
-﻿using System.Text.RegularExpressions;
-using AutoMapper;
+﻿using AutoMapper;
 using AutoMapper.Internal;
-using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -439,8 +437,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 {
                     Id = x.FollowerId,
                     Name = x.Follower.FirstName + ' ' + x.Follower.LastName,
-                    PhotoUrl=x.Follower.PhotoUrl,
-                    UserName=x.Follower.UserName
+                    PhotoUrl = x.Follower.PhotoUrl,
+                    UserName = x.Follower.UserName
                 }));
 
             customer.Following.TryAdd(
@@ -449,8 +447,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 {
                     Id = x.CustomerId,
                     Name = x.Customer.FirstName + " " + x.Customer.LastName,
-                    PhotoUrl=x.Customer.PhotoUrl,
-                    UserName=x.Customer.UserName
+                    PhotoUrl = x.Customer.PhotoUrl,
+                    UserName = x.Customer.UserName
                 }));
 
             _response.Data = customer;
@@ -521,23 +519,26 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 return BaseResponse.GetErrorException(System.Net.HttpStatusCode.NotFound, _localization["UserNameNotFound"].Value);
             }
 
-            var inComingTrips = GetReservationOnMatchDate(x => x.ReservationDate > DateTime.UtcNow && x.TripTimeTable.StartTime > DateTime.UtcNow, user).Result.Data as List<CustomerTicket>;
+            var inComingTrips = GetReservationOnMatchDate(x => x.TripTimeTable.StartTime.Date > DateTime.Now.Date, user).Result.Data as List<CustomerTicket>;
 
-            if (inComingTrips.IsNullOrEmpty())
+            var publicIncoming = await _context.PublicDriverTripReservation.Where(x => x.PublicDriverTrip.StartDate > DateTime.Now && customerId == x.CustomerId)
+                               .Select(x => new CustomerTicket()
+                               {
+                                   EndStation = x.PublicDriverTrip.EndStation.Name,
+                                   StartStation = x.PublicDriverTrip.StartStation.Name,
+                                   IsPublic = true,
+                                   Price = 10,
+                                   StartTime = x.PublicDriverTrip.StartDate,
+                                   EndTime = x.PublicDriverTrip.EndDate,
+                                   TripId = x.PublicDriverTrip.Id
+                               })
+                               .ToListAsync();
+            if (!publicIncoming.IsNullOrEmpty() && !inComingTrips.IsNullOrEmpty())
             {
-                inComingTrips = await _context.PublicDriverTripReservation.Where(x => x.PublicDriverTrip.StartDate > DateTime.Now && customerId == x.CustomerId)
-                                .Select(x => new CustomerTicket()
-                                {
-                                    EndStation = x.PublicDriverTrip.EndStation.Name,
-                                    StartStation = x.PublicDriverTrip.StartStation.Name,
-                                    IsPublic = true,
-                                    Price = 10,
-                                    StartTime = x.PublicDriverTrip.StartDate,
-                                    EndTime = x.PublicDriverTrip.EndDate,
-                                    TripId = x.PublicDriverTrip.Id
-                                })
-                                .ToListAsync();
+                inComingTrips.AddRange(publicIncoming);
             }
+
+            inComingTrips = inComingTrips.OrderBy(x => x.StartTime).ToList();
 
             _response.Data = inComingTrips;
             return _response;
@@ -628,7 +629,6 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         private async Task<BaseResponse> GetReservationOnMatchDate(Func<Reservation, bool> match, Customer customer)
         {
             var inComingTrips = customer.Reservations.Where(match)
-                .Where(x => x.TriptimeTableId != null)
             .Select(x => new CustomerTicket()
             {
                 StartStation = x.TripTimeTable.Trip.Line.Start.Name,
@@ -639,7 +639,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 Price = x.TripTimeTable.Trip.Price,
                 SeatNumber = x.SetNum,
                 TripId = (int)x.TriptimeTableId!,
-                IsPublic=false
+                IsPublic = false
             }).ToList();
 
             await Task.CompletedTask;
@@ -649,8 +649,9 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         }
         private async Task<BaseResponse> GetFirstReservationOnMatchDate(Func<Reservation, bool> match, Customer customer)
         {
-            var inComingTrips = customer.Reservations.Where(match)
-                .Where(x => x.TriptimeTableId != null).OrderBy(x => x.TripTimeTable.StartTime)
+            var inComingTrips = _context.Reservations.Where(match)
+                .Where(x => x.CustomerId == customer.Id)
+                .OrderBy(x => x.TripTimeTable.StartTime)
             .Select(x => new CustomerTicket()
             {
                 StartStation = x.TripTimeTable.Trip.Line.Start.Name,
