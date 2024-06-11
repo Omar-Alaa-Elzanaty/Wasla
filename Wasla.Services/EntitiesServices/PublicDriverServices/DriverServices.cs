@@ -356,6 +356,23 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             return _response;
         }
 
+        public async Task<BaseResponse> CancelPassengerReqeust(int id)
+        {
+            var entity = await _context.PublicDriverTripRequests.FindAsync(id);
+
+            if (entity == null)
+            {
+                return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, "request not found");
+            }
+
+            _context.Remove(entity);
+
+            await _context.SaveChangesAsync();
+            _response.Message = _localization["canceledReverseRequest"].Value;
+            return _response;
+        }
+
+
 
 
         public async Task<BaseResponse> GetTripsHistoryForPublicDriverAsync(string DriverId, DateTime currentDate)
