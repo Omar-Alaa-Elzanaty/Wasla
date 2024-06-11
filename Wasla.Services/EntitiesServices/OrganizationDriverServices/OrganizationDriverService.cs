@@ -132,7 +132,8 @@ namespace Wasla.Services.EntitiesServices.OrganizationDriverServices
                 IsRide = x.IsRide,
                 PhotoUrl = x.Customer.PhotoUrl,
                 LocationDescription = x.LocationDescription,
-                OnRoad = x.OnRoad
+                OnRoad = x.OnRoad,
+                SeatNumber = x.SetNum
             });
 
             _response.Data = reservations;

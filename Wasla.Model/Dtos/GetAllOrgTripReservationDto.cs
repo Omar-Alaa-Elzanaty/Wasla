@@ -14,5 +14,6 @@ namespace Wasla.Model.Dtos
         public string LocationDescription { get; set; }
         public bool OnRoad { get; set; }
         public string? PhotoUrl { get; set; }
+        public int SeatNumber { get; set; }
     }
 }
