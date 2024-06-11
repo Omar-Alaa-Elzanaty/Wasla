@@ -113,10 +113,12 @@ namespace Wasla.Api.Controllers
 
             return Ok(await _driverService.GetCurrentTrip(userId));
         }
-        [HttpGet("vehicle/{id}")]
-        public async Task<IActionResult> GetById(int id)
+        [HttpGet("vehicle")]
+        public async Task<IActionResult> GetVehicle()
         {
-            return Ok(await _vehicleSrivces.GetVehicleById(id));
+            var driverId = User.FindFirst("uid").Value;
+
+            return Ok(await _driverService.GetVehicle(driverId));
         }
         [HttpPut("endCurrentTrip")]
         public async Task<IActionResult> UpdatePublicTripsStatus()
@@ -170,6 +172,11 @@ namespace Wasla.Api.Controllers
         public async Task<IActionResult> UpdateDriverInfo([FromForm] UpdateOrgDriverInfoDto model)
         {
             return Ok(await _driverService.UpdatePublicDriverProfile(model));
+        }
+        [HttpGet("getTripPassengers/{publicTripId}")]
+        public async Task<IActionResult>GetTripPassengers(int publicTripId)
+        {
+            return Ok(await _driverService.GetTripPassengeers(publicTripId));
         }
     }
 }

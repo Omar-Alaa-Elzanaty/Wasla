@@ -58,9 +58,7 @@ namespace Wasla.Model.Dtos
         public string? ReciverName { get; set; }
         public string ReciverPhoneNumber { get; set; }
         public int? TripId { get; set; }
-        public virtual TripTimeTable? Trip { get; set; }
         public string? DriverId { get; set; }
-        public virtual PublicDriver? Driver { get; set; }
         public PackageStatus Status { get; set; }
     }
 }

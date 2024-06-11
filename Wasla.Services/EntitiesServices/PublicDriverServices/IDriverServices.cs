@@ -32,7 +32,7 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
         Task<BaseResponse> CreateVehicle(CreatePublicDriverVehicleDto model);
         Task<BaseResponse> UpdatePublicDriverProfile(UpdateOrgDriverInfoDto model);
         Task<BaseResponse> CancelPassengerReqeust(int id);
-
-
+        Task<BaseResponse> GetVehicle(string userId);
+        Task<BaseResponse> GetTripPassengeers(int tripId);
     }
 }
