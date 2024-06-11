@@ -316,9 +316,17 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             .Where(p => p.DriverId == driverId)
             .ExecuteDeleteAsync();
 
+                var requests = await _context.PublicDriverTripRequests.Where(x => x.PublicDriverTrip.PublicDriverId == driverId)
+                               .ToListAsync();
+
+                _context.PublicDriverTripRequests.RemoveRange(requests);
+
+                await _context.SaveChangesAsync();
+
                 await transaction.CommitAsync();
                 _response.Message = "update success";
                 return _response;
+
             }
             catch (Exception)
             {

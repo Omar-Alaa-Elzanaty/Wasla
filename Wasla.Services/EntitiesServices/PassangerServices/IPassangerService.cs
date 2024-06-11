@@ -47,5 +47,6 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         Task<BaseResponse> SearchTripsForUserAsync(string from, string to, DateTime? date);
         Task<BaseResponse> EditProfile(string userId, EditCustomerProfileDto model);
         Task<BaseResponse> RequestPublicTrip(PassengerPublicTripRequestDto model, string userId);
+        Task<BaseResponse> GetUserLocation(string userId);
     }
 }

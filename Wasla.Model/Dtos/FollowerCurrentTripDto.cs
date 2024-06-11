@@ -19,5 +19,7 @@ namespace Wasla.Model.Dtos
         public string FullName { get; set; }
         public string Latitude { get; set; }
         public string Langtitude { get; set; }
+        public bool IsPublic { get; set; }
+        public int TripId { get; set; }
     }
 }

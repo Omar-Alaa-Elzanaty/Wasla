@@ -265,6 +265,11 @@ namespace Wasla.Api.Controllers
 
             return Ok(await _passangerService.RequestPublicTrip(model, userId));
         }
+        [HttpGet("getFollowerLocation/{userId}")]
+        public async Task<IActionResult>GetFollowerLocation(string userId)
+        {
+            return Ok(await _passangerService.GetUserLocation(userId));
+        }
     }
 
 }
