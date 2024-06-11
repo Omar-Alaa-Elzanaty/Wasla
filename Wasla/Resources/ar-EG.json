@@ -15,7 +15,7 @@
   "LicenseNumRequire": "رقم الرخصه مطلوب",
   "NotPublicTripInDate": "لا يوجد رحلات في هذا البوم",
   //errors
-  "ErrorInReverse":"حدثه مشكله في عمليه الحجز بارجاء التاكد من المعلومات المدخله او رقم المقعد المحجوز",
+  "ErrorInReverse": "حدثه مشكله في عمليه الحجز بارجاء التاكد من المعلومات المدخله او رقم المقعد المحجوز",
   "AccountExist": "المستخدم موجود مسبقا",
   "phoneNumberExist": "رقم الهاتف موجود مسبقا",
   "userNameExist": "اسم المستخدم موجود مسبقا",
@@ -64,7 +64,8 @@
   "ReciverUserNameInCorrect": "اسم المستخدم للمستلم غير صحيح",
   "AdsExist": "ربما الاعلان موجود مسبقا ",
   //success
-
+  "canceledReverseRequest": "يعتذر الستئق عن قبول طلب الحجز",
+  "PackageReviewedSuccess": "تم مراجعه طلب البكيج بنجاح",
   "PhoneNumberValid": "رقم الهاتف صالح للاستخدام",
   "EmailValid": "الايميل صالح للاستخدام",
   "RegisterSucccess": "تم تسجيل الدخول بنجاح",

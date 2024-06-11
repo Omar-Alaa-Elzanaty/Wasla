@@ -950,6 +950,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                     Title = _localization["NotificationAcceptPackageRequestTopic"].Value,
                     Description = _localization["NotificationAcceptPackageRequestDescription"].Value,
                     Type = NotificationType.PackageAccept,
+
                 });
 
                 if (package.ReciverUserName is not null)

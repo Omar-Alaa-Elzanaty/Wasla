@@ -131,6 +131,11 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _driverService.AcceptPassengerReqeust(reqeustId));
         }
+        [HttpPut("RejectPassengerReqeust/{reqeustId}")]
+        public async Task<IActionResult> RejectPassengerReqeust(int reqeustId)
+        {
+            return Ok(await _driverService.AcceptPassengerReqeust(reqeustId));
+        }
         [HttpGet("publicTrips/history/{dateTime}")]
         public async Task<IActionResult> GetTripsHistoryForPublicDriverAsync(DateTime dateTime)
         {
