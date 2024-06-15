@@ -200,7 +200,6 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
 
             return _response;
         }
-
         public async Task<BaseResponse> UpdatePublicTripStart(int tripId)
         {
             var trip = await _context.PublicDriverTrips.FindAsync(tripId);

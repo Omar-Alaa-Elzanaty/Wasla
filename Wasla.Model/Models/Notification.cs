@@ -11,6 +11,8 @@ namespace Wasla.Model.Models
     {
         public int Id { get; set; }
         public string AccountId { get; set; }
+        public string NotifactionImage { get; set; }
+        public string NotifactionName { get; set; }
         public virtual Account Account { get; set; }
         public string Title { get; set; }
         public string Description { get; set; }
