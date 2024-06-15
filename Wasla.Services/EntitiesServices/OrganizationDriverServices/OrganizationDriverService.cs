@@ -132,7 +132,8 @@ namespace Wasla.Services.EntitiesServices.OrganizationDriverServices
                 IsRide = x.IsRide,
                 PhotoUrl = x.Customer.PhotoUrl,
                 LocationDescription = x.LocationDescription,
-                OnRoad = x.OnRoad
+                OnRoad = x.OnRoad,
+                SeatNumber = x.SetNum
             });
 
             _response.Data = reservations;
@@ -183,8 +184,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationDriverServices
             DateTime currentData = DateTime.Now;
             var trip = await _context.TripTimeTables.
                 FirstOrDefaultAsync(t => t.DriverId == driverId &&
-                t.StartTime.ToLocalTime() <= currentData.ToLocalTime() &&
-                (t.Status != TripStatus.Arrived || t.Status == TripStatus.preparing));
+                (t.Status != TripStatus.Arrived && t.Status != TripStatus.preparing));
 
             if (trip == null)
                 return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, _localization["ObjectNotFound"].Value);

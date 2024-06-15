@@ -918,7 +918,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
         public async Task<BaseResponse> FollowersLocation(string userId)
         {
-            var user = await _context.Customers.FindAsync(userId);
+            var user = await _context.Customers.FirstOrDefaultAsync(x => x.Id == userId);
 
             if (user is null)
             {
@@ -936,7 +936,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
 
             var followersInTrips = await _context.Reservations
                             .Where(x => followers.Contains(x.CustomerId) && x.TripTimeTable != null &&
-                            x.StartTime <= DateTime.Now && x.EndTime >= DateTime.Now)
+                            x.TripTimeTable.Status != TripStatus.Arrived && x.TripTimeTable.Status != TripStatus.preparing)
                             .Select(x => new FollowerCurrentTripDto()
                             {
                                 Id = x.CustomerId,
@@ -949,12 +949,14 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                                 EndLangtitude = x.TripTimeTable.Trip.Line.End.Langtitude,
                                 EndLatitude = x.TripTimeTable.Trip.Line.End.Latitude,
                                 StartLangtitude = x.TripTimeTable.Trip.Line.Start.Langtitude,
-                                StartLatitude = x.TripTimeTable.Trip.Line.Start.Latitude
+                                StartLatitude = x.TripTimeTable.Trip.Line.Start.Latitude,
+                                IsPublic = false,
+                                TripId = (int)x.TriptimeTableId
                             }).ToListAsync();
 
             followersInTrips.AddRange(await _context.PublicDriverTripReservation
                                         .Where(x => followers.Contains(x.CustomerId))
-                                        .Where(x => x.PublicDriverTrip.StartDate <= DateTime.Now && x.PublicDriverTrip.EndDate >= DateTime.Now)
+                                        .Where(x => x.PublicDriverTrip.Status != TripStatus.Arrived && x.PublicDriverTrip.Status != TripStatus.preparing)
                                         .Select(x => new FollowerCurrentTripDto()
                                         {
                                             CompanyImageUrl = x.PublicDriverTrip.PublicDriver.PhotoUrl,
@@ -963,7 +965,13 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                                             Id = x.CustomerId,
                                             Langtitude = x.PublicDriverTrip.Langtitude,
                                             Latitude = x.PublicDriverTrip.Latitude,
-                                            UserName = x.Customer.UserName
+                                            UserName = x.Customer.UserName,
+                                            EndLangtitude = x.PublicDriverTrip.EndStation.Langtitude,
+                                            EndLatitude = x.PublicDriverTrip.EndStation.Latitude,
+                                            StartLangtitude = x.PublicDriverTrip.StartStation.Langtitude,
+                                            StartLatitude = x.PublicDriverTrip.StartStation.Latitude,
+                                            TripId = x.PublicDriverTripId,
+                                            IsPublic = true
                                         }).ToListAsync());
 
             followersInTrips = followersInTrips.DistinctBy(x => x.UserName).ToList();
@@ -971,7 +979,44 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             _response.Data = followersInTrips;
             return _response;
         }
+        public async Task<BaseResponse> GetUserLocation(string userId)
+        {
+            var user = await _context.Customers.FirstOrDefaultAsync(x => x.Id == userId);
 
+            if (user is null)
+            {
+                _response.IsSuccess = false;
+                _response.Status = System.Net.HttpStatusCode.NotFound;
+                _response.Message = "user not found.";
+
+                return _response;
+            }
+            var userInTrip = await _context.Reservations
+                            .FirstOrDefaultAsync(x => x.CustomerId == userId && x.TripTimeTable != null &&
+                            x.TripTimeTable.Status != TripStatus.Arrived && x.TripTimeTable.Status != TripStatus.preparing);
+            if (userInTrip != null)
+            {
+                _response.Data = new
+                {
+                    Langtitude = userInTrip.TripTimeTable.Langtitude.IsNullOrEmpty() ? userInTrip.TripTimeTable.Trip.Line.Start.Langtitude : userInTrip.TripTimeTable.Langtitude,
+                    Latitude = userInTrip.TripTimeTable.Latitude.IsNullOrEmpty() ? userInTrip.TripTimeTable.Trip.Line.Start.Latitude : userInTrip.TripTimeTable.Latitude,
+                    TripId = (int)userInTrip.TriptimeTableId
+                };
+                return _response;
+            }
+
+
+            var trip = await _context.PublicDriverTripReservation
+                .FirstOrDefaultAsync(x => x.CustomerId == userId && x.PublicDriverTrip.Status != TripStatus.Arrived && x.PublicDriverTrip.Status != TripStatus.preparing);
+            _response.Data = new
+            {
+                Langtitude = trip.PublicDriverTrip.Langtitude.IsNullOrEmpty() ? trip.PublicDriverTrip.StartStation.Langtitude : trip.PublicDriverTrip.Langtitude,
+                Latitude = trip.PublicDriverTrip.Latitude.IsNullOrEmpty() ? trip.PublicDriverTrip.StartStation.Latitude : trip.PublicDriverTrip.Latitude,
+                TripId = trip.PublicDriverTrip
+            };
+
+            return _response;
+        }
         public async Task<BaseResponse> PackagesLocations(string userId)
         {
             var packages = await _context.Packages
