@@ -935,18 +935,20 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
         public async Task<BaseResponse> ReviewPackagesRequest(int packageId, PackageStatus status)
         {
             var package = await _context.Packages.FirstOrDefaultAsync(p => p.Id == packageId);
-
             if (package is null)
             {
                 throw new KeynotFoundException(_localization["ObjectNotFound"].Value);
             }
             package.Status = status;
+            var sender = await _context.Customers.FirstOrDefaultAsync(x => x.Id == package.SenderId);
 
             if (status == PackageStatus.Approved)
             {
                 await _context.AddAsync(new Notification()
                 {
                     AccountId = package.SenderId,
+                    NotifactionImage = sender.PhotoUrl,
+                    NotifactionName = sender.FirstName,  
                     Title = _localization["NotificationAcceptPackageRequestTopic"].Value,
                     Description = _localization["NotificationAcceptPackageRequestDescription"].Value,
                     Type = NotificationType.PackageAccept,
@@ -956,10 +958,11 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                 if (package.ReciverUserName is not null)
                 {
                     var user = await _context.Customers.FindAsync(package.ReciverUserName);
-                    var sender = await _context.Customers.FindAsync(package.SenderId);
                     await _context.AddAsync(new Notification()
                     {
                         AccountId = package.SenderId,
+                        NotifactionImage = sender.PhotoUrl,
+                        NotifactionName = sender.FirstName,
                         Title = _localization["NotificationRecivePackageReqeustTopic"].Value,
                         Description = _localization["NotificationRecivePackageDescription"].Value.Replace("Name", $"{sender.FirstName + ' ' + sender.LastName}"),
                         Type = NotificationType.PackageAccept,

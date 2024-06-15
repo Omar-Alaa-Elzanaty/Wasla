@@ -127,7 +127,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationDriverServices
 
             var reservations = tripTimeTable.Reservations.Select(x => new GetAllOrgTripReservationDto()
             {
-                FullName = x.Customer.FirstName + x.Customer.LastName,
+                FullName = x.Customer.FirstName + ' ' + x.Customer.LastName,
                 UserName = x.Customer.UserName,
                 IsRide = x.IsRide,
                 PhotoUrl = x.Customer.PhotoUrl,
@@ -183,12 +183,15 @@ namespace Wasla.Services.EntitiesServices.OrganizationDriverServices
             DateTime currentData = DateTime.Now;
             var trip = await _context.TripTimeTables.
                 FirstOrDefaultAsync(t => t.DriverId == driverId &&
-                t.StartTime <= currentData &&
-                (t.Status == TripStatus.OnRoad || t.Status == TripStatus.TakeBreak));
+                t.StartTime.ToLocalTime() <= currentData.ToLocalTime() &&
+                (t.Status != TripStatus.Arrived || t.Status == TripStatus.preparing));
+
             if (trip == null)
                 return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, _localization["ObjectNotFound"].Value);
+
             trip.Langtitude = tripDto.Langtitude;
             trip.Latitude = tripDto.Latitude;
+
             _context.TripTimeTables.Update(trip);
             await _context.SaveChangesAsync();
             _response.Message = _localization["UpdateSuccess"].Value;

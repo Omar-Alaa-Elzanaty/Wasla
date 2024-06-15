@@ -9,8 +9,9 @@ namespace Wasla.Model.Dtos
 {
     public class PublicTriptReservationRequestDto
     {
+        public int Id { get; set; }
         public string customerName { get; set; }
-        public int CustomerReservationId { get; set; }
+        public string CustomerReservationId { get; set; }
         public string TripTime { get; set; }
         public string StartStation { get; set; }
         public string EndStation { get; set; }

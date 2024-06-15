@@ -166,6 +166,9 @@ namespace Wasla.DataAccess.AutoMapping
             CreateMap<CreatePublicDriverVehicleDto, Vehicle>();
             CreateMap<Customer, PublicTripCustomerInfoDto>()
                 .ForMember(dest => dest.FullName, src => src.MapFrom(src => src.FirstName + ' ' + src.LastName));
+            CreateMap<Customer, PublicTripPassengerDto>()
+                .ForMember(dest => dest.FullName, src => src.MapFrom(src => src.FirstName + ' ' + src.LastName));
+            CreateMap<PublicDriverTripReservation, GetPublicTripPassenger>();
         }
     }
 }

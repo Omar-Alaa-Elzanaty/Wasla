@@ -13,6 +13,7 @@ using Wasla.Model.Helpers.Statics;
 using Wasla.Model.Models;
 using Wasla.Services.Exceptions;
 using Wasla.Services.HlepServices.MediaSerivces;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Wasla.Services.EntitiesServices.PassangerServices
 {
@@ -330,6 +331,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 await _context.Notifications.AddAsync(new Notification()
                 {
                     AccountId = trip.PublicDriverId,
+                    NotifactionImage = sender.PhotoUrl,
+                    NotifactionName = sender.FirstName,
                     Title = _localization["DriverNewPackageRequestTopic"].Value,
                     Description = _localization["DriverNewPackageRequestDescrption"].Value.Replace("Name", $"{sender.FirstName + ' ' + sender.LastName}"),
                     Type = NotificationType.PackageRequest
@@ -470,8 +473,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 return BaseResponse.GetErrorException(System.Net.HttpStatusCode.NotFound, "User not found.");
             }
 
-            customer.FirstName = model.FullName.Split(' ')[0];
-            customer.LastName = model.FullName.Split(' ')[1];
+            customer.FirstName = model.FirstName;
+            customer.LastName = model.LastName;
             customer.Birthdate = model.Birthdate;
             customer.Gender = model.Gender;
             customer.Email = model.Email;
@@ -707,13 +710,15 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 FollowerId = followDto.FollowerId
             };
 
-            var Passenger = await _context.Customers.FindAsync(senderId);
+            var passenger = await _context.Customers.FindAsync(senderId);
 
             var notification = new Notification()
             {
                 AccountId = followDto.FollowerId,
+                NotifactionImage = passenger.PhotoUrl,
+                NotifactionName = passenger.FirstName,
                 Title = _localization["FollowReqeustTopic"].Value,
-                Description = _localization["FollowReqeustDescription"].Value.Replace("Name", $"{Passenger.FirstName + ' ' + Passenger.LastName}"),
+                Description = _localization["FollowReqeustDescription"].Value.Replace("Name", $"{passenger.FirstName + ' ' + passenger.LastName}"),
                 Type = NotificationType.FollowReqeust
             };
 
@@ -723,8 +728,6 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             _response.Message = _localization["createFollowRequestSuccess"].Value;
             return _response;
         }
-
-
         public async Task<BaseResponse> ConfirmFollowRequestAsync(string userId, string senderId)
         {
             var followRequest = await _context.FollowRequests.SingleOrDefaultAsync(f => f.SenderId == senderId && f.FollowerId == userId);
@@ -753,7 +756,6 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             }
             return _response;
         }
-
         public async Task<BaseResponse> DeleteFollowRequestAsync(string userId, string senderId)
         {
             var request = await _context.FollowRequests.SingleOrDefaultAsync(f => f.SenderId == senderId && f.FollowerId == userId);
@@ -765,7 +767,6 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             _response.Message = _localization["RemoveFollowRequestSuccess"].Value;
             return _response;
         }
-
         public async Task<BaseResponse> DeleteFollowerAsync(string userId, FollowDto followDto)
         {
             var follow = await _context.UserFollows.SingleOrDefaultAsync(f => f.CustomerId == followDto.FollowerId && f.FollowerId == userId);
@@ -936,7 +937,6 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             var followersInTrips = await _context.Reservations
                             .Where(x => followers.Contains(x.CustomerId) && x.TripTimeTable != null &&
                             x.StartTime <= DateTime.Now && x.EndTime >= DateTime.Now)
-                            .DistinctBy(x => x.CustomerId)
                             .Select(x => new FollowerCurrentTripDto()
                             {
                                 Id = x.CustomerId,
@@ -945,7 +945,11 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                                 Latitude = x.TripTimeTable.Latitude,
                                 UserName = x.Customer.UserName,
                                 CustomerImageUrl = x.Customer.PhotoUrl,
-                                CompanyImageUrl = x.TripTimeTable.Trip.Organization.LogoUrl
+                                CompanyImageUrl = x.TripTimeTable.Trip.Organization.LogoUrl,
+                                EndLangtitude = x.TripTimeTable.Trip.Line.End.Langtitude,
+                                EndLatitude = x.TripTimeTable.Trip.Line.End.Latitude,
+                                StartLangtitude = x.TripTimeTable.Trip.Line.Start.Langtitude,
+                                StartLatitude = x.TripTimeTable.Trip.Line.Start.Latitude
                             }).ToListAsync();
 
             followersInTrips.AddRange(await _context.PublicDriverTripReservation
@@ -988,63 +992,97 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             return _response;
         }
 
-        public async Task<BaseResponse> SearchTripsForUserAsync(string from, string to, DateTime? date)
+        public async Task<BaseResponse> SearchTripsForUserAsync(string from, string to, DateOnly? date,TimeOnly ?time)
         {
-            var today = DateTime.Today;
-            List<SearchOrgTripsForUser> orgTrips = await _context.TripTimeTables
+            var today = DateTime.UtcNow;
+            var orgTrips = _context.TripTimeTables
                  .Where(tt =>
-                     ((tt.Trip.Line.Start.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()) && tt.Trip.Line.End.Name.Trim().ToLower().StartsWith(to.Trim().ToLower())) ||
-                     (tt.Trip.Line.Start.Name.Trim().ToLower().Contains(from.Trim().ToLower()) && tt.Trip.Line.End.Name.Trim().ToLower().Contains(to.Trim().ToLower())) ||
-                      (tt.Trip.Line.Start.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) && tt.Trip.Line.End.Name.Trim().ToLower().StartsWith(from.Trim().ToLower())) ||
-                      (tt.Trip.Line.Start.Name.Trim().ToLower().Contains(to.Trim().ToLower()) && tt.Trip.Line.End.Name.Trim().ToLower().Contains(from.Trim().ToLower())) ||
-                      tt.Trip.Line.Start.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()))
-                      && (date.HasValue ? tt.StartTime == date.Value : tt.StartTime >= today)
-                     )
-                 .Where(tt => tt.Status != TripStatus.Arrived)
-                 .OrderBy(t => t.StartTime)
-                 .Select(t => new SearchOrgTripsForUser
-                 {
-                     TripId = t.Id,
-                     TripDate = t.StartTime.ToString("MMM d"),
-                     TripDay = t.StartTime.ToString("dddd"),
-                     TripStartTime = t.StartTime.ToString("h:mm tt"),
-                     TripEndTime = t.ArriveTime.ToString("h:mm tt"),
-                     StartStation = t.Trip.Line.Start.Name,
-                     EndStation = t.Trip.Line.End.Name,
-                     ImgUrl = t.Trip.Organization.LogoUrl,
-                     Price = t.Trip.Price,
-                     OrgName = t.Trip.Organization.Name,
-                     Rates = t.Trip.Organization.Rates,
-                     IsStart = t.IsStart,
-                     Points = t.Trip.Points
+                     ((tt.Trip.Line.Start.Name.Trim().ToLower().StartsWith(from.Trim().ToLower())
+                     && tt.Trip.Line.End.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) && tt.IsStart == true) ||
+                     (tt.Trip.Line.Start.Name.Trim().ToLower().Contains(from.Trim().ToLower())
+                     && tt.Trip.Line.End.Name.Trim().ToLower().Contains(to.Trim().ToLower()) && tt.IsStart == true) ||
+                      (tt.Trip.Line.Start.Name.Trim().ToLower().StartsWith(to.Trim().ToLower())
+                      && tt.Trip.Line.End.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()) && tt.IsStart == false) ||
+                      (tt.Trip.Line.Start.Name.Trim().ToLower().Contains(to.Trim().ToLower()) &&
+                      tt.Trip.Line.End.Name.Trim().ToLower().Contains(from.Trim().ToLower()) && tt.IsStart == false) ||
+                     (tt.Trip.Line.Start.Name.Trim().ToLower().StartsWith(from.Trim().ToLower())&&to==null && tt.IsStart == true) ||
+                     (tt.Trip.Line.Start.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) &&from==null &&tt.IsStart == false))
+                      && tt.StartTime >= today
+                     ).Where(tt => tt.Status != TripStatus.Arrived);
+         
 
-                 }).ToListAsync();
-            List<SearchTripsForUser> publicTrips = await _context.PublicDriverTrips
+      
+           var publicTrips =  _context.PublicDriverTrips
                .Where(tt =>
                    ((tt.StartStation.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()) && tt.EndStation.Name.Trim().ToLower().StartsWith(to.Trim().ToLower())) ||
                    (tt.StartStation.Name.Trim().ToLower().Contains(from.Trim().ToLower()) && tt.EndStation.Name.Trim().ToLower().Contains(to.Trim().ToLower())) ||
                     (tt.StartStation.Name.Trim().ToLower().StartsWith(to.Trim().ToLower()) && tt.EndStation.Name.Trim().ToLower().StartsWith(from.Trim().ToLower())) ||
-                    (tt.StartStation.Name.Trim().ToLower().Contains(to.Trim().ToLower()) && tt.EndStation.Name.Trim().ToLower().Contains(from.Trim().ToLower())) ||
-                    tt.StartStation.Name.Trim().ToLower().StartsWith(from.Trim().ToLower()))
-                   && (date.HasValue ? tt.StartDate == date.Value : tt.StartDate >= today) &&
+                    (tt.StartStation.Name.Trim().ToLower().Contains(to.Trim().ToLower()) && tt.EndStation.Name.Trim().ToLower().Contains(from.Trim().ToLower()))||
+                   ( tt.StartStation.Name.Trim().ToLower().StartsWith(from.Trim().ToLower())&& to==null))
+                   && (tt.StartDate >= today) &&
                    (tt.IsActive == true)
 
-                   ).OrderBy(t => t.StartDate)
-               .Select(t => new SearchTripsForUser
-               {
-                   TripId = t.Id,
-                   TripDate = t.StartDate.ToString("MMM d"),
-                   TripDay = t.StartDate.ToString("dddd"),
-                   TripStartTime = t.StartDate.ToString("h:mm tt"),
-                   TripEndTime = t.EndDate.ToString("hh:mm tt"),
-                   StartStation = t.StartStation.Name,
-                   EndStation = t.EndStation.Name,
-                   ImgUrl = t.PublicDriver.PhotoUrl,
-                   IsStart = t.IsStart
+                   );
+            if (date.HasValue && time.HasValue)
+            {
+                var startDateTime = date.Value.ToDateTime(time.Value);
+                var endDateTime = startDateTime.AddMinutes(30); // Assuming time precision to minutes
+                publicTrips = publicTrips.Where(tt => tt.StartDate >= startDateTime && tt.StartDate <= endDateTime);
+                orgTrips = orgTrips.Where(tt => tt.StartTime >= startDateTime && tt.StartTime <= endDateTime);
 
-               }).ToListAsync();
+            }
+            else if (date.HasValue)
+            {
+                var startDate = date.Value.ToDateTime(new TimeOnly(0, 0));
+                var endDate = startDate.AddDays(1);
+                publicTrips = publicTrips.Where(tt => tt.StartDate >= startDate && tt.EndDate < endDate);
+                orgTrips = orgTrips.Where(tt => tt.StartTime >= startDate && tt.StartTime < endDate);
 
-            _response.Data = new { orgTrips, publicTrips };
+            }
+            else if (time.HasValue)
+            {
+                var startTime = today.Date.Add(time.Value.ToTimeSpan());
+            //    var endTime = startTime.AddMinutes(30);
+               publicTrips = publicTrips.Where(tt => tt.StartDate.TimeOfDay >= startTime.TimeOfDay );
+                orgTrips = orgTrips.Where(tt => tt.StartTime.TimeOfDay >= startTime.TimeOfDay );
+
+                //    orgTrips = orgTrips.Where(tt => tt.StartTime.TimeOfDay >= startTime.TimeOfDay && tt.StartTime.TimeOfDay < endTime.TimeOfDay);
+
+            }
+           var orgquery= await orgTrips.OrderBy(t => t.StartTime)
+            .Select(t => new SearchOrgTripsForUser
+            {
+                TripId = t.Id,
+                TripDate = t.StartTime.ToString("MMM d"),
+                TripDay = t.StartTime.ToString("dddd"),
+                TripStartTime = t.StartTime.ToString("h:mm tt"),
+                TripEndTime = t.ArriveTime.ToString("h:mm tt"),
+                StartStation = t.Trip.Line.Start.Name,
+                EndStation = t.Trip.Line.End.Name,
+                ImgUrl = t.Trip.Organization.LogoUrl,
+                Price = t.Trip.Price,
+                OrgName = t.Trip.Organization.Name,
+                Rates = t.Trip.Organization.Rates,
+                IsStart = t.IsStart,
+                Points = t.Trip.Points
+
+            }).ToListAsync();
+            var publicquery=  await publicTrips.OrderBy(t => t.StartDate)
+                 .Select(t => new SearchTripsForUser
+                 {
+                     TripId = t.Id,
+                     TripDate = t.StartDate.ToString("MMM d"),
+                     TripDay = t.StartDate.ToString("dddd"),
+                     TripStartTime = t.StartDate.ToString("h:mm tt"),
+                     TripEndTime = t.EndDate.ToString("hh:mm tt"),
+                     StartStation = t.StartStation.Name,
+                     EndStation = t.EndStation.Name,
+                    ImgUrl = t.PublicDriver.PhotoUrl,
+                     IsStart = t.IsStart
+
+                 }).ToListAsync();
+              
+            _response.Data = new { orgquery , publicquery };
             return _response;
         }
         public async Task<BaseResponse> RequestPublicTrip(PassengerPublicTripRequestDto model, string userId)

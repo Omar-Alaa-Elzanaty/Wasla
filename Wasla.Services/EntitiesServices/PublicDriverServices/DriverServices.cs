@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Localization;
+using Microsoft.Win32.SafeHandles;
+using Twilio.TwiML.Voice;
 using Wasla.DataAccess;
 using Wasla.Model.Dtos;
 using Wasla.Model.Helpers;
@@ -96,17 +98,20 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
         }
         public async Task<BaseResponse> UpdateCurrentPublicTripLocationAsync(string driverId, TripLocationUpdateDto tripDto)
         {
-            DateTime currentData = DateTime.Now;
             var trip = await _context.PublicDriverTrips.
                 FirstOrDefaultAsync(t => t.PublicDriverId == driverId &&
-                t.StartDate <= currentData &&
-                (t.Status == TripStatus.OnRoad || t.Status == TripStatus.TakeBreak));
+                t.IsStart &&
+                (t.Status == TripStatus.OnRoad || t.Status == TripStatus.TakeBreak || t.Status == TripStatus.Waiting));
+
             if (trip == null)
                 return BaseResponse.GetErrorException(HttpStatusErrorCode.NotFound, _localization["ObjectNotFound"].Value);
+
             trip.Langtitude = tripDto.Langtitude;
             trip.Latitude = tripDto.Latitude;
+
             _context.PublicDriverTrips.Update(trip);
             await _context.SaveChangesAsync();
+
             _response.Message = _localization["UpdateSuccess"].Value;
             return _response;
         }
@@ -195,16 +200,20 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
 
             return _response;
         }
-
         public async Task<BaseResponse> UpdatePublicTripStart(int tripId)
         {
             var trip = await _context.PublicDriverTrips.FindAsync(tripId);
             if (trip is null)
                 return BaseResponse.GetErrorException(System.Net.HttpStatusCode.BadRequest, _localization["NoActiveTrip"].Value);
+
             trip.IsActive = false;
             trip.IsStart = true;
             trip.AcceptPackages = false;
             trip.Status = TripStatus.OnRoad;
+
+            _context.Update(trip);
+            await _context.SaveChangesAsync();
+
             _response.Message = _localization["SuccessProcess"].Value;
             return _response;
         }
@@ -239,17 +248,21 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             if (trip is null)
                 return BaseResponse.GetErrorException(System.Net.HttpStatusCode.BadRequest, _localization["TripNotFound"].Value);
             _response.Data = trip.Status;
+
+            _context.Update(trip);
+            await _context.SaveChangesAsync();
             return _response;
         }
         public async Task<BaseResponse> GetReservationOnRoad(int tripId)
         {
             var reservations = await _context.PublicDriverTripRequests.Where(t => t.PublicDriverTripId == tripId && t.OnRoad == true).Select(t => new PublicTriptReservationRequestDto
             {
+                Id=t.Id,
                 TripTime = t.PublicDriverTrip.StartDate.ToString(@"hh\:mm\:ss"),
                 customerName = t.Customer.FirstName,
                 StartStation = t.PublicDriverTrip.StartStation.Name,
                 EndStation = t.PublicDriverTrip.EndStation.Name,
-                CustomerReservationId = t.Id,
+                CustomerReservationId = t.CustomerId,
                 LocationDescription = t.LocationDescription
             }).ToListAsync();
             _response.Data = reservations;
@@ -399,11 +412,12 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             var reservations = await _context.PublicDriverTripRequests.Where(t => t.PublicDriverTripId == tripId && t.OnRoad == false)
             .Select(t => new PublicTriptReservationRequestDto
             {
+                Id=t.Id,
                 TripTime = t.PublicDriverTrip.StartDate.ToString(@"hh\:mm\:ss"),
                 customerName = t.Customer.FirstName + ' ' + t.Customer.LastName,
                 StartStation = t.PublicDriverTrip.StartStation.Name,
                 EndStation = t.PublicDriverTrip.EndStation.Name,
-                CustomerReservationId = t.Id
+                CustomerReservationId = t.CustomerId
             }).ToListAsync();
 
             _response.Data = reservations;
@@ -459,7 +473,26 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
             return _response;
         }
 
-       
+        public async Task<BaseResponse>GetVehicle(string userId)
+        {
+            var entity = await _context.Vehicles.FirstOrDefaultAsync(x => x.PublicDriverId == userId);
+            var vehicle = _mapper.Map<GetVehicleByIdDto>(entity);
+
+            _response.Data = vehicle;
+
+            return _response;
+        }
+
+        public async Task<BaseResponse> GetTripPassengeers(int tripId)
+        {
+            var entities = await _context.PublicDriverTripReservation.Where(x => x.PublicDriverTripId == tripId)
+                        .ToListAsync();
+
+            var passengers=_mapper.Map<List<GetPublicTripPassenger>>(entities);
+
+            _response.Data = passengers;
+            return _response;
+        }
     }
 }
 

@@ -198,10 +198,11 @@ namespace Wasla.Api.Controllers
         {
             return Ok(await _passangerService.GetTripsForUserAsync(orgId, lineName));
         }
-        [HttpGet("search/trips/user/{from}/{to}/date")]
-        public async Task<IActionResult> SearchTripsForUser([FromRoute] string from, [FromRoute] string to, [FromQuery] DateTime? date)
-        {
-            return Ok(await _passangerService.SearchTripsForUserAsync(from, to,date));
+        [HttpGet("search/trips/user/{from}/{to}/date/time")]
+        public async Task<IActionResult> SearchTripsForUser([FromRoute] string from, [FromRoute] string to, [FromQuery] DateOnly? date,[FromQuery] TimeOnly? time)
+        
+       {
+            return Ok(await _passangerService.SearchTripsForUserAsync(from, to,date,time));
         }
 
         [HttpGet("trip/user/{orgId}/{from}/{to}")]

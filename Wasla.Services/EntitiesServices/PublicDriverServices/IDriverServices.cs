@@ -34,5 +34,7 @@ namespace Wasla.Services.EntitiesServices.PublicDriverServices
         Task<BaseResponse> CancelPassengerReqeust(int id);
 
 
+        Task<BaseResponse> GetVehicle(string userId);
+        Task<BaseResponse> GetTripPassengeers(int tripId);
     }
 }
