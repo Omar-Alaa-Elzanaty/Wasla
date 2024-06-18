@@ -336,7 +336,9 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                     NotifactionName = sender.FirstName,
                     Title = _localization["DriverNewPackageRequestTopic"].Value,
                     Description = _localization["DriverNewPackageRequestDescrption"].Value.Replace("Name", $"{sender.FirstName + ' ' + sender.LastName}"),
-                    Type = NotificationType.PackageRequest
+                    Type = NotificationType.PackageRequest,
+                    NotificationTime = DateTime.UtcNow
+
                 });
             }
             else
@@ -353,7 +355,9 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                     AccountId = trip.Trip.Organization.Id,
                     Title = _localization["DriverNewPackageRequestTopic"].Value,
                     Description = _localization["DriverNewPackageRequestDescrption"].Value.Replace("Name", $"{sender.FirstName + ' ' + sender.LastName}"),
-                    Type = NotificationType.PackageRequest
+                    Type = NotificationType.PackageRequest,
+                    NotificationTime = DateTime.UtcNow
+
                 });
             }
 
@@ -730,7 +734,9 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
                 NotifactionName = passenger.FirstName,
                 Title = _localization["FollowReqeustTopic"].Value,
                 Description = _localization["FollowReqeustDescription"].Value.Replace("Name", $"{passenger.FirstName + ' ' + passenger.LastName}"),
-                Type = NotificationType.FollowReqeust
+                Type = NotificationType.FollowReqeust,
+                NotificationTime = DateTime.UtcNow
+
             };
 
             await _context.AddAsync(notification);
