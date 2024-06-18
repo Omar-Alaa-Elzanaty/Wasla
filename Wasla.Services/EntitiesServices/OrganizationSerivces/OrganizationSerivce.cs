@@ -952,6 +952,7 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                     Title = _localization["NotificationAcceptPackageRequestTopic"].Value,
                     Description = _localization["NotificationAcceptPackageRequestDescription"].Value,
                     Type = NotificationType.PackageAccept,
+                    NotificationTime=DateTime.UtcNow
 
                 });
 
@@ -966,6 +967,8 @@ namespace Wasla.Services.EntitiesServices.OrganizationSerivces
                         Title = _localization["NotificationRecivePackageReqeustTopic"].Value,
                         Description = _localization["NotificationRecivePackageDescription"].Value.Replace("Name", $"{sender.FirstName + ' ' + sender.LastName}"),
                         Type = NotificationType.PackageAccept,
+                        NotificationTime = DateTime.UtcNow
+
                     });
                 }
             }

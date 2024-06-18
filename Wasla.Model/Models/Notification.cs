@@ -18,5 +18,7 @@ namespace Wasla.Model.Models
         public string Description { get; set; }
         public NotificationType Type { get; set; }
         public bool IsRead { get; set; }
+        public DateTime NotificationTime { get; set; }
+
     }
 }

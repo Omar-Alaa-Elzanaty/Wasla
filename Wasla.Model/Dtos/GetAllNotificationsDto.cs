@@ -17,5 +17,7 @@ namespace Wasla.Model.Dtos
         public string NotifactionName { get; set; }
         public string Type { get; set; }
         public bool IsRead { get; set; }
+        public DateTime NotificationTime { get; set; }
+
     }
 }
