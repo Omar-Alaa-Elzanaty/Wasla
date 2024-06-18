@@ -11,9 +11,9 @@ using Wasla.Model.Helpers;
 using Wasla.Model.Helpers.Enums;
 using Wasla.Model.Helpers.Statics;
 using Wasla.Model.Models;
+using Wasla.Services.Authentication.VerifyService;
 using Wasla.Services.Exceptions;
 using Wasla.Services.HlepServices.MediaSerivces;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace Wasla.Services.EntitiesServices.PassangerServices
 {
@@ -26,6 +26,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
         private readonly IMapper _mapper;
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly UserManager<Account> _userManager;
+        private readonly IVerifyService _authVerifyService;
         public PassangerService
             (
             WaslaDb context,
@@ -33,7 +34,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             IMediaSerivce mediaSerivce,
             IMapper mapper,
             UserManager<Account> userManager,
-            IHttpContextAccessor httpContextAccessor)
+            IHttpContextAccessor httpContextAccessor,IVerifyService authVerifyService)
         {
             _context = context;
             _response = new();
@@ -43,6 +44,7 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             _httpContextAccessor = httpContextAccessor;
             _userManager = userManager;
             _httpContextAccessor = httpContextAccessor;
+            _authVerifyService = authVerifyService;
         }
 
         public async Task<BaseResponse> SeatsRecordsAsync(int tripId)
@@ -247,7 +249,6 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             _response.Data = lineDtos;
             return _response;
         }
-
         public async Task<BaseResponse> AddAdsAsync(PassangerAddAdsDto adsRequest, string customerId)
         {
             if (customerId is null)
@@ -472,26 +473,36 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             {
                 return BaseResponse.GetErrorException(System.Net.HttpStatusCode.NotFound, "User not found.");
             }
+            if (model.Email == null && model.PhoneNumber == null)
+                throw new BadRequestException(_localization["phoneOremailRequired"].Value);
+
+            if (model.PhoneNumber is not null) await _authVerifyService.CheckPhoneNumberForEditAsync(model.PhoneNumber,customer.Id);
+            if (model.Email is not null) await _authVerifyService.CheckEmailForEditAsync(model.Email,customer.Id);
+            _ = await CheckUserName(model.UserName);
+            if(model.PhoneNumber is not null && model.PhoneNumber!=customer.PhoneNumber)
+                customer.PhoneNumberConfirmed = false;
+            if (model.Email is not null && model.Email != customer.Email)
+                customer.EmailConfirmed = false;
 
             customer.FirstName = model.FirstName;
             customer.LastName = model.LastName;
             customer.Birthdate = model.Birthdate;
             customer.Gender = model.Gender;
-            customer.Email = model.Email;
-            customer.PhoneNumber = model.PhoneNumber;
+            customer.Email = model.Email??null;
+            customer.PhoneNumber = model.PhoneNumber??null;
             customer.UserName = model.UserName;
             customer.NormalizedUserName = model.UserName.ToUpper();
-            customer.NormalizedEmail = model.Email.ToUpper();
+            customer.NormalizedEmail = model.Email?.ToUpper();
 
-            if (model.Photo is null && customer.PhotoUrl != null)
+           /* if (model.Photo is null && customer.PhotoUrl != null)
             {
                 await _mediaSerivce.DeleteAsync(customer.PhotoUrl);
-            }
-            else if (model.Photo is not null)
-            {
+            }*/
+             if (model.Photo is not null)
+             {
                 customer.PhotoUrl = customer.PhotoUrl.IsNullOrEmpty() ?
                      await _mediaSerivce.AddAsync(model.Photo) : await _mediaSerivce.UpdateAsync(customer.PhotoUrl, model.Photo);
-            }
+             }
 
             await _userManager.UpdateAsync(customer);
 
@@ -1088,8 +1099,8 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             {
                 var startTime = today.Date.Add(time.Value.ToTimeSpan());
             //    var endTime = startTime.AddMinutes(30);
-               publicTrips = publicTrips.Where(tt => tt.StartDate.TimeOfDay >= startTime.TimeOfDay );
-                orgTrips = orgTrips.Where(tt => tt.StartTime.TimeOfDay >= startTime.TimeOfDay );
+               publicTrips = publicTrips.Where(tt => tt.StartDate >= startTime );
+                orgTrips = orgTrips.Where(tt => tt.StartTime >= startTime );
 
                 //    orgTrips = orgTrips.Where(tt => tt.StartTime.TimeOfDay >= startTime.TimeOfDay && tt.StartTime.TimeOfDay < endTime.TimeOfDay);
 
@@ -1139,6 +1150,14 @@ namespace Wasla.Services.EntitiesServices.PassangerServices
             await _context.SaveChangesAsync();
 
             return _response;
+        }
+        private async Task<bool> CheckUserName(string UserName)
+        {
+            if (await _userManager.FindByNameAsync(UserName) is not null)
+            {
+                throw new BadRequestException(_localization["userNameExist"].Value);
+            }
+            return false;
         }
     }
 }

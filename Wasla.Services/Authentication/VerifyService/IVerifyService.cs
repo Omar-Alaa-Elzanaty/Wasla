@@ -11,6 +11,8 @@ namespace Wasla.Services.Authentication.VerifyService
         Task<BaseResponse> CheckUserNameSimilarity(string input);
         Task<BaseResponse> CheckPhoneNumberAsync(string phoneNumber);
         Task<BaseResponse> CheckEmailAsync(string email);
+        Task<BaseResponse> CheckPhoneNumberForEditAsync(string phoneNumber,string userId);
+        Task<BaseResponse> CheckEmailForEditAsync(string email,string userId);
         Task<BaseResponse> CompareOtpAsync(string reciveOtp);
         Task<BaseResponse> ConfirmPhoneAsync(ConfirmNumberDto confirmNumberDto);
         Task<BaseResponse> ConfirmEmailAsync(ConfirmEmailDto confirmEmailDto);

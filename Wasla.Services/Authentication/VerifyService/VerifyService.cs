@@ -105,6 +105,22 @@ namespace Wasla.Services.Authentication.VerifyService
             };
             return _response;
         }
+        public async Task<BaseResponse> CheckPhoneNumberForEditAsync(string phoneNumber,string userId)
+        {
+            if (phoneNumber.IsNullOrEmpty())
+            {
+                throw new BadRequestException(_localization["phoneNumberRequired"]);
+            }
+
+            var isNotFound = !await _userManager.Users.AnyAsync(u => u.PhoneNumber == phoneNumber&&u.Id!=userId);
+
+            _response.Data = new
+            {
+                Valid = isNotFound,
+                Message = isNotFound ? _localization["NotUsed"].Value : _localization["Used"].Value
+            };
+            return _response;
+        }
         public async Task<BaseResponse> CheckEmailAsync(string email)
         {
             if (email.IsNullOrEmpty())
@@ -113,6 +129,22 @@ namespace Wasla.Services.Authentication.VerifyService
             }
 
             var isNotFound = !await _userManager.Users.AnyAsync(u => u.Email == email);
+
+            _response.Data = new
+            {
+                Valid = isNotFound,
+                Message = isNotFound ? _localization["NotUsed"].Value : _localization["Used"].Value
+            };
+            return _response;
+        }
+        public async Task<BaseResponse> CheckEmailForEditAsync(string email,string userId)
+        {
+            if (email.IsNullOrEmpty())
+            {
+                throw new BadRequestException(_localization["EmailRequired"]);
+            }
+
+            var isNotFound = !await _userManager.Users.AnyAsync(u => u.Email == email&&u.Id!=userId);
 
             _response.Data = new
             {
